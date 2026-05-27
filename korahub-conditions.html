@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KoraHub – Conditions d'utilisation</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root{--violet:#2D1B69;--violet-mid:#4A2E9E;--violet-light:#6B46C1;--gold:#F5C518;--gold-light:#FFD95A;--text-dark:#1A0F3C;--text-muted:#7C6FAD;--border:rgba(107,70,193,0.12);--off-white:#F8F6FF;--shadow:0 8px 32px rgba(45,27,105,0.12)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--text-dark)}
+nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:64px;background:rgba(45,27,105,0.97);backdrop-filter:blur(12px);border-bottom:1px solid rgba(245,197,24,0.12)}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-icon{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--gold),var(--gold-light));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:var(--violet)}
+.logo-text{font-family:'Syne',sans-serif;font-weight:700;font-size:18px;color:white}
+.logo-text span{color:var(--gold)}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:9px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .2s;text-decoration:none}
+.btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--violet)}
+.btn-ghost{background:transparent;color:white;border:1px solid rgba(255,255,255,0.25)}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold)}
+
+/* LAYOUT */
+.page-layout{display:grid;grid-template-columns:260px 1fr;gap:32px;max-width:1100px;margin:0 auto;padding:40px 5%}
+
+/* TOC */
+.toc{position:sticky;top:84px;height:fit-content;background:white;border:1.5px solid var(--border);border-radius:16px;padding:20px;overflow:hidden}
+.toc-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--text-dark);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.toc-item{display:block;padding:7px 10px;border-radius:8px;font-size:13px;color:var(--text-muted);text-decoration:none;transition:all .2s;cursor:pointer}
+.toc-item:hover{background:var(--off-white);color:var(--violet-light)}
+.toc-item.active{background:rgba(107,70,193,0.08);color:var(--violet);font-weight:600}
+
+/* DOC TABS */
+.doc-tabs{display:flex;gap:0;background:white;border:1.5px solid var(--border);border-radius:14px;padding:4px;margin-bottom:28px}
+.doc-tab{flex:1;padding:10px;text-align:center;border-radius:10px;cursor:pointer;font-size:14px;font-weight:600;color:var(--text-muted);transition:all .2s;border:none;background:transparent}
+.doc-tab.active{background:linear-gradient(135deg,var(--violet),var(--violet-light));color:white;box-shadow:0 2px 12px rgba(74,46,158,0.3)}
+
+/* CONTENT */
+.doc-content{background:white;border:1.5px solid var(--border);border-radius:16px;padding:36px}
+.doc-hero{background:linear-gradient(135deg,var(--violet) 0%,#1A0F3C 100%);border-radius:14px;padding:28px;margin-bottom:32px;color:white}
+.doc-hero-title{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;margin-bottom:6px}
+.doc-hero-sub{font-size:13px;opacity:.7;margin-bottom:12px}
+.doc-hero-date{display:inline-flex;align-items:center;gap:6px;background:rgba(245,197,24,0.15);border:1px solid rgba(245,197,24,0.3);border-radius:100px;padding:4px 12px;font-size:11px;color:var(--gold);font-weight:600}
+
+.section{margin-bottom:32px;scroll-margin-top:80px}
+.section-num{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,var(--violet),var(--violet-light));color:white;font-family:'Syne',sans-serif;font-weight:800;font-size:12px;margin-right:10px;flex-shrink:0}
+.section-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--text-dark);margin-bottom:14px;display:flex;align-items:center}
+.section-body{font-size:14px;line-height:1.8;color:var(--text-dark)}
+.section-body p{margin-bottom:12px}
+.section-body ul{padding-left:20px;margin-bottom:12px}
+.section-body li{margin-bottom:6px}
+.highlight-box{background:rgba(245,197,24,0.06);border:1.5px solid rgba(245,197,24,0.2);border-radius:12px;padding:16px;margin:14px 0;font-size:13px}
+.highlight-box.danger{background:rgba(255,71,87,0.06);border-color:rgba(255,71,87,0.2)}
+.highlight-box.info{background:rgba(79,172,254,0.06);border-color:rgba(79,172,254,0.2)}
+.highlight-box strong{display:block;margin-bottom:4px}
+.divider{height:1px;background:var(--border);margin:24px 0}
+
+/* COMMISSION TABLE */
+.comm-table{width:100%;border-collapse:collapse;margin:14px 0;border-radius:10px;overflow:hidden;border:1.5px solid var(--border)}
+.comm-table th{background:linear-gradient(135deg,var(--violet),var(--violet-light));color:white;padding:12px 16px;text-align:left;font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+.comm-table td{padding:12px 16px;border-bottom:1px solid var(--border);font-size:13px}
+.comm-table tr:last-child td{border-bottom:none}
+.comm-table tr:hover td{background:var(--off-white)}
+
+footer{background:var(--violet);padding:32px 5%;margin-top:40px}
+.footer-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.footer-copy{font-size:13px;color:rgba(255,255,255,0.5)}
+.footer-links{display:flex;gap:16px}
+.footer-links a{font-size:13px;color:rgba(255,255,255,0.6);text-decoration:none;transition:color .2s}
+.footer-links a:hover{color:var(--gold)}
+
+@media(max-width:900px){.page-layout{grid-template-columns:1fr}.toc{display:none}}
+</style>
+
+<link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImZnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3R5bGU9InN0b3AtY29sb3I6I0Y1QzUxOCIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNGRkQ5NUEiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgcng9IjgiIGZpbGw9InVybCgjZmcpIi8+CiAgPHRleHQgeD0iNCIgeT0iMjQiIGZvbnQtZmFtaWx5PSJBcmlhbCBCbGFjayxzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iOTAwIiBmb250LXNpemU9IjIyIiBmaWxsPSIjMkQxQjY5Ij5LPC90ZXh0Pgo8L3N2Zz4=" type="image/svg+xml">
+</head>
+<body>
+<div class="kh-logo">K</div></div><div class="kh-name">Kora<span style="color:#F5C518">Hub</span></div><div class="kh-dots"><div class="kh-dot"></div><div class="kh-dot"></div><div class="kh-dot"></div></div></div>
+<div class="kh-logo">K</div></div><div class="kh-name">Kora<span style="color:#F5C518">Hub</span></div><div class="kh-dots"><div class="kh-dot"></div><div class="kh-dot"></div><div class="kh-dot"></div></div></div>
+
+<nav>
+  <a href="korahub.html" class="nav-logo">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 40" style="height:34px;width:auto;display:block"><defs><linearGradient id="kg1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#F5C518"/><stop offset="100%" style="stop-color:#FFD95A"/></linearGradient></defs><rect x="0" y="2" width="36" height="36" rx="9" fill="url(#kg1)"/><text x="8" y="28" font-family="Arial Black,sans-serif" font-weight="900" font-size="23" fill="#2D1B69">K</text><text x="44" y="25" font-family="Arial,sans-serif" font-weight="700" font-size="16" fill="white">Kora</text><text x="80" y="25" font-family="Arial,sans-serif" font-weight="700" font-size="16" fill="#F5C518">Hub</text><text x="44" y="35" font-family="Arial,sans-serif" font-size="7" fill="rgba(255,255,255,0.45)" letter-spacing="1.5">LEARN · SELL · GROW</text></svg>
+    
+  </a>
+  <div style="display:flex;gap:10px">
+    <a href="korahub.html" class="btn btn-ghost">🏠 Accueil</a>
+    <a href="korahub-auth.html" class="btn btn-gold">Mon compte</a>
+  </div>
+</nav>
+
+<div class="page-layout">
+
+  <!-- TOC -->
+  <aside class="toc">
+    <div class="toc-title">📋 Sommaire</div>
+    <a class="toc-item active" onclick="scrollTo('s1')">1. Présentation</a>
+    <a class="toc-item" onclick="scrollTo('s2')">2. Inscription</a>
+    <a class="toc-item" onclick="scrollTo('s3')">3. Vendeurs</a>
+    <a class="toc-item" onclick="scrollTo('s4')">4. Commissions</a>
+    <a class="toc-item" onclick="scrollTo('s5')">5. Acheteurs</a>
+    <a class="toc-item" onclick="scrollTo('s6')">6. Affiliés</a>
+    <a class="toc-item" onclick="scrollTo('s7')">7. Paiements</a>
+    <a class="toc-item" onclick="scrollTo('s8')">8. Produits interdits</a>
+    <a class="toc-item" onclick="scrollTo('s9')">9. Confidentialité</a>
+    <a class="toc-item" onclick="scrollTo('s10')">10. Contact</a>
+  </aside>
+
+  <!-- CONTENT -->
+  <div>
+
+    <!-- TABS -->
+    <div class="doc-tabs">
+      <button class="doc-tab active" onclick="switchDoc('cgu',this)">📋 Conditions d'utilisation</button>
+      <button class="doc-tab" onclick="switchDoc('privacy',this)">🔒 Politique de confidentialité</button>
+    </div>
+
+    <!-- CGU -->
+    <div id="doc-cgu" class="doc-content">
+
+      <div class="doc-hero">
+        <div class="doc-hero-title">📋 Conditions Générales d'Utilisation</div>
+        <div class="doc-hero-sub">KoraHub – La marketplace digitale de toute l'Afrique</div>
+        <div class="doc-hero-date">📅 Dernière mise à jour : Janvier 2025</div>
+      </div>
+
+      <div class="section" id="s1">
+        <div class="section-title"><span class="section-num">1</span> Présentation de KoraHub</div>
+        <div class="section-body">
+          <p>KoraHub est une marketplace africaine de produits digitaux permettant à des vendeurs et acheteurs de toute l'Afrique d'échanger des contenus numériques (ebooks, formations, coaching, cours vidéo, etc.).</p>
+          <p>KoraHub est une plateforme panafricaine qui s'adresse à tous les pays africains. En utilisant notre plateforme, vous acceptez les présentes conditions d'utilisation.</p>
+          <div class="highlight-box">
+            <strong>🌍 Plateforme panafricaine</strong>
+            KoraHub est disponible dans toute l'Afrique. Nos moyens de paiement locaux (Mobile Money, carte bancaire et autres) permettent d'acheter et vendre avec votre moyen de paiement habituel.
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="section" id="s2">
+        <div class="section-title"><span class="section-num">2</span> Inscription et compte</div>
+        <div class="section-body">
+          <p>Trois types de comptes sont disponibles sur KoraHub :</p>
+          <ul>
+            <li><strong>Acheteur</strong> : peut parcourir et acheter des produits. L'inscription est optionnelle pour les achats.</li>
+            <li><strong>Vendeur</strong> : peut publier et vendre des produits digitaux. Inscription obligatoire.</li>
+            <li><strong>Affilié</strong> : peut promouvoir les produits et gagner des commissions. Inscription obligatoire.</li>
+          </ul>
+          <p>En vous inscrivant, vous garantissez que les informations fournies sont exactes et que vous avez au moins 18 ans ou l'autorisation parentale requise.</p>
+          <div class="highlight-box info">
+            <strong>ℹ️ Sécurité du compte</strong>
+            Vous êtes responsable de la confidentialité de votre mot de passe. KoraHub ne sera pas tenu responsable des pertes résultant d'un accès non autorisé à votre compte.
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="section" id="s3">
+        <div class="section-title"><span class="section-num">3</span> Règles pour les vendeurs</div>
+        <div class="section-body">
+          <p>En tant que vendeur sur KoraHub, vous vous engagez à :</p>
+          <ul>
+            <li>Vendre uniquement des produits dont vous êtes l'auteur ou avez les droits de distribution</li>
+            <li>Fournir des descriptions honnêtes et précises de vos produits</li>
+            <li>Livrer le produit vendu dans les meilleurs délais après confirmation du paiement</li>
+            <li>Payer votre commission de 10% à KoraHub dans un délai de <strong>24 heures</strong> après chaque vente confirmée</li>
+            <li>Ne pas contacter directement les clients pour contourner la plateforme</li>
+          </ul>
+          <div class="highlight-box danger">
+            <strong>⚠️ Blocage automatique</strong>
+            Tout vendeur qui ne paie pas sa commission dans les 24h sera automatiquement bloqué. Un avertissement est envoyé à H+12. Le vendeur a droit à une seule chance.
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="section" id="s4">
+        <div class="section-title"><span class="section-num">4</span> Commissions et paiements</div>
+        <div class="section-body">
+          <p>Le modèle de commission de KoraHub est le suivant :</p>
+
+          <table class="comm-table">
+            <thead>
+              <tr>
+                <th>Acteur</th>
+                <th>Sans affiliation</th>
+                <th>Avec affiliation</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>🏪 KoraHub</strong></td>
+                <td style="color:#2D1B69;font-weight:700">10%</td>
+                <td style="color:#2D1B69;font-weight:700">10%</td>
+              </tr>
+              <tr>
+                <td><strong>💼 Vendeur</strong></td>
+                <td style="color:#2ed573;font-weight:700">90%</td>
+                <td style="color:#2ed573;font-weight:700">80%</td>
+              </tr>
+              <tr>
+                <td><strong>📢 Affilié</strong></td>
+                <td style="color:var(--text-muted)">—</td>
+                <td style="color:#F5C518;font-weight:700">10%</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <p>La commission KoraHub (10%) doit être payée par le vendeur sur les numéros suivants :</p>
+          <ul>
+            <li>🟠 <strong>Orange Money / Wave :</strong> selon vendeur</li>
+            <li>🟣 <strong>Moov Money / Coris Money :</strong> selon vendeur</li>
+          </ul>
+          <p>Le programme d'affiliation est optionnel. Chaque vendeur choisit librement d'activer ou non l'affiliation sur ses produits.</p>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="section" id="s5">
+        <div class="section-title"><span class="section-num">5</span> Règles pour les acheteurs</div>
+        <div class="section-body">
+          <p>En tant qu'acheteur sur KoraHub, vous vous engagez à :</p>
+          <ul>
+            <li>Payer le montant exact indiqué sur le site avant de soumettre votre commande</li>
+            <li>Uploader une capture d'écran authentique de votre paiement</li>
+            <li>Ne pas partager les produits achetés sans autorisation du vendeur</li>
+            <li>Ne pas effectuer de faux achats ou tentatives d'escroquerie</li>
+          </ul>
+          <div class="highlight-box">
+            <strong>⏱️ Délai de paiement</strong>
+            Toute commande sans preuve de paiement dans les 24 heures sera automatiquement annulée. Vous recevrez un email de notification.
+          </div>
+          <p>Les produits digitaux achetés ne sont pas remboursables sauf en cas de non-livraison prouvée après confirmation de paiement.</p>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="section" id="s6">
+        <div class="section-title"><span class="section-num">6</span> Programme d'affiliation</div>
+        <div class="section-body">
+          <p>Le programme d'affiliation KoraHub permet à tout inscrit de gagner 10% de commission sur les ventes générées via son lien unique.</p>
+          <ul>
+            <li>Chaque affilié reçoit un lien unique personnalisé</li>
+            <li>La commission est créditée après confirmation du paiement de l'acheteur</li>
+            <li>Le paiement des gains se fait sur Mobile Money sur demande de l'affilié</li>
+            <li>KoraHub traite les demandes de retrait sous 24 à 48 heures</li>
+          </ul>
+          <div class="highlight-box info">
+            <strong>ℹ️ Note importante</strong>
+            La commission affilié (10%) est prélevée sur la part du vendeur. KoraHub conserve toujours ses 10% fixes quelle que soit la situation.
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="section" id="s7">
+        <div class="section-title"><span class="section-num">7</span> Moyens de paiement acceptés</div>
+        <div class="section-body">
+          <p>KoraHub accepte tous les moyens de paiement selon le vendeur :</p>
+          <ul>
+            <li>🟠 <strong>Orange Money</strong></li>
+            <li>🔵 <strong>Wave</strong></li>
+            <li>🟣 <strong>Moov Money</strong></li>
+            <li>🔴 <strong>Coris Money</strong></li>
+          </ul>
+          <p>Les cartes bancaires ne sont pas acceptées en Phase 1. D'autres moyens de paiement africains seront ajoutés progressivement (MTN MoMo, M-Pesa, etc.).</p>
+          <p>Tous les paiements sont effectués en FCFA ou équivalent selon le pays de l'acheteur.</p>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="section" id="s8">
+        <div class="section-title"><span class="section-num">8</span> Contenus interdits</div>
+        <div class="section-body">
+          <p>Il est strictement interdit de vendre sur KoraHub :</p>
+          <ul>
+            <li>Des contenus portant atteinte aux droits d'auteur sans autorisation</li>
+            <li>Des contenus à caractère pornographique ou sexuellement explicite</li>
+            <li>Des contenus incitant à la haine, à la discrimination ou à la violence</li>
+            <li>Des logiciels malveillants, virus ou outils de piratage</li>
+            <li>Des contenus trompeurs ou frauduleux</li>
+            <li>Des produits physiques (réservé à la Phase 2)</li>
+          </ul>
+          <div class="highlight-box danger">
+            <strong>⚠️ Santé mentale</strong>
+            Les contenus de bien-être mental sur KoraHub sont fournis à titre de soutien léger uniquement. Ils ne remplacent en aucun cas un suivi médical ou psychologique professionnel. En cas de détresse grave, consultez un professionnel de santé.
+          </div>
+          <p>KoraHub se réserve le droit de retirer tout contenu non conforme sans préavis et de bannir définitivement les vendeurs en infraction.</p>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="section" id="s9">
+        <div class="section-title"><span class="section-num">9</span> Confidentialité des données</div>
+        <div class="section-body">
+          <p>KoraHub collecte uniquement les données nécessaires au fonctionnement de la plateforme :</p>
+          <ul>
+            <li>Nom, email et pays pour la création de compte</li>
+            <li>Numéros de Mobile Money pour les transactions</li>
+            <li>Historique des achats et ventes</li>
+          </ul>
+          <p>Vos données ne sont jamais vendues à des tiers. Elles sont utilisées uniquement pour :</p>
+          <ul>
+            <li>Traiter vos commandes et paiements</li>
+            <li>Vous envoyer vos produits et confirmations</li>
+            <li>Améliorer notre service</li>
+          </ul>
+          <p>Pour plus de détails, consultez notre <a href="korahub.html" onclick="switchDocByName('privacy')" style="color:var(--violet-light);font-weight:600">Politique de Confidentialité complète</a>.</p>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="section" id="s10">
+        <div class="section-title"><span class="section-num">10</span> Contact et support</div>
+        <div class="section-body">
+          <p>Pour toute question, réclamation ou signalement, contactez-nous :</p>
+          <ul>
+            <li>📧 <strong>Email :</strong> sonde.business.75@gmail.com</li>
+            <li>💬 <strong>WhatsApp :</strong> +226 75 31 83 51</li>
+            <li>🌍 <strong>Plateforme :</strong> korahub.vercel.app</li>
+          </ul>
+          <p>Nous nous engageons à répondre à toutes les demandes dans un délai de 24 à 48 heures.</p>
+          <div class="highlight-box">
+            <strong>✅ Notre engagement</strong>
+            KoraHub s'engage à offrir une plateforme sécurisée, transparente et équitable pour tous les acteurs de l'économie digitale africaine.
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- PRIVACY POLICY -->
+    <div id="doc-privacy" class="doc-content" style="display:none">
+
+      <div class="doc-hero" style="background:linear-gradient(135deg,#1a0f3c 0%,#2d1b69 100%)">
+        <div class="doc-hero-title">🔒 Politique de Confidentialité</div>
+        <div class="doc-hero-sub">KoraHub – Protection de vos données personnelles</div>
+        <div class="doc-hero-date">📅 Dernière mise à jour : Janvier 2025</div>
+      </div>
+
+      <div class="section">
+        <div class="section-title"><span class="section-num">1</span> Données collectées</div>
+        <div class="section-body">
+          <p>KoraHub collecte les données suivantes :</p>
+          <ul>
+            <li><strong>Données d'inscription :</strong> nom complet, email, pays, rôle (acheteur/vendeur/affilié)</li>
+            <li><strong>Données de transaction :</strong> numéros Mobile Money, montants, captures d'écran de paiement</li>
+            <li><strong>Données d'utilisation :</strong> produits consultés, achats effectués, commentaires publiés</li>
+            <li><strong>Données techniques :</strong> adresse IP, type de navigateur (pour la sécurité uniquement)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="section">
+        <div class="section-title"><span class="section-num">2</span> Utilisation des données</div>
+        <div class="section-body">
+          <p>Vos données sont utilisées exclusivement pour :</p>
+          <ul>
+            <li>Traiter et confirmer vos commandes</li>
+            <li>Vous envoyer vos produits achetés par email</li>
+            <li>Vous notifier par WhatsApp et email des activités sur votre compte</li>
+            <li>Calculer et suivre les commissions</li>
+            <li>Améliorer l'expérience utilisateur sur KoraHub</li>
+            <li>Envoyer la newsletter hebdomadaire (si vous y avez consenti)</li>
+          </ul>
+          <div class="highlight-box danger">
+            <strong>🚫 Ce que nous ne faisons jamais</strong>
+            Nous ne vendons jamais vos données à des tiers. Nous ne les utilisons pas à des fins publicitaires externes. Nous ne partageons pas vos numéros Mobile Money avec des tiers.
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="section">
+        <div class="section-title"><span class="section-num">3</span> Vos droits</div>
+        <div class="section-body">
+          <p>Conformément aux lois africaines sur la protection des données, vous avez le droit de :</p>
+          <ul>
+            <li><strong>Accéder</strong> à toutes vos données personnelles stockées par KoraHub</li>
+            <li><strong>Modifier</strong> vos informations depuis votre dashboard</li>
+            <li><strong>Supprimer</strong> votre compte et toutes les données associées</li>
+            <li><strong>Vous désabonner</strong> de la newsletter à tout moment</li>
+            <li><strong>Contester</strong> toute utilisation de vos données</li>
+          </ul>
+          <p>Pour exercer ces droits, contactez-nous à sonde.business.75@gmail.com.</p>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="section">
+        <div class="section-title"><span class="section-num">4</span> Sécurité des données</div>
+        <div class="section-body">
+          <p>KoraHub prend la sécurité de vos données très au sérieux :</p>
+          <ul>
+            <li>Mots de passe chiffrés et jamais stockés en clair</li>
+            <li>Connexions sécurisées via HTTPS</li>
+            <li>Accès aux données limité à l'équipe KoraHub uniquement</li>
+            <li>Captures d'écran de paiement supprimées après traitement</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="section">
+        <div class="section-title"><span class="section-num">5</span> Cookies</div>
+        <div class="section-body">
+          <p>KoraHub utilise des cookies uniquement pour :</p>
+          <ul>
+            <li>Maintenir votre session de connexion</li>
+            <li>Mémoriser vos préférences (langue, mode sombre)</li>
+            <li>Analyser l'utilisation du site de manière anonyme</li>
+          </ul>
+          <p>Aucun cookie publicitaire ou de tracking tiers n'est utilisé.</p>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="section">
+        <div class="section-title"><span class="section-num">6</span> Contact</div>
+        <div class="section-body">
+          <p>Pour toute question relative à la confidentialité de vos données :</p>
+          <ul>
+            <li>📧 sonde.business.75@gmail.com</li>
+            <li>💬 WhatsApp : +226 75 31 83 51</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-copy">© 2025 KoraHub · Learn. Sell. Grow. · Pour toute l'Afrique 🌍</div>
+    <div class="footer-links">
+      <a href="korahub.html">Accueil</a>
+      <a href="korahub-recherche.html">Catalogue</a>
+      <a href="korahub-auth.html">Connexion</a>
+      <a href="korahub-404.html">404</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+function switchDoc(doc, btn) {
+  document.querySelectorAll('.doc-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('doc-cgu').style.display = doc === 'cgu' ? 'block' : 'none';
+  document.getElementById('doc-privacy').style.display = doc === 'privacy' ? 'block' : 'none';
+}
+
+function switchDocByName(doc) {
+  const tabs = document.querySelectorAll('.doc-tab');
+  tabs.forEach((t, i) => t.classList.toggle('active', (doc==='cgu'&&i===0)||(doc==='privacy'&&i===1)));
+  document.getElementById('doc-cgu').style.display = doc === 'cgu' ? 'block' : 'none';
+  document.getElementById('doc-privacy').style.display = doc === 'privacy' ? 'block' : 'none';
+}
+
+function scrollTo(id) {
+  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+  document.querySelectorAll('.toc-item').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+}
+</script>
+<script id="kh-loader-script"></script>
+
+</body>
+</html>

@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KoraHub Templates – Imprimables, CV, Planners & Créatifs</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root{--violet:#2D1B69;--violet-mid:#4A2E9E;--violet-light:#6B46C1;--gold:#F5C518;--gold-light:#FFD95A;--white:#FFFFFF;--off-white:#F8F6FF;--text-dark:#1A0F3C;--text-muted:#7C6FAD;--border:rgba(107,70,193,0.12);--shadow:0 8px 32px rgba(45,27,105,0.12);--success:#2ed573;--danger:#ff4757}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--text-dark)}
+
+nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:64px;background:rgba(45,27,105,0.97);backdrop-filter:blur(12px);border-bottom:1px solid rgba(245,197,24,0.12)}
+.nav-logo{display:flex;align-items:center;text-decoration:none}
+.nav-right{display:flex;gap:10px;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:9px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .2s;text-decoration:none}
+.btn-ghost{background:transparent;color:white;border:1px solid rgba(255,255,255,0.25)}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold)}
+.btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--violet);font-weight:700}
+.btn-gold:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(245,197,24,0.35)}
+
+/* HERO */
+.hero{background:linear-gradient(145deg,var(--violet) 0%,#1A0F3C 60%,#0D0829 100%);padding:60px 5% 50px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-100px;right:-100px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(245,197,24,0.07) 0%,transparent 70%)}
+.hero-inner{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;max-width:1100px;margin:0 auto}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(245,197,24,0.1);border:1px solid rgba(245,197,24,0.25);border-radius:100px;padding:5px 14px;font-size:12px;font-weight:600;color:var(--gold-light);margin-bottom:16px}
+.hero-title{font-family:'Syne',sans-serif;font-size:clamp(26px,4vw,44px);font-weight:800;color:white;line-height:1.15;margin-bottom:12px}
+.hero-title span{color:var(--gold)}
+.hero-sub{font-size:14px;color:rgba(255,255,255,0.65);line-height:1.7;margin-bottom:24px;max-width:440px}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap}
+.hero-visual{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.template-preview{border-radius:14px;overflow:hidden;transition:all .3s;cursor:pointer}
+.template-preview:hover{transform:translateY(-5px) rotate(-1deg);box-shadow:0 12px 40px rgba(0,0,0,0.3)}
+.template-cover{height:130px;display:flex;align-items:center;justify-content:center;font-size:36px;position:relative}
+.template-cover-label{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.5);padding:6px 10px;font-size:11px;font-weight:700;color:white}
+
+/* STATS */
+.stats-band{background:white;border-bottom:1px solid var(--border);padding:18px 5%}
+.stats-inner{max-width:1100px;margin:0 auto;display:flex;justify-content:space-around;flex-wrap:wrap;gap:14px}
+.band-stat{text-align:center}
+.band-val{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:var(--violet)}
+.band-label{font-size:12px;color:var(--text-muted);margin-top:2px}
+
+/* CATEGORIES NAV */
+.cat-nav{background:white;border-bottom:1px solid var(--border);padding:0 5%;position:sticky;top:64px;z-index:50;overflow-x:auto}
+.cat-nav-inner{max-width:1100px;margin:0 auto;display:flex;gap:0}
+.cat-nav-item{display:flex;align-items:center;gap:7px;padding:14px 20px;font-size:13px;font-weight:600;color:var(--text-muted);cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;transition:all .2s}
+.cat-nav-item:hover{color:var(--violet-light)}
+.cat-nav-item.active{color:var(--violet);border-bottom-color:var(--violet)}
+
+/* MAIN */
+.main{max-width:1100px;margin:0 auto;padding:36px 5%}
+.section-label{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--violet-light);margin-bottom:8px}
+.section-label::before{content:'';width:20px;height:2px;background:var(--gold)}
+.section-title{font-family:'Syne',sans-serif;font-size:clamp(22px,3vw,32px);font-weight:800;color:var(--text-dark);margin-bottom:6px}
+.section-title span{color:var(--violet-light)}
+.section-sub{font-size:14px;color:var(--text-muted);margin-bottom:28px;line-height:1.7}
+
+/* FILTERS */
+.filters-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px;align-items:center}
+.filter-chip{padding:7px 14px;border-radius:100px;border:1.5px solid var(--border);background:white;font-size:12px;font-weight:600;color:var(--text-muted);cursor:pointer;transition:all .2s;white-space:nowrap}
+.filter-chip:hover{border-color:var(--violet-light);color:var(--violet-light)}
+.filter-chip.active{background:var(--violet);border-color:var(--violet);color:white}
+.filter-chip.free{border-color:rgba(46,213,115,0.3);color:var(--success)}
+.filter-chip.free.active{background:var(--success);border-color:var(--success);color:white}
+
+/* TEMPLATES GRID */
+.templates-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px;margin-bottom:40px}
+.template-card{background:white;border:1.5px solid var(--border);border-radius:16px;overflow:hidden;cursor:pointer;transition:all .25s}
+.template-card:hover{transform:translateY(-4px);box-shadow:var(--shadow);border-color:rgba(107,70,193,0.2)}
+.template-thumb{height:170px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;gap:6px}
+.template-emoji{font-size:48px}
+.template-mini-title{font-size:11px;font-weight:700;color:white;text-align:center;padding:0 10px;text-shadow:0 1px 3px rgba(0,0,0,0.3)}
+.template-badges{position:absolute;top:8px;left:8px;display:flex;gap:4px;flex-wrap:wrap}
+.tbadge{font-size:9px;font-weight:800;padding:2px 7px;border-radius:100px}
+.tbadge-type{background:rgba(255,255,255,0.9);color:var(--violet)}
+.tbadge-new{background:var(--gold);color:var(--violet)}
+.tbadge-free{background:var(--success);color:white}
+.tbadge-hot{background:var(--danger);color:white}
+.template-wishlist{position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.9);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all .2s}
+.template-wishlist:hover{transform:scale(1.15)}
+.template-body{padding:14px}
+.template-cat{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--violet-light);margin-bottom:4px}
+.template-name{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--text-dark);margin-bottom:3px;line-height:1.3}
+.template-author{font-size:11px;color:var(--text-muted);margin-bottom:10px}
+.template-footer{display:flex;align-items:center;justify-content:space-between}
+.template-price{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--violet)}
+.template-price.free{color:var(--success)}
+.template-formats{display:flex;gap:4px;margin-top:8px;flex-wrap:wrap}
+.format-tag{background:rgba(107,70,193,0.06);border:1px solid rgba(107,70,193,0.12);border-radius:4px;padding:2px 6px;font-size:10px;font-weight:600;color:var(--violet-light)}
+.buy-btn{padding:7px 14px;border-radius:8px;border:none;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;background:linear-gradient(135deg,var(--violet),var(--violet-light));color:white}
+.buy-btn:hover{transform:scale(1.05)}
+.template-meta{display:flex;gap:10px;margin-top:8px;padding-top:8px;border-top:1px solid var(--border)}
+.meta-item{font-size:10px;color:var(--text-muted);display:flex;align-items:center;gap:3px}
+
+/* SECTION IMPRIMABLES */
+.imprimables-banner{background:linear-gradient(135deg,#667eea,#764ba2);border-radius:20px;padding:28px;margin-bottom:28px;display:flex;align-items:center;gap:20px;position:relative;overflow:hidden}
+.imprimables-banner::before{content:'';position:absolute;top:-30px;right:-30px;width:150px;height:150px;border-radius:50%;background:rgba(255,255,255,0.08)}
+.imprimables-info-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:white;margin-bottom:6px}
+.imprimables-info-sub{font-size:13px;color:rgba(255,255,255,0.8);line-height:1.6}
+
+/* VENDOR CTA */
+.vendor-cta{background:white;border:2px solid var(--border);border-radius:20px;padding:32px;display:flex;align-items:center;gap:24px;flex-wrap:wrap;margin-top:40px}
+.vendor-cta-icon{font-size:48px;flex-shrink:0}
+.vendor-cta-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--text-dark);margin-bottom:6px}
+.vendor-cta-sub{font-size:13px;color:var(--text-muted);line-height:1.6;margin-bottom:14px}
+.vendor-features{display:flex;gap:14px;flex-wrap:wrap}
+.vendor-feat{font-size:12px;color:var(--text-muted);display:flex;align-items:center;gap:5px}
+.vendor-feat::before{content:'✅'}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;z-index:1000;background:rgba(13,8,41,0.85);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .3s}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.template-modal{background:white;border-radius:20px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;transform:translateY(20px);transition:transform .3s}
+.modal-overlay.open .template-modal{transform:translateY(0)}
+.modal-header{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--text-dark)}
+.modal-close{width:30px;height:30px;border-radius:8px;background:var(--off-white);border:none;cursor:pointer;font-size:15px;color:var(--text-muted)}
+.modal-body{padding:22px}
+.modal-cover{height:180px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:60px;margin-bottom:16px}
+.modal-template-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--text-dark);margin-bottom:4px}
+.modal-template-desc{font-size:13px;color:var(--text-muted);margin-bottom:16px;line-height:1.6}
+.modal-info-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:18px}
+.modal-info-item{background:var(--off-white);border-radius:10px;padding:10px;text-align:center}
+.modal-info-val{font-weight:700;font-size:13px;color:var(--text-dark)}
+.modal-info-label{font-size:10px;color:var(--text-muted);margin-top:2px}
+.modal-price{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:var(--violet);text-align:center;margin-bottom:16px}
+.modal-buy-btn{width:100%;padding:13px;background:linear-gradient(135deg,var(--violet-mid),var(--violet-light));color:white;border:none;border-radius:12px;font-family:'Syne',sans-serif;font-size:15px;font-weight:800;cursor:pointer;transition:all .2s;margin-bottom:10px}
+.modal-buy-btn:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(74,46,158,0.4)}
+.modal-preview-btn{width:100%;padding:11px;background:var(--off-white);color:var(--text-dark);border:1.5px solid var(--border);border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s}
+.modal-preview-btn:hover{border-color:var(--violet-light)}
+
+footer{background:var(--violet);padding:28px 5%}
+.footer-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px}
+.footer-copy{font-size:13px;color:rgba(255,255,255,0.5)}
+.footer-links{display:flex;gap:14px;flex-wrap:wrap}
+.footer-links a{font-size:13px;color:rgba(255,255,255,0.6);text-decoration:none;transition:color .2s}
+.footer-links a:hover{color:var(--gold)}
+
+.toast{position:fixed;bottom:24px;right:24px;z-index:2000;background:var(--violet);border:1px solid var(--gold);color:white;padding:13px 18px;border-radius:11px;font-size:13px;display:flex;align-items:center;gap:9px;transform:translateX(120%);transition:transform .3s;box-shadow:var(--shadow);max-width:300px}
+.toast.show{transform:translateX(0)}
+
+@media(max-width:900px){.hero-inner{grid-template-columns:1fr}.hero-visual{display:none}}
+@media(max-width:600px){.templates-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:400px){.templates-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="korahub.html" class="nav-logo">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 40" style="height:34px;width:auto;display:block"><defs><linearGradient id="kg1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#F5C518"/><stop offset="100%" style="stop-color:#FFD95A"/></linearGradient></defs><rect x="0" y="2" width="36" height="36" rx="9" fill="url(#kg1)"/><text x="8" y="28" font-family="Arial Black,sans-serif" font-weight="900" font-size="23" fill="#2D1B69">K</text><text x="44" y="25" font-family="Arial,sans-serif" font-weight="700" font-size="16" fill="white">Kora</text><text x="80" y="25" font-family="Arial,sans-serif" font-weight="700" font-size="16" fill="#F5C518">Hub</text><text x="44" y="35" font-family="Arial,sans-serif" font-size="7" fill="rgba(255,255,255,0.45)" letter-spacing="1.5">LEARN · SELL · GROW</text></svg>
+  </a>
+  <div class="nav-right">
+    <a href="korahub.html" class="btn btn-ghost" style="font-size:12px">← KoraHub</a>
+    <a href="korahub-kids.html" class="btn btn-ghost" style="font-size:12px">👶 Kids</a>
+    <a href="korahub-auth.html?tab=register" class="btn btn-gold" style="font-size:12px">Publier un template</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-badge">🎨 Templates & Imprimables africains</div>
+      <h1 class="hero-title">Des ressources créatives<br>pour <span>avancer plus vite</span></h1>
+      <p class="hero-sub">CV professionnels, planners, trackers, journaux, carnets et bien plus. Téléchargez et utilisez immédiatement.</p>
+      <div class="hero-actions">
+        <button class="btn btn-gold" style="padding:12px 22px;font-size:14px;font-family:'Syne',sans-serif;font-weight:800" onclick="document.getElementById('catalogue').scrollIntoView({behavior:'smooth'})">
+          🎨 Voir le catalogue
+        </button>
+        <a href="korahub-auth.html?tab=register" class="btn btn-ghost" style="padding:12px 22px;font-size:14px">
+          ➕ Publier mon template
+        </a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="template-preview" onclick="openModal('Planner 2026','🗓️','linear-gradient(135deg,#667eea,#764ba2)','Organisez votre année avec ce planner complet','Planner annuel · PDF A4 · 52 semaines','2 000')">
+        <div class="template-cover" style="background:linear-gradient(135deg,#667eea,#764ba2)">🗓️<div class="template-cover-label">Planner 2026</div></div>
+      </div>
+      <div class="template-preview" onclick="openModal('CV Moderne Pro','📄','linear-gradient(135deg,#f093fb,#f5576c)','CV professionnel moderne adapté au marché africain','Template CV · Word/PDF · Modifiable','1 500')">
+        <div class="template-cover" style="background:linear-gradient(135deg,#f093fb,#f5576c)">📄<div class="template-cover-label">CV Pro Africain</div></div>
+      </div>
+      <div class="template-preview" onclick="openModal('Tracker Budget','💰','linear-gradient(135deg,#43e97b,#38f9d7)','Suivez vos dépenses et économies au quotidien','Tracker financier · PDF imprimable · 12 mois','1 000')">
+        <div class="template-cover" style="background:linear-gradient(135deg,#43e97b,#38f9d7)">💰<div class="template-cover-label">Tracker Budget</div></div>
+      </div>
+      <div class="template-preview" onclick="openModal('Bloc-notes 6x9','📒','linear-gradient(135deg,#fa709a,#fee140)','Bloc-notes ligné format 6x9 pouces prêt à imprimer','Bloc-notes · PDF imprimable · 100 pages','500')">
+        <div class="template-cover" style="background:linear-gradient(135deg,#fa709a,#fee140)">📒<div class="template-cover-label">Bloc-notes 6x9</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-band">
+  <div class="stats-inner">
+    <div class="band-stat"><div class="band-val">300+</div><div class="band-label">Templates disponibles</div></div>
+    <div class="band-stat"><div class="band-val">PDF</div><div class="band-label">Téléchargement immédiat</div></div>
+    <div class="band-stat"><div class="band-val">500 F</div><div class="band-label">À partir de</div></div>
+    <div class="band-stat"><div class="band-val">100%</div><div class="band-label">Modifiables</div></div>
+  </div>
+</div>
+
+<!-- CAT NAV -->
+<div class="cat-nav">
+  <div class="cat-nav-inner">
+    <div class="cat-nav-item active" onclick="filterCat('all',this)">📋 Tous</div>
+    <div class="cat-nav-item" onclick="filterCat('imprimable',this)">🖨️ Imprimables</div>
+    <div class="cat-nav-item" onclick="filterCat('planner',this)">🗓️ Planners</div>
+    <div class="cat-nav-item" onclick="filterCat('tracker',this)">📊 Trackers</div>
+    <div class="cat-nav-item" onclick="filterCat('journal',this)">📔 Journaux</div>
+    <div class="cat-nav-item" onclick="filterCat('carnet',this)">📒 Carnets</div>
+    <div class="cat-nav-item" onclick="filterCat('cv',this)">📄 CV & Lettres</div>
+    <div class="cat-nav-item" onclick="filterCat('business',this)">💼 Business</div>
+    <div class="cat-nav-item" onclick="filterCat('social',this)">📱 Réseaux sociaux</div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main" id="catalogue">
+
+  <!-- IMPRIMABLES BANNER -->
+  <div class="imprimables-banner" style="margin-bottom:28px">
+    <div style="font-size:48px;flex-shrink:0">🖨️</div>
+    <div>
+      <div class="imprimables-info-title">Tous nos fichiers sont prêts à imprimer !</div>
+      <div class="imprimables-info-sub">Téléchargez le PDF · Ouvrez dans Adobe Reader · Imprimez chez vous ou en imprimerie locale. Simple et rapide.</div>
+    </div>
+  </div>
+
+  <!-- FILTERS -->
+  <div class="filters-row">
+    <span style="font-size:13px;font-weight:600;color:var(--text-muted)">Format :</span>
+    <div class="filter-chip active" onclick="toggleFilter(this)">Tous</div>
+    <div class="filter-chip" onclick="toggleFilter(this)">📥 Téléchargeable</div>
+    <div class="filter-chip" onclick="toggleFilter(this)">🖨️ Imprimable</div>
+    <div class="filter-chip" onclick="toggleFilter(this)">A4</div>
+    <div class="filter-chip" onclick="toggleFilter(this)">A5</div>
+    <div class="filter-chip" onclick="toggleFilter(this)">6×9 pouces</div>
+    <div class="filter-chip free" onclick="toggleFilter(this)">🆓 Gratuits</div>
+  </div>
+
+  <!-- GRID -->
+  <div class="templates-grid" id="templatesGrid">
+
+    <!-- PLANNERS -->
+    <div class="template-card" data-cat="planner imprimable" onclick="openModal('Planner 2026 Complet','🗓️','linear-gradient(135deg,#667eea,#764ba2)','Planifiez toute votre année avec ce planner hebdomadaire et mensuel. Suivi objectifs, habitudes et projets inclus.','PDF A4 · 120 pages · Imprimable','2 000')">
+      <div class="template-thumb" style="background:linear-gradient(135deg,#667eea,#764ba2)">
+        <div class="template-emoji">🗓️</div>
+        <div class="template-mini-title">Planner 2026</div>
+        <div class="template-badges">
+          <span class="tbadge tbadge-type">🖨️ Imprimable</span>
+          <span class="tbadge tbadge-new">Nouveau</span>
+        </div>
+        <button class="template-wishlist" onclick="event.stopPropagation();toggleWishlist(this)">🤍</button>
+      </div>
+      <div class="template-body">
+        <div class="template-cat">Planner annuel</div>
+        <div class="template-name">Planner 2026 Complet</div>
+        <div class="template-author">par KoraHub Créatifs</div>
+        <div class="template-formats">
+          <span class="format-tag">PDF</span>
+          <span class="format-tag">A4</span>
+          <span class="format-tag">120 pages</span>
+        </div>
+        <div class="template-footer" style="margin-top:10px">
+          <span class="template-price">2 000 F</span>
+          <button class="buy-btn" onclick="event.stopPropagation();openModal('Planner 2026','🗓️','linear-gradient(135deg,#667eea,#764ba2)','Planifiez toute votre année.','PDF A4 · 120 pages','2 000')">Voir</button>
+        </div>
+        <div class="template-meta">
+          <span class="meta-item">❤️ 145</span>
+          <span class="meta-item">⭐ 4.9</span>
+          <span class="meta-item">📥 230</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TRACKER BUDGET -->
+    <div class="template-card" data-cat="tracker imprimable" onclick="openModal('Tracker Budget Mensuel','💰','linear-gradient(135deg,#43e97b,#38f9d7)','Suivez vos revenus, dépenses et économies chaque mois. Adapté à la réalité africaine avec colonnes Mobile Money.','PDF A4 · 12 mois · Imprimable','1 000')">
+      <div class="template-thumb" style="background:linear-gradient(135deg,#43e97b,#38f9d7)">
+        <div class="template-emoji">💰</div>
+        <div class="template-mini-title">Tracker Budget</div>
+        <div class="template-badges">
+          <span class="tbadge tbadge-type">🖨️ Imprimable</span>
+          <span class="tbadge tbadge-hot">🔥 Top</span>
+        </div>
+        <button class="template-wishlist" onclick="event.stopPropagation();toggleWishlist(this)">🤍</button>
+      </div>
+      <div class="template-body">
+        <div class="template-cat">Tracker financier</div>
+        <div class="template-name">Tracker Budget Mensuel</div>
+        <div class="template-author">par Aminata Finance</div>
+        <div class="template-formats">
+          <span class="format-tag">PDF</span>
+          <span class="format-tag">A4</span>
+          <span class="format-tag">12 mois</span>
+        </div>
+        <div class="template-footer" style="margin-top:10px">
+          <span class="template-price">1 000 F</span>
+          <button class="buy-btn" onclick="event.stopPropagation();openModal('Tracker Budget','💰','linear-gradient(135deg,#43e97b,#38f9d7)','Suivez vos finances.','PDF A4 · 12 mois','1 000')">Voir</button>
+        </div>
+        <div class="template-meta">
+          <span class="meta-item">❤️ 203</span>
+          <span class="meta-item">⭐ 5.0</span>
+          <span class="meta-item">📥 412</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CV PRO -->
+    <div class="template-card" data-cat="cv" onclick="openModal('CV Moderne Pro Africain','📄','linear-gradient(135deg,#f093fb,#f5576c)','Template CV professionnel moderne, adapté au marché africain. Disponible en Word et PDF modifiable.','Word + PDF · Modifiable · FR/EN','1 500')">
+      <div class="template-thumb" style="background:linear-gradient(135deg,#f093fb,#f5576c)">
+        <div class="template-emoji">📄</div>
+        <div class="template-mini-title">CV Pro Africain</div>
+        <div class="template-badges">
+          <span class="tbadge tbadge-type">📥 Téléchargeable</span>
+        </div>
+        <button class="template-wishlist" onclick="event.stopPropagation();toggleWishlist(this)">🤍</button>
+      </div>
+      <div class="template-body">
+        <div class="template-cat">CV & Lettres</div>
+        <div class="template-name">CV Moderne Pro Africain</div>
+        <div class="template-author">par Design Afrique</div>
+        <div class="template-formats">
+          <span class="format-tag">Word</span>
+          <span class="format-tag">PDF</span>
+          <span class="format-tag">Modifiable</span>
+        </div>
+        <div class="template-footer" style="margin-top:10px">
+          <span class="template-price">1 500 F</span>
+          <button class="buy-btn" onclick="event.stopPropagation();openModal('CV Pro','📄','linear-gradient(135deg,#f093fb,#f5576c)','CV professionnel moderne.','Word + PDF · Modifiable','1 500')">Voir</button>
+        </div>
+        <div class="template-meta">
+          <span class="meta-item">❤️ 98</span>
+          <span class="meta-item">⭐ 4.8</span>
+          <span class="meta-item">📥 187</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- BLOC-NOTES 6x9 -->
+    <div class="template-card" data-cat="carnet imprimable" onclick="openModal('Bloc-notes Ligné 6×9','📒','linear-gradient(135deg,#fa709a,#fee140)','Bloc-notes ligné au format 6×9 pouces (format Amazon KDP). 100 pages, couverture incluse. Prêt à imprimer ou publier.','PDF 6×9 · 100 pages · Imprimable','500')">
+      <div class="template-thumb" style="background:linear-gradient(135deg,#fa709a,#fee140)">
+        <div class="template-emoji">📒</div>
+        <div class="template-mini-title">Bloc-notes 6×9</div>
+        <div class="template-badges">
+          <span class="tbadge tbadge-type">🖨️ Imprimable</span>
+        </div>
+        <button class="template-wishlist" onclick="event.stopPropagation();toggleWishlist(this)">🤍</button>
+      </div>
+      <div class="template-body">
+        <div class="template-cat">Carnet & Bloc-notes</div>
+        <div class="template-name">Bloc-notes Ligné 6×9</div>
+        <div class="template-author">par Print Afrique</div>
+        <div class="template-formats">
+          <span class="format-tag">PDF</span>
+          <span class="format-tag">6×9 pouces</span>
+          <span class="format-tag">100 pages</span>
+        </div>
+        <div class="template-footer" style="margin-top:10px">
+          <span class="template-price">500 F</span>
+          <button class="buy-btn" onclick="event.stopPropagation();openModal('Bloc-notes 6×9','📒','linear-gradient(135deg,#fa709a,#fee140)','Bloc-notes prêt à imprimer.','PDF 6×9 · 100 pages','500')">Voir</button>
+        </div>
+        <div class="template-meta">
+          <span class="meta-item">❤️ 67</span>
+          <span class="meta-item">⭐ 4.7</span>
+          <span class="meta-item">📥 134</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- JOURNAL PERSONNEL -->
+    <div class="template-card" data-cat="journal imprimable" onclick="openModal('Journal Personnel 90 jours','📔','linear-gradient(135deg,#4facfe,#00f2fe)','Journal de développement personnel sur 90 jours. Réflexions quotidiennes, gratitude, objectifs et suivi de progrès.','PDF A5 · 90 jours · Imprimable','1 500')">
+      <div class="template-thumb" style="background:linear-gradient(135deg,#4facfe,#00f2fe)">
+        <div class="template-emoji">📔</div>
+        <div class="template-mini-title">Journal 90 Jours</div>
+        <div class="template-badges">
+          <span class="tbadge tbadge-type">🖨️ Imprimable</span>
+          <span class="tbadge tbadge-new">Nouveau</span>
+        </div>
+        <button class="template-wishlist" onclick="event.stopPropagation();toggleWishlist(this)">🤍</button>
+      </div>
+      <div class="template-body">
+        <div class="template-cat">Journal personnel</div>
+        <div class="template-name">Journal Personnel 90 Jours</div>
+        <div class="template-author">par Mindset Africa</div>
+        <div class="template-formats">
+          <span class="format-tag">PDF</span>
+          <span class="format-tag">A5</span>
+          <span class="format-tag">90 jours</span>
+        </div>
+        <div class="template-footer" style="margin-top:10px">
+          <span class="template-price">1 500 F</span>
+          <button class="buy-btn" onclick="event.stopPropagation();openModal('Journal 90 Jours','📔','linear-gradient(135deg,#4facfe,#00f2fe)','Journal de développement personnel.','PDF A5 · 90 jours','1 500')">Voir</button>
+        </div>
+        <div class="template-meta">
+          <span class="meta-item">❤️ 89</span>
+          <span class="meta-item">⭐ 4.9</span>
+          <span class="meta-item">📥 156</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TRACKER HABITUDES -->
+    <div class="template-card" data-cat="tracker imprimable">
+      <div class="template-thumb" style="background:linear-gradient(135deg,#a18cd1,#fbc2eb)">
+        <div class="template-emoji">✅</div>
+        <div class="template-mini-title">Tracker Habitudes</div>
+        <div class="template-badges">
+          <span class="tbadge tbadge-free">🆓 Gratuit</span>
+        </div>
+        <button class="template-wishlist" onclick="event.stopPropagation();toggleWishlist(this)">🤍</button>
+      </div>
+      <div class="template-body">
+        <div class="template-cat">Tracker habitudes</div>
+        <div class="template-name">Tracker Habitudes 30 Jours</div>
+        <div class="template-author">par KoraHub</div>
+        <div class="template-formats">
+          <span class="format-tag">PDF</span>
+          <span class="format-tag">A4</span>
+          <span class="format-tag">30 jours</span>
+        </div>
+        <div class="template-footer" style="margin-top:10px">
+          <span class="template-price free">Gratuit</span>
+          <button class="buy-btn" style="background:linear-gradient(135deg,#2ECC71,#1A8A4A)" onclick="event.stopPropagation();showToast('📥 Téléchargement démarré !')">Obtenir</button>
+        </div>
+        <div class="template-meta">
+          <span class="meta-item">❤️ 312</span>
+          <span class="meta-item">⭐ 5.0</span>
+          <span class="meta-item">📥 680</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TEMPLATE FACTURE -->
+    <div class="template-card" data-cat="business" onclick="openModal('Pack Factures Pro','🧾','linear-gradient(135deg,#0f3460,#16213e)','Pack complet de templates de factures, devis et bons de commande pour professionnels africains.','Word + Excel · 5 templates · Modifiable','2 500')">
+      <div class="template-thumb" style="background:linear-gradient(135deg,#0f3460,#16213e)">
+        <div class="template-emoji">🧾</div>
+        <div class="template-mini-title">Pack Factures Pro</div>
+        <div class="template-badges">
+          <span class="tbadge tbadge-type">📥 Téléchargeable</span>
+          <span class="tbadge tbadge-hot">🔥 Top</span>
+        </div>
+        <button class="template-wishlist" onclick="event.stopPropagation();toggleWishlist(this)">🤍</button>
+      </div>
+      <div class="template-body">
+        <div class="template-cat">Business Pro</div>
+        <div class="template-name">Pack Factures & Devis Pro</div>
+        <div class="template-author">par Business Africa</div>
+        <div class="template-formats">
+          <span class="format-tag">Word</span>
+          <span class="format-tag">Excel</span>
+          <span class="format-tag">5 templates</span>
+        </div>
+        <div class="template-footer" style="margin-top:10px">
+          <span class="template-price">2 500 F</span>
+          <button class="buy-btn" onclick="event.stopPropagation();openModal('Pack Factures','🧾','linear-gradient(135deg,#0f3460,#16213e)','5 templates professionnels.','Word + Excel · 5 templates','2 500')">Voir</button>
+        </div>
+        <div class="template-meta">
+          <span class="meta-item">❤️ 124</span>
+          <span class="meta-item">⭐ 4.8</span>
+          <span class="meta-item">📥 245</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARNET VOYAGE -->
+    <div class="template-card" data-cat="carnet journal imprimable" onclick="openModal('Carnet de Voyage Afrique','✈️','linear-gradient(135deg,#F7971E,#FFD200)','Carnet de voyage illustré avec pages pour itinéraires, souvenirs, photos et dépenses. Format compact.','PDF A5 · 80 pages · Imprimable','1 000')">
+      <div class="template-thumb" style="background:linear-gradient(135deg,#F7971E,#FFD200)">
+        <div class="template-emoji">✈️</div>
+        <div class="template-mini-title">Carnet Voyage</div>
+        <div class="template-badges">
+          <span class="tbadge tbadge-type">🖨️ Imprimable</span>
+        </div>
+        <button class="template-wishlist" onclick="event.stopPropagation();toggleWishlist(this)">🤍</button>
+      </div>
+      <div class="template-body">
+        <div class="template-cat">Carnet spécial</div>
+        <div class="template-name">Carnet de Voyage Afrique</div>
+        <div class="template-author">par Voyages Africa</div>
+        <div class="template-formats">
+          <span class="format-tag">PDF</span>
+          <span class="format-tag">A5</span>
+          <span class="format-tag">80 pages</span>
+        </div>
+        <div class="template-footer" style="margin-top:10px">
+          <span class="template-price">1 000 F</span>
+          <button class="buy-btn" onclick="event.stopPropagation();openModal('Carnet Voyage','✈️','linear-gradient(135deg,#F7971E,#FFD200)','Carnet de voyage illustré.','PDF A5 · 80 pages','1 000')">Voir</button>
+        </div>
+        <div class="template-meta">
+          <span class="meta-item">❤️ 76</span>
+          <span class="meta-item">⭐ 4.7</span>
+          <span class="meta-item">📥 98</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TEMPLATES RÉSEAUX SOCIAUX -->
+    <div class="template-card" data-cat="social" onclick="openModal('Pack Posts Instagram Africa','📱','linear-gradient(135deg,#E1306C,#833AB4)','30 templates Canva pour Instagram adaptés au style africain. Posts, Stories et Reels inclus.','Canva · 30 templates · Modifiable','3 000')">
+      <div class="template-thumb" style="background:linear-gradient(135deg,#E1306C,#833AB4)">
+        <div class="template-emoji">📱</div>
+        <div class="template-mini-title">Pack Instagram</div>
+        <div class="template-badges">
+          <span class="tbadge tbadge-type">📥 Canva</span>
+          <span class="tbadge tbadge-new">Nouveau</span>
+        </div>
+        <button class="template-wishlist" onclick="event.stopPropagation();toggleWishlist(this)">🤍</button>
+      </div>
+      <div class="template-body">
+        <div class="template-cat">Réseaux sociaux</div>
+        <div class="template-name">Pack Instagram Africa</div>
+        <div class="template-author">par Social Media BF</div>
+        <div class="template-formats">
+          <span class="format-tag">Canva</span>
+          <span class="format-tag">30 posts</span>
+          <span class="format-tag">Stories</span>
+        </div>
+        <div class="template-footer" style="margin-top:10px">
+          <span class="template-price">3 000 F</span>
+          <button class="buy-btn" onclick="event.stopPropagation();openModal('Pack Instagram','📱','linear-gradient(135deg,#E1306C,#833AB4)','30 templates Canva.','Canva · 30 templates','3 000')">Voir</button>
+        </div>
+        <div class="template-meta">
+          <span class="meta-item">❤️ 189</span>
+          <span class="meta-item">⭐ 4.9</span>
+          <span class="meta-item">📥 356</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- VENDOR CTA -->
+  <div class="vendor-cta">
+    <div class="vendor-cta-icon">✍️</div>
+    <div style="flex:1">
+      <div class="vendor-cta-title">Vous créez des templates ou imprimables ?</div>
+      <div class="vendor-cta-sub">Publiez vos créations sur KoraHub et touchez des milliers de clients africains. Inscription gratuite, 90% des revenus pour vous.</div>
+      <div class="vendor-features">
+        <span class="vendor-feat">Publication immédiate</span>
+        <span class="vendor-feat">90% des revenus</span>
+        <span class="vendor-feat">Vos propres moyens de paiement</span>
+        <span class="vendor-feat">Dashboard complet</span>
+      </div>
+    </div>
+    <a href="korahub-auth.html?tab=register" class="btn btn-gold" style="padding:13px 22px;font-size:14px;font-family:'Syne',sans-serif;font-weight:800;white-space:nowrap">
+      🚀 Publier mes templates
+    </a>
+  </div>
+
+</div>
+
+<!-- TEMPLATE MODAL -->
+<div class="modal-overlay" id="templateModal">
+  <div class="template-modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle">Détails du template</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-cover" id="modalCover">📄</div>
+      <div class="modal-template-title" id="modalTemplateName"></div>
+      <div class="modal-template-desc" id="modalTemplateDesc"></div>
+      <div class="modal-info-grid">
+        <div class="modal-info-item">
+          <div class="modal-info-val" id="modalFormat">PDF</div>
+          <div class="modal-info-label">Format</div>
+        </div>
+        <div class="modal-info-item">
+          <div class="modal-info-val">📧</div>
+          <div class="modal-info-label">Livraison</div>
+        </div>
+        <div class="modal-info-item">
+          <div class="modal-info-val">✅</div>
+          <div class="modal-info-label">Modifiable</div>
+        </div>
+      </div>
+      <div class="modal-price" id="modalPrice">1 000 F</div>
+      <button class="modal-buy-btn" onclick="buyTemplate()">💳 Acheter maintenant</button>
+      <button class="modal-preview-btn" onclick="showToast('👀 Aperçu du template...')">👀 Aperçu gratuit</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-copy">© 2025 KoraHub Templates · Pour toute l'Afrique 🌍</div>
+    <div class="footer-links">
+      <a href="korahub.html">KoraHub</a>
+      <a href="korahub-kids.html">Kids</a>
+      <a href="korahub-faq.html">FAQ</a>
+      <a href="korahub-conditions.html">CGU</a>
+      <a href="korahub-auth.html">Connexion</a>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" id="toast"><span>✅</span><span id="toastMsg"></span></div>
+
+<script>
+function filterCat(cat, el) {
+  document.querySelectorAll('.cat-nav-item').forEach(i => i.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.template-card').forEach(card => {
+    const cats = card.dataset.cat || '';
+    card.style.display = (cat === 'all' || cats.includes(cat)) ? '' : 'none';
+  });
+}
+
+function toggleFilter(el) {
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function openModal(name, emoji, bg, desc, format, price) {
+  document.getElementById('modalTitle').textContent = name;
+  document.getElementById('modalTemplateName').textContent = name;
+  document.getElementById('modalTemplateDesc').textContent = desc;
+  document.getElementById('modalFormat').textContent = format.split('·')[0].trim();
+  document.getElementById('modalPrice').textContent = price + ' FCFA';
+  const cover = document.getElementById('modalCover');
+  cover.textContent = emoji;
+  cover.style.background = bg;
+  document.getElementById('templateModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('templateModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('templateModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+function buyTemplate() {
+  closeModal();
+  window.location.href = 'korahub-produit-panier.html';
+}
+
+function toggleWishlist(btn) {
+  btn.classList.toggle('liked');
+  btn.textContent = btn.classList.contains('liked') ? '❤️' : '🤍';
+  showToast(btn.classList.contains('liked') ? '❤️ Ajouté aux favoris !' : '💔 Retiré des favoris');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.style.opacity='1'; e.target.style.transform='translateY(0)'; }
+  });
+}, { threshold: 0.08 });
+
+document.querySelectorAll('.template-card').forEach(el => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(20px)';
+  el.style.transition = 'opacity .4s ease, transform .4s ease';
+  observer.observe(el);
+});
+
+// ═══ PWA INSTALL ═══
+let deferredPrompt = null;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  showInstallButton();
+});
+
+function showInstallButton() {
+  const existing = document.getElementById('pwaInstallBtn');
+  if (existing) return;
+  
+  const btn = document.createElement('div');
+  btn.id = 'pwaInstallBtn';
+  btn.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:999;background:linear-gradient(135deg,#2D1B69,#4A2E9E);color:white;padding:12px 24px;border-radius:100px;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 4px 20px rgba(45,27,105,0.4);display:flex;align-items:center;gap:8px;animation:slideUp .3s ease;white-space:nowrap';
+  btn.innerHTML = '📱 Installer l'App KoraHub';
+  btn.onclick = installPWA;
+  document.body.appendChild(btn);
+  
+  setTimeout(() => { if (btn.parentNode) btn.remove(); }, 8000);
+}
+
+async function installPWA() {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  if (outcome === 'accepted') showToast('🎉 KoraHub installé sur votre téléphone !');
+  deferredPrompt = null;
+  document.getElementById('pwaInstallBtn')?.remove();
+}
+
+// Register service worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(reg => console.log('✅ Service Worker registered:', reg.scope))
+      .catch(err => console.log('SW registration failed:', err));
+  });
+}
+
+// CSS for animation
+const pwaStyle = document.createElement('style');
+pwaStyle.textContent = '@keyframes slideUp{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}';
+document.head.appendChild(pwaStyle);
+
+</script>
+</body>
+</html>

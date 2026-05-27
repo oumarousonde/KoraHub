@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KoraHub – Index de navigation</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root{--violet:#2D1B69;--violet-mid:#4A2E9E;--violet-light:#6B46C1;--gold:#F5C518;--gold-light:#FFD95A;--text-dark:#1A0F3C;--text-muted:#7C6FAD;--border:rgba(107,70,193,0.12);--off-white:#F8F6FF;--shadow:0 8px 32px rgba(45,27,105,0.12);--success:#2ed573;--danger:#ff4757}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--text-dark);min-height:100vh}
+nav{display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:64px;background:rgba(45,27,105,0.97);border-bottom:1px solid rgba(245,197,24,0.12)}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-icon{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--gold),var(--gold-light));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:var(--violet)}
+.logo-text{font-family:'Syne',sans-serif;font-weight:700;font-size:18px;color:white}
+.logo-text span{color:var(--gold)}
+
+.hero{background:linear-gradient(135deg,var(--violet) 0%,#1A0F3C 100%);padding:60px 5% 50px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(245,197,24,0.06) 0%,transparent 70%);border-radius:50%}
+.hero-title{font-family:'Syne',sans-serif;font-size:clamp(24px,4vw,42px);font-weight:800;color:white;margin-bottom:8px;position:relative;z-index:1}
+.hero-title span{color:var(--gold)}
+.hero-sub{font-size:14px;color:rgba(255,255,255,0.6);position:relative;z-index:1}
+
+.content{max-width:1100px;margin:0 auto;padding:40px 5%}
+
+.section-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--text-dark);margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+
+.pages-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-bottom:40px}
+
+.page-card{background:white;border:1.5px solid var(--border);border-radius:16px;overflow:hidden;text-decoration:none;transition:all .25s;display:block}
+.page-card:hover{transform:translateY(-4px);box-shadow:var(--shadow);border-color:rgba(107,70,193,0.2)}
+.page-card-cover{height:80px;display:flex;align-items:center;justify-content:center;font-size:32px}
+.page-card-body{padding:16px}
+.page-card-tag{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--violet-light);margin-bottom:5px}
+.page-card-name{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--text-dark);margin-bottom:4px}
+.page-card-desc{font-size:12px;color:var(--text-muted);line-height:1.5}
+.page-card-footer{padding:10px 16px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--off-white)}
+.page-card-status{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600}
+.page-card-status.done{color:var(--success)}
+.page-card-status.dev{color:var(--danger)}
+.page-card-btn{font-size:11px;font-weight:700;color:var(--violet-light);text-decoration:none}
+
+footer{background:var(--violet);padding:24px 5%;text-align:center;font-size:13px;color:rgba(255,255,255,0.5)}
+footer a{color:var(--gold);text-decoration:none;margin:0 8px}
+footer a:hover{text-decoration:underline}
+</style>
+<link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImZnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3R5bGU9InN0b3AtY29sb3I6I0Y1QzUxOCIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNGRkQ5NUEiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgcng9IjgiIGZpbGw9InVybCgjZmcpIi8+CiAgPHRleHQgeD0iNCIgeT0iMjQiIGZvbnQtZmFtaWx5PSJBcmlhbCBCbGFjayxzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iOTAwIiBmb250LXNpemU9IjIyIiBmaWxsPSIjMkQxQjY5Ij5LPC90ZXh0Pgo8L3N2Zz4=" type="image/svg+xml">
+</head>
+<body>
+
+<nav>
+  <a href="korahub.html" class="nav-logo">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 40" style="height:34px;width:auto;display:block"><defs><linearGradient id="kg1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#F5C518"/><stop offset="100%" style="stop-color:#FFD95A"/></linearGradient></defs><rect x="0" y="2" width="36" height="36" rx="9" fill="url(#kg1)"/><text x="8" y="28" font-family="Arial Black,sans-serif" font-weight="900" font-size="23" fill="#2D1B69">K</text><text x="44" y="25" font-family="Arial,sans-serif" font-weight="700" font-size="16" fill="white">Kora</text><text x="80" y="25" font-family="Arial,sans-serif" font-weight="700" font-size="16" fill="#F5C518">Hub</text><text x="44" y="35" font-family="Arial,sans-serif" font-size="7" fill="rgba(255,255,255,0.45)" letter-spacing="1.5">LEARN · SELL · GROW</text></svg>
+    
+  </a>
+  <div style="font-size:12px;color:rgba(255,255,255,0.5)">🗂️ Index de navigation KoraHub</div>
+</nav>
+
+<div class="hero">
+  <h1 class="hero-title">KoraHub <span>Navigation</span></h1>
+  <p class="hero-sub">Toutes les pages du projet KoraHub · Learn. Sell. Grow. 🌍</p>
+</div>
+
+<div class="content">
+
+  <!-- PUBLIC PAGES -->
+  <div class="section-title">🌐 Pages publiques</div>
+  <div class="pages-grid">
+
+    <a href="korahub.html" class="page-card">
+      <div class="page-card-cover" style="background:linear-gradient(135deg,var(--violet),#1A0F3C)">🏪</div>
+      <div class="page-card-body">
+        <div class="page-card-tag">Principal</div>
+        <div class="page-card-name">Page d'accueil</div>
+        <div class="page-card-desc">Vitrine principale de KoraHub avec catalogue, catégories, paiements et outils marketing</div>
+      </div>
+      <div class="page-card-footer">
+        <span class="page-card-status done">✅ Terminé</span>
+        <a href="korahub.html" class="page-card-btn">Ouvrir →</a>
+      </div>
+    </a>
+
+    <a href="korahub-recherche.html" class="page-card">
+      <div class="page-card-cover" style="background:linear-gradient(135deg,#667eea,#764ba2)">🔍</div>
+      <div class="page-card-body">
+        <div class="page-card-tag">Catalogue</div>
+        <div class="page-card-name">Recherche & Filtres</div>
+        <div class="page-card-desc">Catalogue complet avec filtres, tri, vue grille/liste et recherche en temps réel</div>
+      </div>
+      <div class="page-card-footer">
+        <span class="page-card-status done">✅ Terminé</span>
+        <a href="korahub-recherche.html" class="page-card-btn">Ouvrir →</a>
+      </div>
+    </a>
+
+    <a href="korahub-produit-panier.html" class="page-card">
+      <div class="page-card-cover" style="background:linear-gradient(135deg,#f093fb,#f5576c)">📦</div>
+      <div class="page-card-body">
+        <div class="page-card-tag">Achat</div>
+        <div class="page-card-name">Page Produit & Panier</div>
+        <div class="page-card-desc">Page produit détaillée avec commentaires, panier et processus de paiement complet</div>
+      </div>
+      <div class="page-card-footer">
+        <span class="page-card-status done">✅ Terminé</span>
+        <a href="korahub-produit-panier.html" class="page-card-btn">Ouvrir →</a>
+      </div>
+    </a>
+
+    <a href="korahub-auth.html" class="page-card">
+      <div class="page-card-cover" style="background:linear-gradient(135deg,#4facfe,#00f2fe)">🔐</div>
+      <div class="page-card-body">
+        <div class="page-card-tag">Compte</div>
+        <div class="page-card-name">Connexion & Inscription</div>
+        <div class="page-card-desc">Page d'authentification avec inscription par rôle, connexion et mot de passe oublié</div>
+      </div>
+      <div class="page-card-footer">
+        <span class="page-card-status done">✅ Terminé</span>
+        <a href="korahub-auth.html" class="page-card-btn">Ouvrir →</a>
+      </div>
+    </a>
+
+    <a href="korahub-conditions.html" class="page-card">
+      <div class="page-card-cover" style="background:linear-gradient(135deg,#43e97b,#38f9d7)">📋</div>
+      <div class="page-card-body">
+        <div class="page-card-tag">Légal</div>
+        <div class="page-card-name">Conditions & Confidentialité</div>
+        <div class="page-card-desc">CGU complètes avec tableau de commissions, règles vendeurs et politique de confidentialité</div>
+      </div>
+      <div class="page-card-footer">
+        <span class="page-card-status done">✅ Terminé</span>
+        <a href="korahub-conditions.html" class="page-card-btn">Ouvrir →</a>
+      </div>
+    </a>
+
+    <a href="korahub-404.html" class="page-card">
+      <div class="page-card-cover" style="background:linear-gradient(135deg,#636e72,#b2bec3)">🔍</div>
+      <div class="page-card-body">
+        <div class="page-card-tag">Erreur</div>
+        <div class="page-card-name">Page 404</div>
+        <div class="page-card-desc">Page d'erreur animée avec liens rapides vers les sections principales</div>
+      </div>
+      <div class="page-card-footer">
+        <span class="page-card-status done">✅ Terminé</span>
+        <a href="korahub-404.html" class="page-card-btn">Ouvrir →</a>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- DASHBOARDS -->
+  <div class="section-title">🖥️ Dashboards</div>
+  <div class="pages-grid">
+
+    <a href="korahub-dashboard-admin.html" class="page-card">
+      <div class="page-card-cover" style="background:linear-gradient(135deg,#ff4757,#ff6b81)">👑</div>
+      <div class="page-card-body">
+        <div class="page-card-tag">Admin</div>
+        <div class="page-card-name">Dashboard Admin</div>
+        <div class="page-card-desc">Gestion complète : commandes, vendeurs, commissions, revenus, notifications WhatsApp</div>
+      </div>
+      <div class="page-card-footer">
+        <span class="page-card-status done">✅ Terminé</span>
+        <a href="korahub-dashboard-admin.html" class="page-card-btn">Ouvrir →</a>
+      </div>
+    </a>
+
+    <a href="korahub-dashboard-vendeur.html" class="page-card">
+      <div class="page-card-cover" style="background:linear-gradient(135deg,var(--violet),var(--violet-light))">💼</div>
+      <div class="page-card-body">
+        <div class="page-card-tag">Vendeur</div>
+        <div class="page-card-name">Dashboard Vendeur</div>
+        <div class="page-card-desc">Gestion produits, ventes, outils marketing, codes promo, affiliation et commissions</div>
+      </div>
+      <div class="page-card-footer">
+        <span class="page-card-status done">✅ Terminé</span>
+        <a href="korahub-dashboard-vendeur.html" class="page-card-btn">Ouvrir →</a>
+      </div>
+    </a>
+
+    <a href="korahub-dashboard-affilie.html" class="page-card">
+      <div class="page-card-cover" style="background:linear-gradient(135deg,#f093fb,#f5576c)">📢</div>
+      <div class="page-card-body">
+        <div class="page-card-tag">Affilié</div>
+        <div class="page-card-name">Dashboard Affilié</div>
+        <div class="page-card-desc">Liens uniques, statistiques clics, gains, retraits Mobile Money et conseils marketing</div>
+      </div>
+      <div class="page-card-footer">
+        <span class="page-card-status done">✅ Terminé</span>
+        <a href="korahub-dashboard-affilie.html" class="page-card-btn">Ouvrir →</a>
+      </div>
+    </a>
+
+    <a href="korahub-profil-acheteur.html" class="page-card">
+      <div class="page-card-cover" style="background:linear-gradient(135deg,#fa709a,#fee140)">🛒</div>
+      <div class="page-card-body">
+        <div class="page-card-tag">Acheteur</div>
+        <div class="page-card-name">Profil Acheteur</div>
+        <div class="page-card-desc">Historique achats, téléchargements, liste souhaits, avis et paramètres compte</div>
+      </div>
+      <div class="page-card-footer">
+        <span class="page-card-status done">✅ Terminé</span>
+        <a href="korahub-profil-acheteur.html" class="page-card-btn">Ouvrir →</a>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- SYSTEMS -->
+  <div class="section-title">⚙️ Systèmes</div>
+  <div class="pages-grid">
+
+    <a href="korahub-automatisations.html" class="page-card">
+      <div class="page-card-cover" style="background:linear-gradient(135deg,#0f3460,#16213e)">🤖</div>
+      <div class="page-card-body">
+        <div class="page-card-tag">Automatisation</div>
+        <div class="page-card-name">Système d'automatisations</div>
+        <div class="page-card-desc">Emails automatiques, notifications WhatsApp, blocage 24h, newsletter et logs</div>
+      </div>
+      <div class="page-card-footer">
+        <span class="page-card-status done">✅ Terminé</span>
+        <a href="korahub-automatisations.html" class="page-card-btn">Ouvrir →</a>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- RECAP -->
+  <div style="background:linear-gradient(135deg,var(--violet),#1A0F3C);border-radius:20px;padding:32px;color:white;text-align:center">
+    <div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:800;margin-bottom:8px">🎉 KoraHub est prêt !</div>
+    <div style="font-size:14px;color:rgba(255,255,255,0.6);margin-bottom:24px">10 pages complètes · Design moderne · Toute l'Afrique 🌍</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-bottom:24px">
+      <div style="background:rgba(255,255,255,0.06);border-radius:12px;padding:16px;text-align:center">
+        <div style="font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:var(--gold)">10</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-top:3px">Pages créées</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.06);border-radius:12px;padding:16px;text-align:center">
+        <div style="font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:var(--gold)">7</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-top:3px">Automatisations</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.06);border-radius:12px;padding:16px;text-align:center">
+        <div style="font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:var(--gold)">4</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-top:3px">Paiements locaux</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.06);border-radius:12px;padding:16px;text-align:center">
+        <div style="font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:var(--gold)">3</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-top:3px">Types d'utilisateurs</div>
+      </div>
+    </div>
+    <div style="font-size:13px;color:rgba(255,255,255,0.5)">Prochaine étape → Hébergement sur Vercel 🚀</div>
+  </div>
+
+</div>
+
+<footer>
+  © 2025 KoraHub · Learn. Sell. Grow. · Pour toute l'Afrique 🌍
+  <br style="margin-top:6px">
+  <a href="korahub.html">Accueil</a>
+  <a href="korahub-recherche.html">Catalogue</a>
+  <a href="korahub-conditions.html">CGU</a>
+  <a href="korahub-404.html">404</a>
+</footer>
+
+</body>
+</html>

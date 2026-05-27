@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KoraHub – Recherche & Catalogue</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --violet: #2D1B69;
+  --violet-mid: #4A2E9E;
+  --violet-light: #6B46C1;
+  --gold: #F5C518;
+  --gold-light: #FFD95A;
+  --white: #FFFFFF;
+  --off-white: #F8F6FF;
+  --text-dark: #1A0F3C;
+  --text-muted: #7C6FAD;
+  --border: rgba(107,70,193,0.12);
+  --shadow: 0 8px 32px rgba(45,27,105,0.12);
+  --success: #2ed573;
+  --danger: #ff4757;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--text-dark)}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:64px;background:rgba(45,27,105,0.97);backdrop-filter:blur(12px);border-bottom:1px solid rgba(245,197,24,0.12)}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-icon{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--gold),var(--gold-light));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:var(--violet)}
+.logo-text{font-family:'Syne',sans-serif;font-weight:700;font-size:18px;color:white}
+.logo-text span{color:var(--gold)}
+.nav-search{flex:1;max-width:500px;margin:0 24px;position:relative}
+.nav-search-input{width:100%;padding:9px 16px 9px 40px;border-radius:10px;border:1.5px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.08);color:white;font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:all .2s}
+.nav-search-input::placeholder{color:rgba(255,255,255,0.4)}
+.nav-search-input:focus{border-color:var(--gold);background:rgba(255,255,255,0.12)}
+.nav-search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:16px;color:rgba(255,255,255,0.4)}
+.nav-right{display:flex;align-items:center;gap:10px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:9px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .2s;text-decoration:none}
+.btn-ghost{background:transparent;color:white;border:1px solid rgba(255,255,255,0.25)}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold)}
+.btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--violet);font-weight:700}
+.btn-gold:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(245,197,24,0.35)}
+.btn-violet{background:linear-gradient(135deg,var(--violet-mid),var(--violet-light));color:white}
+.btn-sm{padding:6px 12px;font-size:12px;border-radius:7px}
+
+/* HERO SEARCH */
+.search-hero{background:linear-gradient(135deg,var(--violet) 0%,#1A0F3C 100%);padding:90px 5% 40px;text-align:center;position:relative;overflow:hidden}
+.search-hero::before{content:'';position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(245,197,24,0.06) 0%,transparent 70%);border-radius:50%}
+.search-hero-title{font-family:'Syne',sans-serif;font-size:clamp(24px,4vw,40px);font-weight:800;color:white;margin-bottom:8px;position:relative;z-index:1}
+.search-hero-title span{color:var(--gold)}
+.search-hero-sub{font-size:14px;color:rgba(255,255,255,0.6);margin-bottom:28px;position:relative;z-index:1}
+.search-box{max-width:600px;margin:0 auto;position:relative;z-index:1}
+.search-big{display:flex;gap:0;background:white;border-radius:14px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.3)}
+.search-big-input{flex:1;padding:14px 20px;border:none;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--text-dark);outline:none}
+.search-big-btn{background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--violet);border:none;padding:14px 24px;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px}
+.search-big-btn:hover{background:linear-gradient(135deg,var(--gold-light),var(--gold))}
+
+/* QUICK CATS */
+.quick-cats{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:16px;position:relative;z-index:1}
+.quick-cat{padding:6px 14px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:100px;font-size:12px;font-weight:600;color:rgba(255,255,255,0.8);cursor:pointer;transition:all .2s}
+.quick-cat:hover,.quick-cat.active{background:var(--gold);border-color:var(--gold);color:var(--violet)}
+
+/* MAIN LAYOUT */
+.main-layout{display:grid;grid-template-columns:260px 1fr;gap:24px;padding:28px 5%;max-width:1300px;margin:0 auto}
+
+/* FILTERS SIDEBAR */
+.filters-sidebar{position:sticky;top:80px;height:fit-content}
+.filter-card{background:white;border:1.5px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:14px}
+.filter-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;cursor:pointer}
+.filter-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--text-dark)}
+.filter-toggle-icon{font-size:12px;color:var(--text-muted);transition:transform .2s}
+.filter-body{padding:14px 18px}
+.filter-option{display:flex;align-items:center;gap:10px;padding:7px 0;cursor:pointer;transition:all .2s}
+.filter-option:hover .filter-label{color:var(--violet-light)}
+.filter-checkbox{width:16px;height:16px;border:1.5px solid var(--border);border-radius:4px;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+.filter-checkbox.checked{background:var(--violet);border-color:var(--violet);color:white;font-size:10px}
+.filter-label{font-size:13px;color:var(--text-dark);flex:1}
+.filter-count{font-size:11px;color:var(--text-muted);background:var(--off-white);padding:1px 7px;border-radius:100px}
+
+/* PRICE RANGE */
+.price-inputs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.price-input{padding:8px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:12px;color:var(--text-dark);background:var(--off-white);outline:none;width:100%}
+.price-input:focus{border-color:var(--violet-light)}
+.price-slider{width:100%;margin-top:8px;accent-color:var(--violet-light)}
+
+/* RATING FILTER */
+.rating-option{display:flex;align-items:center;gap:8px;padding:6px 0;cursor:pointer}
+.rating-stars{color:var(--gold);font-size:13px}
+.rating-label{font-size:12px;color:var(--text-muted)}
+
+/* RESULTS AREA */
+.results-area{}
+.results-topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+.results-info{font-size:13px;color:var(--text-muted)}
+.results-info strong{color:var(--text-dark)}
+.results-controls{display:flex;align-items:center;gap:10px}
+.sort-select{padding:8px 12px;border:1.5px solid var(--border);border-radius:9px;font-size:13px;color:var(--text-dark);background:white;outline:none;cursor:pointer}
+.view-btns{display:flex;gap:4px}
+.view-btn{width:34px;height:34px;border-radius:8px;border:1.5px solid var(--border);background:white;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;transition:all .2s;color:var(--text-muted)}
+.view-btn.active{border-color:var(--violet);background:rgba(107,70,193,0.08);color:var(--violet)}
+
+/* ACTIVE FILTERS */
+.active-filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.active-filter{display:inline-flex;align-items:center;gap:6px;background:rgba(107,70,193,0.08);border:1px solid rgba(107,70,193,0.2);border-radius:100px;padding:4px 12px;font-size:12px;font-weight:600;color:var(--violet-light)}
+.active-filter-remove{cursor:pointer;font-size:14px;line-height:1;color:var(--text-muted);transition:color .2s}
+.active-filter-remove:hover{color:var(--danger)}
+.clear-filters{font-size:12px;color:var(--danger);cursor:pointer;font-weight:600;text-decoration:none}
+.clear-filters:hover{text-decoration:underline}
+
+/* PRODUCTS GRID */
+.products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+.products-grid.list-view{grid-template-columns:1fr}
+
+.product-card{background:white;border:1.5px solid var(--border);border-radius:16px;overflow:hidden;cursor:pointer;transition:all .25s;position:relative}
+.product-card:hover{transform:translateY(-4px);box-shadow:var(--shadow);border-color:rgba(107,70,193,0.2)}
+
+/* Grid view */
+.product-cover{height:140px;display:flex;align-items:center;justify-content:center;font-size:44px;position:relative}
+.product-badges{position:absolute;top:10px;left:10px;display:flex;gap:5px}
+.badge{padding:3px 8px;border-radius:6px;font-size:10px;font-weight:700}
+.badge-sale{background:#ff4757;color:white}
+.badge-lang{background:rgba(0,0,0,0.4);color:white}
+.badge-new{background:var(--gold);color:var(--violet)}
+.badge-free{background:var(--success);color:white}
+.product-wishlist{position:absolute;top:10px;right:10px;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.9);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .2s}
+.product-wishlist:hover{background:white;transform:scale(1.1)}
+.product-wishlist.liked{color:var(--danger)}
+.product-body{padding:14px}
+.product-cat{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--violet-light);margin-bottom:4px}
+.product-name{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--text-dark);margin-bottom:6px;line-height:1.3}
+.product-seller{font-size:11px;color:var(--text-muted);margin-bottom:10px;display:flex;align-items:center;gap:5px}
+.seller-dot{width:16px;height:16px;border-radius:50%;background:linear-gradient(135deg,var(--violet-mid),var(--violet-light));display:inline-flex;align-items:center;justify-content:center;font-size:8px;color:white;font-weight:700}
+.product-footer{display:flex;align-items:center;justify-content:space-between}
+.price-block{display:flex;align-items:baseline;gap:5px}
+.price-current{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;color:var(--violet)}
+.price-old{font-size:11px;color:var(--text-muted);text-decoration:line-through}
+.buy-btn{background:linear-gradient(135deg,var(--violet),var(--violet-light));color:white;border:none;padding:7px 13px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s}
+.buy-btn:hover{transform:scale(1.05)}
+.product-meta{display:flex;gap:10px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
+.meta-item{font-size:10px;color:var(--text-muted);display:flex;align-items:center;gap:3px}
+
+/* List view card */
+.products-grid.list-view .product-card{display:flex;gap:0}
+.products-grid.list-view .product-cover{width:140px;height:auto;min-height:120px;flex-shrink:0;border-radius:0}
+.products-grid.list-view .product-body{flex:1;display:flex;flex-direction:column;justify-content:space-between}
+.products-grid.list-view .product-name{font-size:16px}
+
+/* NO RESULTS */
+.no-results{text-align:center;padding:60px 20px;color:var(--text-muted)}
+.no-results-icon{font-size:56px;margin-bottom:14px}
+.no-results-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:var(--text-dark);margin-bottom:8px}
+
+/* PAGINATION */
+.pagination{display:flex;justify-content:center;gap:8px;margin-top:32px;flex-wrap:wrap}
+.page-btn{width:38px;height:38px;border-radius:9px;border:1.5px solid var(--border);background:white;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;font-weight:600;color:var(--text-muted);transition:all .2s}
+.page-btn:hover{border-color:var(--violet-light);color:var(--violet-light)}
+.page-btn.active{background:var(--violet);border-color:var(--violet);color:white}
+.page-btn.disabled{opacity:.4;pointer-events:none}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;z-index:2000;background:var(--violet);border:1px solid var(--gold);color:white;padding:13px 18px;border-radius:11px;font-size:13px;display:flex;align-items:center;gap:9px;transform:translateX(120%);transition:transform .3s;box-shadow:var(--shadow);max-width:300px}
+.toast.show{transform:translateX(0)}
+
+/* MOBILE FILTER BTN */
+.mobile-filter-btn{display:none;position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:50;padding:12px 24px;background:var(--violet);color:white;border:none;border-radius:100px;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;cursor:pointer;box-shadow:0 4px 20px rgba(45,27,105,0.4)}
+.filter-overlay{position:fixed;inset:0;z-index:150;background:rgba(13,8,41,0.6);opacity:0;pointer-events:none;transition:opacity .3s}
+.filter-overlay.open{opacity:1;pointer-events:all}
+.filters-mobile{position:fixed;left:0;bottom:0;right:0;z-index:151;background:white;border-radius:20px 20px 0 0;padding:24px;max-height:80vh;overflow-y:auto;transform:translateY(100%);transition:transform .35s}
+.filter-overlay.open .filters-mobile{transform:translateY(0)}
+
+/* RESPONSIVE */
+@media(max-width:900px){.main-layout{grid-template-columns:1fr}.filters-sidebar{display:none}.mobile-filter-btn{display:block}}
+@media(max-width:600px){.search-hero{padding:80px 4% 32px}.nav-search{display:none}.products-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:400px){.products-grid{grid-template-columns:1fr}}
+</style>
+
+<link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImZnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3R5bGU9InN0b3AtY29sb3I6I0Y1QzUxOCIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNGRkQ5NUEiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgcng9IjgiIGZpbGw9InVybCgjZmcpIi8+CiAgPHRleHQgeD0iNCIgeT0iMjQiIGZvbnQtZmFtaWx5PSJBcmlhbCBCbGFjayxzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iOTAwIiBmb250LXNpemU9IjIyIiBmaWxsPSIjMkQxQjY5Ij5LPC90ZXh0Pgo8L3N2Zz4=" type="image/svg+xml">
+
+<!-- Firebase SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+  import { getFirestore, collection, doc, setDoc, getDoc, getDocs, addDoc, updateDoc, deleteDoc, query, where, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBUM1tOdkfEZA4z1ts6tyRhlcRqotHE4zs",
+    authDomain: "korahub-7160.firebaseapp.com",
+    projectId: "korahub-7160",
+    storageBucket: "korahub-7160.firebasestorage.app",
+    messagingSenderId: "334789190484",
+    appId: "1:334789190484:web:90a21186adb353409f5ec1"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // Make available globally
+  window.firebaseAuth = auth;
+  window.firebaseDB = db;
+  window.firebaseFunctions = {
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    signOut,
+    onAuthStateChanged,
+    collection, doc, setDoc, getDoc, getDocs,
+    addDoc, updateDoc, deleteDoc, query, where, orderBy, onSnapshot
+  };
+
+  // Auth state listener
+  onAuthStateChanged(auth, (user) => {
+    window.currentUser = user;
+    if (user) {
+      console.log('✅ Connecté:', user.email);
+      document.dispatchEvent(new CustomEvent('userLoggedIn', { detail: user }));
+    } else {
+      console.log('❌ Non connecté');
+      document.dispatchEvent(new CustomEvent('userLoggedOut'));
+    }
+  });
+
+  console.log('🔥 Firebase KoraHub initialisé !');
+
+// ═══ FIREBASE REAL PRODUCTS CATALOG ═══
+async function loadCatalogProducts() {
+  const grid = document.getElementById('productsGrid') || document.getElementById('booksGrid') || document.getElementById('templatesGrid');
+  if (!grid) return;
+
+  if (!window.firebaseDB || !window.firebaseFunctions) {
+    console.log('Firebase not ready, using demo products');
+    return;
+  }
+
+  try {
+    const { collection, getDocs, query, orderBy, limit } = window.firebaseFunctions;
+    const q = query(collection(window.firebaseDB, 'products'), orderBy('createdAt', 'desc'), limit(20));
+    const snapshot = await getDocs(q);
+
+    if (snapshot.empty) {
+      console.log('No products yet - showing demo products');
+      return;
+    }
+
+    // Clear demo products
+    grid.innerHTML = '';
+
+    snapshot.forEach(doc => {
+      const p = { id: doc.id, ...doc.data() };
+      const card = createProductCard(p);
+      grid.appendChild(card);
+    });
+
+    console.log('✅ Loaded', snapshot.size, 'products from Firebase');
+  } catch(e) {
+    console.log('Error loading products:', e);
+  }
+}
+
+function createProductCard(product) {
+  const div = document.createElement('div');
+  div.className = 'product-card';
+  div.style.cssText = 'background:white;border:1.5px solid rgba(107,70,193,0.12);border-radius:16px;overflow:hidden;cursor:pointer;transition:all .25s';
+
+  const price = product.deliveryOptions?.[0]?.price || product.price || 0;
+  const emoji = getCategoryEmoji(product.category);
+  const bg = getCategoryGradient(product.category);
+
+  div.innerHTML = `
+    <div style="height:180px;background:${bg};display:flex;align-items:center;justify-content:center;font-size:52px;position:relative">
+      ${emoji}
+      <div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.4);padding:8px 12px;font-size:12px;font-weight:700;color:white">${product.title || 'Produit KoraHub'}</div>
+    </div>
+    <div style="padding:14px">
+      <div style="font-size:10px;font-weight:700;color:#6B46C1;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">${product.category || 'Produit'}</div>
+      <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:#1A0F3C;margin-bottom:3px">${product.title || 'Produit KoraHub'}</div>
+      <div style="font-size:11px;color:#7C6FAD;margin-bottom:10px">${product.language || '🇫🇷 Français'}</div>
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <span style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:#2D1B69">${price.toLocaleString()} F</span>
+        <button onclick="window.location.href='korahub-produit-panier.html?product=${product.id}&vendor=${product.sellerId}'" style="padding:7px 14px;border-radius:8px;border:none;font-size:12px;font-weight:700;cursor:pointer;background:linear-gradient(135deg,#4A2E9E,#6B46C1);color:white">Voir</button>
+      </div>
+    </div>
+  `;
+
+  div.onclick = () => window.location.href = `korahub-produit-panier.html?product=${product.id}&vendor=${product.sellerId}`;
+  return div;
+}
+
+function getCategoryEmoji(cat) {
+  const map = {
+    'Roman & Fiction': '📖', 'Développement personnel': '🌱', 'Business en ligne': '💼',
+    'Marketing digital': '📱', 'Coaching personnel': '🎯', 'Planner & Agenda': '🗓️',
+    'Tracker': '📊', 'Journal personnel': '📔', 'Carnet & Bloc-notes': '📒',
+    'CV & Lettres': '📄', 'Factures & Devis': '🧾', 'Santé mentale': '🧠',
+    'Fitness & Sport': '🏋️', 'default': '📦'
+  };
+  for (const [key, emoji] of Object.entries(map)) {
+    if (cat && cat.includes(key.split(' ')[0])) return emoji;
+  }
+  return map.default;
+}
+
+function getCategoryGradient(cat) {
+  const map = {
+    'Roman': 'linear-gradient(135deg,#667eea,#764ba2)',
+    'Business': 'linear-gradient(135deg,#f093fb,#f5576c)',
+    'Marketing': 'linear-gradient(135deg,#4facfe,#00f2fe)',
+    'Coaching': 'linear-gradient(135deg,#43e97b,#38f9d7)',
+    'Planner': 'linear-gradient(135deg,#fa709a,#fee140)',
+    'Tracker': 'linear-gradient(135deg,#a18cd1,#fbc2eb)',
+    'Journal': 'linear-gradient(135deg,#fbc2eb,#a18cd1)',
+    'Carnet': 'linear-gradient(135deg,#F7971E,#FFD200)',
+    'CV': 'linear-gradient(135deg,#0f3460,#16213e)',
+    'default': 'linear-gradient(135deg,#2D1B69,#4A2E9E)'
+  };
+  for (const [key, grad] of Object.entries(map)) {
+    if (cat && cat.includes(key)) return grad;
+  }
+  return map.default;
+}
+
+// Auto-load products when Firebase is ready
+document.addEventListener('userLoggedIn', loadCatalogProducts);
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(loadCatalogProducts, 2000);
+});
+
+
+// ═══ PWA INSTALL ═══
+let deferredPrompt = null;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  showInstallButton();
+});
+
+function showInstallButton() {
+  const existing = document.getElementById('pwaInstallBtn');
+  if (existing) return;
+  
+  const btn = document.createElement('div');
+  btn.id = 'pwaInstallBtn';
+  btn.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:999;background:linear-gradient(135deg,#2D1B69,#4A2E9E);color:white;padding:12px 24px;border-radius:100px;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 4px 20px rgba(45,27,105,0.4);display:flex;align-items:center;gap:8px;animation:slideUp .3s ease;white-space:nowrap';
+  btn.innerHTML = '📱 Installer l'App KoraHub';
+  btn.onclick = installPWA;
+  document.body.appendChild(btn);
+  
+  setTimeout(() => { if (btn.parentNode) btn.remove(); }, 8000);
+}
+
+async function installPWA() {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  if (outcome === 'accepted') showToast('🎉 KoraHub installé sur votre téléphone !');
+  deferredPrompt = null;
+  document.getElementById('pwaInstallBtn')?.remove();
+}
+
+// Register service worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(reg => console.log('✅ Service Worker registered:', reg.scope))
+      .catch(err => console.log('SW registration failed:', err));
+  });
+}
+
+// CSS for animation
+const pwaStyle = document.createElement('style');
+pwaStyle.textContent = '@keyframes slideUp{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}';
+document.head.appendChild(pwaStyle);
+
+</script>
+
+
+<!-- PWA Manifest -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2D1B69">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="KoraHub">
+
+</head>
+<body>
+<div class="kh-logo">K</div></div><div class="kh-name">Kora<span style="color:#F5C518">Hub</span></div><div class="kh-dots"><div class="kh-dot"></div><div class="kh-dot"></div><div class="kh-dot"></div></div></div>
+<div class="kh-logo">K</div></div><div class="kh-name">Kora<span style="color:#F5C518">Hub</span></div><div class="kh-dots"><div class="kh-dot"></div><div class="kh-dot"></div><div class="kh-dot"></div></div></div>
+
+<!-- NAV -->
+<nav>
+  <a href="korahub.html" class="nav-logo">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 40" style="height:34px;width:auto;display:block"><defs><linearGradient id="kg1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#F5C518"/><stop offset="100%" style="stop-color:#FFD95A"/></linearGradient></defs><rect x="0" y="2" width="36" height="36" rx="9" fill="url(#kg1)"/><text x="8" y="28" font-family="Arial Black,sans-serif" font-weight="900" font-size="23" fill="#2D1B69">K</text><text x="44" y="25" font-family="Arial,sans-serif" font-weight="700" font-size="16" fill="white">Kora</text><text x="80" y="25" font-family="Arial,sans-serif" font-weight="700" font-size="16" fill="#F5C518">Hub</text><text x="44" y="35" font-family="Arial,sans-serif" font-size="7" fill="rgba(255,255,255,0.45)" letter-spacing="1.5">LEARN · SELL · GROW</text></svg>
+    
+  </a>
+  <div class="nav-search">
+    <span class="nav-search-icon">🔍</span>
+    <input type="text" class="nav-search-input" placeholder="Rechercher un produit, catégorie..." id="navSearchInput" oninput="doSearch(this.value)">
+  </div>
+  <div class="nav-right">
+    <a href="korahub-auth.html" class="btn btn-ghost btn-sm">Connexion</a>
+    <a href="korahub-auth.html?tab=register" class="btn btn-gold btn-sm">S'inscrire</a>
+  </div>
+</nav>
+
+<!-- SEARCH HERO -->
+<div class="search-hero">
+  <h1 class="search-hero-title">Trouvez votre prochain<br><span>produit digital</span></h1>
+  <p class="search-hero-sub">Plus de 500 ebooks, formations, coachings et bien plus — pour toute l'Afrique</p>
+
+  <div class="search-box">
+    <div class="search-big">
+      <input type="text" class="search-big-input" placeholder="Ex: gagner de l'argent, marketing, coaching..." id="mainSearch" oninput="doSearch(this.value)">
+      <button class="search-big-btn" onclick="triggerSearch()">🔍 Rechercher</button>
+    </div>
+  </div>
+
+  <div class="quick-cats">
+    <div class="quick-cat active" onclick="filterCat(this,'Tous')">Tous</div>
+    <div class="quick-cat" onclick="filterCat(this,'Ebooks')">📚 Ebooks</div>
+    <div class="quick-cat" onclick="filterCat(this,'Formations')">🎓 Formations</div>
+    <div class="quick-cat" onclick="filterCat(this,'Coaching')">🎯 Coaching</div>
+    <div class="quick-cat" onclick="filterCat(this,'Vidéos')">🎥 Cours Vidéo</div>
+    <div class="quick-cat" onclick="filterCat(this,'Bien-être')">🧠 Bien-être</div>
+    <div class="quick-cat" onclick="filterCat(this,'Business')">💼 Business</div>
+    <div class="quick-cat" onclick="filterCat(this,'Gratuits')">🆓 Gratuits</div>
+  </div>
+</div>
+
+<!-- MAIN LAYOUT -->
+<div class="main-layout">
+
+  <!-- FILTERS SIDEBAR -->
+  <aside class="filters-sidebar">
+
+    <!-- Active filters -->
+    <div id="activeFiltersWrap" style="display:none;margin-bottom:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <span style="font-size:12px;font-weight:700;color:var(--text-dark)">Filtres actifs</span>
+        <a class="clear-filters" onclick="clearAllFilters()">Tout effacer</a>
+      </div>
+      <div class="active-filters" id="activeFiltersList"></div>
+    </div>
+
+    <!-- Catégorie -->
+    <div class="filter-card">
+      <div class="filter-header" onclick="toggleFilter(this)">
+        <span class="filter-title">📂 Catégorie</span>
+        <span class="filter-toggle-icon">▼</span>
+      </div>
+      <div class="filter-body">
+        <div class="filter-option" onclick="toggleCheck(this,'Ebooks')">
+          <div class="filter-checkbox">✓</div>
+          <span class="filter-label">📚 Ebooks</span>
+          <span class="filter-count">142</span>
+        </div>
+        <div class="filter-option" onclick="toggleCheck(this,'Formations')">
+          <div class="filter-checkbox"></div>
+          <span class="filter-label">🎓 Formations</span>
+          <span class="filter-count">89</span>
+        </div>
+        <div class="filter-option" onclick="toggleCheck(this,'Coaching')">
+          <div class="filter-checkbox"></div>
+          <span class="filter-label">🎯 Coaching</span>
+          <span class="filter-count">54</span>
+        </div>
+        <div class="filter-option" onclick="toggleCheck(this,'Cours Vidéo')">
+          <div class="filter-checkbox"></div>
+          <span class="filter-label">🎥 Cours Vidéo</span>
+          <span class="filter-count">97</span>
+        </div>
+        <div class="filter-option" onclick="toggleCheck(this,'Bien-être')">
+          <div class="filter-checkbox"></div>
+          <span class="filter-label">🧠 Bien-être</span>
+          <span class="filter-count">38</span>
+        </div>
+        <div class="filter-option" onclick="toggleCheck(this,'Business')">
+          <div class="filter-checkbox"></div>
+          <span class="filter-label">💼 Business</span>
+          <span class="filter-count">76</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Prix -->
+    <div class="filter-card">
+      <div class="filter-header" onclick="toggleFilter(this)">
+        <span class="filter-title">💰 Prix (FCFA)</span>
+        <span class="filter-toggle-icon">▼</span>
+      </div>
+      <div class="filter-body">
+        <div class="filter-option" onclick="toggleCheck(this,'Gratuit')">
+          <div class="filter-checkbox"></div>
+          <span class="filter-label">🆓 Gratuit</span>
+        </div>
+        <div class="filter-option" onclick="toggleCheck(this,'0-5000 F')">
+          <div class="filter-checkbox"></div>
+          <span class="filter-label">0 – 5 000 FCFA</span>
+        </div>
+        <div class="filter-option" onclick="toggleCheck(this,'5000-15000 F')">
+          <div class="filter-checkbox"></div>
+          <span class="filter-label">5 000 – 15 000 FCFA</span>
+        </div>
+        <div class="filter-option" onclick="toggleCheck(this,'+15000 F')">
+          <div class="filter-checkbox"></div>
+          <span class="filter-label">+ 15 000 FCFA</span>
+        </div>
+        <div style="margin-top:10px;border-top:1px solid var(--border);padding-top:12px">
+          <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px">Ou entrez une plage :</div>
+          <div class="price-inputs">
+            <input type="number" class="price-input" placeholder="Min" id="priceMin">
+            <input type="number" class="price-input" placeholder="Max" id="priceMax">
+          </div>
+          <button class="btn btn-violet btn-sm" style="width:100%;justify-content:center;margin-top:8px" onclick="applyPriceFilter()">Appliquer</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Langue -->
+    <div class="filter-card">
+      <div class="filter-header" onclick="toggleFilter(this)">
+        <span class="filter-title">🌍 Langue</span>
+        <span class="filter-toggle-icon">▼</span>
+      </div>
+      <div class="filter-body">
+        <div class="filter-option" onclick="toggleCheck(this,'Français')">
+          <div class="filter-checkbox checked">✓</div>
+          <span class="filter-label">🇫🇷 Français</span>
+          <span class="filter-count">387</span>
+        </div>
+        <div class="filter-option" onclick="toggleCheck(this,'Anglais')">
+          <div class="filter-checkbox"></div>
+          <span class="filter-label">🇬🇧 Anglais</span>
+          <span class="filter-count">98</span>
+        </div>
+        <div class="filter-option" onclick="toggleCheck(this,'Bilingue')">
+          <div class="filter-checkbox"></div>
+          <span class="filter-label">🇫🇷🇬🇧 Bilingue</span>
+          <span class="filter-count">58</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Note -->
+    <div class="filter-card">
+      <div class="filter-header" onclick="toggleFilter(this)">
+        <span class="filter-title">⭐ Note minimum</span>
+        <span class="filter-toggle-icon">▼</span>
+      </div>
+      <div class="filter-body">
+        <div class="rating-option" onclick="setRating(5)">
+          <div class="filter-checkbox" id="r5"></div>
+          <span class="rating-stars">★★★★★</span>
+          <span class="rating-label">5 étoiles</span>
+        </div>
+        <div class="rating-option" onclick="setRating(4)">
+          <div class="filter-checkbox" id="r4"></div>
+          <span class="rating-stars">★★★★☆</span>
+          <span class="rating-label">4+ étoiles</span>
+        </div>
+        <div class="rating-option" onclick="setRating(3)">
+          <div class="filter-checkbox" id="r3"></div>
+          <span class="rating-stars">★★★☆☆</span>
+          <span class="rating-label">3+ étoiles</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pays vendeur -->
+    <div class="filter-card">
+      <div class="filter-header" onclick="toggleFilter(this)">
+        <span class="filter-title">🌍 Pays du vendeur</span>
+        <span class="filter-toggle-icon">▼</span>
+      </div>
+      <div class="filter-body">
+        <div class="filter-option" onclick="toggleCheck(this,'Burkina Faso')">
+          <div class="filter-checkbox"></div>
+          <span class="filter-label">🇧🇫 Burkina Faso</span>
+        </div>
+        <div class="filter-option" onclick="toggleCheck(this,'Côte d\'Ivoire')">
+          <div class="filter-checkbox"></div>
+          <span class="filter-label">🇨🇮 Côte d'Ivoire</span>
+        </div>
+        <div class="filter-option" onclick="toggleCheck(this,'Sénégal')">
+          <div class="filter-checkbox"></div>
+          <span class="filter-label">🇸🇳 Sénégal</span>
+        </div>
+        <div class="filter-option" onclick="toggleCheck(this,'Ghana')">
+          <div class="filter-checkbox"></div>
+          <span class="filter-label">🇬🇭 Ghana</span>
+        </div>
+        <div class="filter-option" onclick="toggleCheck(this,'Nigeria')">
+          <div class="filter-checkbox"></div>
+          <span class="filter-label">🇳🇬 Nigeria</span>
+        </div>
+        <div class="filter-option" onclick="toggleCheck(this,'Autres pays')">
+          <div class="filter-checkbox"></div>
+          <span class="filter-label">🌍 Autres pays</span>
+        </div>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- RESULTS -->
+  <div class="results-area">
+
+    <div class="results-topbar">
+      <div class="results-info">
+        <strong id="resultsCount">543</strong> produits trouvés
+        <span id="searchQuery"></span>
+      </div>
+      <div class="results-controls">
+        <select class="sort-select" onchange="sortProducts(this.value)">
+          <option value="popular">🔥 Les plus populaires</option>
+          <option value="recent">🆕 Les plus récents</option>
+          <option value="price-asc">💰 Prix croissant</option>
+          <option value="price-desc">💰 Prix décroissant</option>
+          <option value="rating">⭐ Meilleures notes</option>
+        </select>
+        <div class="view-btns">
+          <button class="view-btn active" id="gridBtn" onclick="setView('grid')" title="Vue grille">⊞</button>
+          <button class="view-btn" id="listBtn" onclick="setView('list')" title="Vue liste">☰</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active filters display -->
+    <div class="active-filters" id="topActiveFilters" style="margin-bottom:16px"></div>
+
+    <!-- Products Grid -->
+    <div class="products-grid" id="productsGrid">
+
+      <div class="product-card" data-cat="Ebook" data-price="2500" data-lang="fr" data-rating="4.8">
+        <div class="product-cover" style="background:linear-gradient(135deg,#667eea,#764ba2)">
+          📚
+          <div class="product-badges">
+            <span class="badge badge-lang">🇫🇷</span>
+            <span class="badge badge-sale">-30%</span>
+          </div>
+          <button class="product-wishlist liked" onclick="toggleWishlist(this)">❤️</button>
+        </div>
+        <div class="product-body">
+          <div class="product-cat">Ebook</div>
+          <div class="product-name">Gagner avec ChatGPT : Guide Afrique</div>
+          <div class="product-seller"><span class="seller-dot">M</span> Moussa Traoré · 🇧🇫</div>
+          <div class="product-footer">
+            <div class="price-block">
+              <span class="price-current">2 500 F</span>
+              <span class="price-old">3 500 F</span>
+            </div>
+            <button class="buy-btn" onclick="window.location.href='korahub-produit-panier.html'">Acheter</button>
+          </div>
+          <div class="product-meta">
+            <span class="meta-item">❤️ 124</span>
+            <span class="meta-item">💬 38</span>
+            <span class="meta-item">⭐ 4.8</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="Formation" data-price="8000" data-lang="fr" data-rating="4.9">
+        <div class="product-cover" style="background:linear-gradient(135deg,#f093fb,#f5576c)">
+          🎓
+          <div class="product-badges">
+            <span class="badge badge-lang">🇫🇷</span>
+            <span class="badge badge-new">Nouveau</span>
+          </div>
+          <button class="product-wishlist" onclick="toggleWishlist(this)">🤍</button>
+        </div>
+        <div class="product-body">
+          <div class="product-cat">Formation</div>
+          <div class="product-name">Marketing Digital pour Débutants Africains</div>
+          <div class="product-seller"><span class="seller-dot">A</span> Aminata Diallo · 🇨🇮</div>
+          <div class="product-footer">
+            <div class="price-block"><span class="price-current">8 000 F</span></div>
+            <button class="buy-btn" onclick="window.location.href='korahub-produit-panier.html'">Acheter</button>
+          </div>
+          <div class="product-meta">
+            <span class="meta-item">❤️ 89</span>
+            <span class="meta-item">💬 21</span>
+            <span class="meta-item">⭐ 4.9</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="Bien-être" data-price="5000" data-lang="bilingue" data-rating="4.7">
+        <div class="product-cover" style="background:linear-gradient(135deg,#4facfe,#00f2fe)">
+          🧠
+          <div class="product-badges">
+            <span class="badge badge-lang">🇫🇷🇬🇧</span>
+          </div>
+          <button class="product-wishlist" onclick="toggleWishlist(this)">🤍</button>
+        </div>
+        <div class="product-body">
+          <div class="product-cat">Bien-être mental</div>
+          <div class="product-name">Gérer son stress et s'épanouir en Afrique</div>
+          <div class="product-seller"><span class="seller-dot">F</span> Dr. Fatou Kone · 🇸🇳</div>
+          <div class="product-footer">
+            <div class="price-block"><span class="price-current">5 000 F</span></div>
+            <button class="buy-btn" onclick="window.location.href='korahub-produit-panier.html'">Acheter</button>
+          </div>
+          <div class="product-meta">
+            <span class="meta-item">❤️ 67</span>
+            <span class="meta-item">💬 15</span>
+            <span class="meta-item">⭐ 4.7</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="Business" data-price="0" data-lang="fr" data-rating="4.6">
+        <div class="product-cover" style="background:linear-gradient(135deg,#43e97b,#38f9d7)">
+          💼
+          <div class="product-badges">
+            <span class="badge badge-free">Gratuit</span>
+          </div>
+          <button class="product-wishlist" onclick="toggleWishlist(this)">🤍</button>
+        </div>
+        <div class="product-body">
+          <div class="product-cat">Business</div>
+          <div class="product-name">Créer son Business Plan en Afrique</div>
+          <div class="product-seller"><span class="seller-dot">I</span> Ibrahim Sawadogo · 🇧🇫</div>
+          <div class="product-footer">
+            <div class="price-block"><span class="price-current" style="color:var(--success)">Gratuit</span></div>
+            <button class="buy-btn" style="background:linear-gradient(135deg,#43e97b,#38f9d7);color:#1a1a1a" onclick="showToast('📥 Téléchargement démarré !')">Obtenir</button>
+          </div>
+          <div class="product-meta">
+            <span class="meta-item">❤️ 203</span>
+            <span class="meta-item">💬 54</span>
+            <span class="meta-item">⭐ 4.6</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="Cours Vidéo" data-price="12000" data-lang="fr" data-rating="4.9">
+        <div class="product-cover" style="background:linear-gradient(135deg,#fa709a,#fee140)">
+          🎥
+          <div class="product-badges">
+            <span class="badge badge-lang">🇫🇷</span>
+            <span class="badge badge-sale">-20%</span>
+          </div>
+          <button class="product-wishlist" onclick="toggleWishlist(this)">🤍</button>
+        </div>
+        <div class="product-body">
+          <div class="product-cat">Cours Vidéo</div>
+          <div class="product-name">Apprendre à coder en 30 jours</div>
+          <div class="product-seller"><span class="seller-dot">K</span> Kofi Mensah · 🇬🇭</div>
+          <div class="product-footer">
+            <div class="price-block">
+              <span class="price-current">12 000 F</span>
+              <span class="price-old">15 000 F</span>
+            </div>
+            <button class="buy-btn" onclick="window.location.href='korahub-produit-panier.html'">Acheter</button>
+          </div>
+          <div class="product-meta">
+            <span class="meta-item">❤️ 156</span>
+            <span class="meta-item">💬 42</span>
+            <span class="meta-item">⭐ 4.9</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="Coaching" data-price="25000" data-lang="fr" data-rating="5.0">
+        <div class="product-cover" style="background:linear-gradient(135deg,#a18cd1,#fbc2eb)">
+          🎯
+          <div class="product-badges">
+            <span class="badge badge-lang">🇫🇷</span>
+          </div>
+          <button class="product-wishlist" onclick="toggleWishlist(this)">🤍</button>
+        </div>
+        <div class="product-body">
+          <div class="product-cat">Coaching</div>
+          <div class="product-name">Coaching Business : De 0 à 100K FCFA/mois</div>
+          <div class="product-seller"><span class="seller-dot">S</span> Sali Ouédraogo · 🇧🇫</div>
+          <div class="product-footer">
+            <div class="price-block"><span class="price-current">25 000 F</span></div>
+            <button class="buy-btn" onclick="window.location.href='korahub-produit-panier.html'">Acheter</button>
+          </div>
+          <div class="product-meta">
+            <span class="meta-item">❤️ 88</span>
+            <span class="meta-item">💬 31</span>
+            <span class="meta-item">⭐ 5.0</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="Ebook" data-price="3500" data-lang="fr" data-rating="4.5">
+        <div class="product-cover" style="background:linear-gradient(135deg,#f7971e,#ffd200)">
+          📖
+          <div class="product-badges">
+            <span class="badge badge-lang">🇫🇷</span>
+          </div>
+          <button class="product-wishlist" onclick="toggleWishlist(this)">🤍</button>
+        </div>
+        <div class="product-body">
+          <div class="product-cat">Ebook</div>
+          <div class="product-name">Investissement et Épargne en Afrique</div>
+          <div class="product-seller"><span class="seller-dot">R</span> Rasmata Zongo · 🇧🇫</div>
+          <div class="product-footer">
+            <div class="price-block"><span class="price-current">3 500 F</span></div>
+            <button class="buy-btn" onclick="window.location.href='korahub-produit-panier.html'">Acheter</button>
+          </div>
+          <div class="product-meta">
+            <span class="meta-item">❤️ 45</span>
+            <span class="meta-item">💬 12</span>
+            <span class="meta-item">⭐ 4.5</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="Formation" data-price="15000" data-lang="bilingue" data-rating="4.8">
+        <div class="product-cover" style="background:linear-gradient(135deg,#0f3460,#16213e)">
+          💡
+          <div class="product-badges">
+            <span class="badge badge-lang">🇫🇷🇬🇧</span>
+            <span class="badge badge-new">Nouveau</span>
+          </div>
+          <button class="product-wishlist" onclick="toggleWishlist(this)">🤍</button>
+        </div>
+        <div class="product-body">
+          <div class="product-cat">Formation</div>
+          <div class="product-name">Créer son e-commerce africain de A à Z</div>
+          <div class="product-seller"><span class="seller-dot">Y</span> Youssouf Compaoré · 🇧🇫</div>
+          <div class="product-footer">
+            <div class="price-block"><span class="price-current">15 000 F</span></div>
+            <button class="buy-btn" onclick="window.location.href='korahub-produit-panier.html'">Acheter</button>
+          </div>
+          <div class="product-meta">
+            <span class="meta-item">❤️ 72</span>
+            <span class="meta-item">💬 19</span>
+            <span class="meta-item">⭐ 4.8</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination">
+      <button class="page-btn disabled">←</button>
+      <button class="page-btn active">1</button>
+      <button class="page-btn" onclick="changePage(this)">2</button>
+      <button class="page-btn" onclick="changePage(this)">3</button>
+      <button class="page-btn" onclick="changePage(this)">4</button>
+      <button class="page-btn" onclick="changePage(this)">5</button>
+      <button class="page-btn" onclick="changePage(this)">→</button>
+    </div>
+  </div>
+</div>
+
+<!-- MOBILE FILTER BUTTON -->
+<button class="mobile-filter-btn" onclick="openMobileFilter()">
+  🔧 Filtres
+</button>
+
+<!-- MOBILE FILTER OVERLAY -->
+<div class="filter-overlay" id="filterOverlay" onclick="closeMobileFilter()">
+  <div class="filters-mobile" onclick="event.stopPropagation()">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+      <span style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800">Filtres</span>
+      <button onclick="closeMobileFilter()" style="background:none;border:none;font-size:20px;cursor:pointer">✕</button>
+    </div>
+    <div style="font-size:13px;color:var(--text-muted);margin-bottom:16px">Catégorie :</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px">
+      <div onclick="filterCatMobile(this,'Ebooks')" style="border:1.5px solid var(--border);border-radius:10px;padding:10px;text-align:center;cursor:pointer;font-size:13px;font-weight:600">📚 Ebooks</div>
+      <div onclick="filterCatMobile(this,'Formations')" style="border:1.5px solid var(--border);border-radius:10px;padding:10px;text-align:center;cursor:pointer;font-size:13px;font-weight:600">🎓 Formations</div>
+      <div onclick="filterCatMobile(this,'Coaching')" style="border:1.5px solid var(--border);border-radius:10px;padding:10px;text-align:center;cursor:pointer;font-size:13px;font-weight:600">🎯 Coaching</div>
+      <div onclick="filterCatMobile(this,'Vidéos')" style="border:1.5px solid var(--border);border-radius:10px;padding:10px;text-align:center;cursor:pointer;font-size:13px;font-weight:600">🎥 Vidéos</div>
+      <div onclick="filterCatMobile(this,'Bien-être')" style="border:1.5px solid var(--border);border-radius:10px;padding:10px;text-align:center;cursor:pointer;font-size:13px;font-weight:600">🧠 Bien-être</div>
+      <div onclick="filterCatMobile(this,'Business')" style="border:1.5px solid var(--border);border-radius:10px;padding:10px;text-align:center;cursor:pointer;font-size:13px;font-weight:600">💼 Business</div>
+    </div>
+    <div style="font-size:13px;color:var(--text-muted);margin-bottom:12px">Prix :</div>
+    <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap">
+      <div onclick="toggleMobileFilter(this)" style="border:1.5px solid var(--border);border-radius:100px;padding:6px 14px;cursor:pointer;font-size:12px;font-weight:600">🆓 Gratuit</div>
+      <div onclick="toggleMobileFilter(this)" style="border:1.5px solid var(--border);border-radius:100px;padding:6px 14px;cursor:pointer;font-size:12px;font-weight:600">0–5 000 F</div>
+      <div onclick="toggleMobileFilter(this)" style="border:1.5px solid var(--border);border-radius:100px;padding:6px 14px;cursor:pointer;font-size:12px;font-weight:600">5–15 000 F</div>
+      <div onclick="toggleMobileFilter(this)" style="border:1.5px solid var(--border);border-radius:100px;padding:6px 14px;cursor:pointer;font-size:12px;font-weight:600">+15 000 F</div>
+    </div>
+    <button class="btn btn-gold" style="width:100%;justify-content:center;padding:13px;font-size:15px" onclick="closeMobileFilter()">✅ Appliquer les filtres</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><span>✅</span><span id="toastMsg"></span></div>
+
+<script>
+let activeFilters = ['Français'];
+let currentView = 'grid';
+
+// Search
+function doSearch(query) {
+  const cards = document.querySelectorAll('.product-card');
+  let count = 0;
+  cards.forEach(card => {
+    const name = card.querySelector('.product-name').textContent.toLowerCase();
+    const cat = card.querySelector('.product-cat').textContent.toLowerCase();
+    const match = !query || name.includes(query.toLowerCase()) || cat.includes(query.toLowerCase());
+    card.style.display = match ? '' : 'none';
+    if (match) count++;
+  });
+  document.getElementById('resultsCount').textContent = count;
+  if (query) {
+    document.getElementById('searchQuery').textContent = ' pour "' + query + '"';
+  } else {
+    document.getElementById('searchQuery').textContent = '';
+  }
+  document.getElementById('navSearchInput').value = query;
+  document.getElementById('mainSearch').value = query;
+}
+
+function triggerSearch() {
+  const q = document.getElementById('mainSearch').value;
+  doSearch(q);
+  showToast('🔍 Recherche : "' + q + '"');
+}
+
+// Category filter
+function filterCat(el, cat) {
+  document.querySelectorAll('.quick-cat').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  const cards = document.querySelectorAll('.product-card');
+  let count = 0;
+  cards.forEach(card => {
+    if (cat === 'Tous' || cat === 'Gratuits') {
+      const show = cat === 'Tous' || card.dataset.price === '0';
+      card.style.display = show ? '' : 'none';
+      if (show) count++;
+    } else {
+      const cardCat = card.dataset.cat;
+      const catMap = {'Ebooks':'Ebook','Formations':'Formation','Coaching':'Coaching','Vidéos':'Cours Vidéo','Bien-être':'Bien-être mental','Business':'Business'};
+      const match = cardCat === catMap[cat];
+      card.style.display = match ? '' : 'none';
+      if (match) count++;
+    }
+  });
+  document.getElementById('resultsCount').textContent = count;
+}
+
+// Toggle filter checkbox
+function toggleCheck(el, filterName) {
+  const checkbox = el.querySelector('.filter-checkbox');
+  const isChecked = checkbox.classList.contains('checked');
+  if (isChecked) {
+    checkbox.classList.remove('checked');
+    checkbox.textContent = '';
+    removeActiveFilter(filterName);
+  } else {
+    checkbox.classList.add('checked');
+    checkbox.textContent = '✓';
+    addActiveFilter(filterName);
+  }
+}
+
+function addActiveFilter(name) {
+  if (activeFilters.includes(name)) return;
+  activeFilters.push(name);
+  updateActiveFiltersDisplay();
+}
+
+function removeActiveFilter(name) {
+  activeFilters = activeFilters.filter(f => f !== name);
+  updateActiveFiltersDisplay();
+}
+
+function updateActiveFiltersDisplay() {
+  const container = document.getElementById('topActiveFilters');
+  container.innerHTML = activeFilters.map(f => `
+    <div class="active-filter">
+      ${f} <span class="active-filter-remove" onclick="removeActiveFilterByName('${f}')">✕</span>
+    </div>
+  `).join('');
+  if (activeFilters.length > 0) {
+    container.innerHTML += `<a class="clear-filters" onclick="clearAllFilters()">Tout effacer</a>`;
+  }
+}
+
+function removeActiveFilterByName(name) {
+  removeActiveFilter(name);
+  document.querySelectorAll('.filter-checkbox.checked').forEach(cb => {
+    const label = cb.parentElement.querySelector('.filter-label');
+    if (label && label.textContent.includes(name)) {
+      cb.classList.remove('checked');
+      cb.textContent = '';
+    }
+  });
+}
+
+function clearAllFilters() {
+  activeFilters = [];
+  document.querySelectorAll('.filter-checkbox.checked').forEach(cb => {
+    cb.classList.remove('checked');
+    cb.textContent = '';
+  });
+  updateActiveFiltersDisplay();
+  document.querySelectorAll('.product-card').forEach(c => c.style.display = '');
+  document.getElementById('resultsCount').textContent = '543';
+  showToast('🗑️ Filtres effacés');
+}
+
+// Rating filter
+function setRating(n) {
+  [3,4,5].forEach(r => {
+    const el = document.getElementById('r'+r);
+    if (el) { el.classList.remove('checked'); el.textContent = ''; }
+  });
+  const el = document.getElementById('r'+n);
+  if (el) { el.classList.add('checked'); el.textContent = '✓'; }
+  addActiveFilter(n + '+ étoiles');
+  const cards = document.querySelectorAll('.product-card');
+  cards.forEach(card => {
+    const rating = parseFloat(card.dataset.rating);
+    card.style.display = rating >= n ? '' : 'none';
+  });
+}
+
+// Price filter
+function applyPriceFilter() {
+  const min = parseInt(document.getElementById('priceMin').value) || 0;
+  const max = parseInt(document.getElementById('priceMax').value) || 999999;
+  const cards = document.querySelectorAll('.product-card');
+  let count = 0;
+  cards.forEach(card => {
+    const price = parseInt(card.dataset.price);
+    const show = price >= min && price <= max;
+    card.style.display = show ? '' : 'none';
+    if (show) count++;
+  });
+  document.getElementById('resultsCount').textContent = count;
+  addActiveFilter(min.toLocaleString() + '–' + max.toLocaleString() + ' F');
+  showToast('💰 Filtre prix appliqué !');
+}
+
+// Sort
+function sortProducts(val) {
+  showToast('🔄 Tri : ' + val);
+}
+
+// View toggle
+function setView(v) {
+  currentView = v;
+  const grid = document.getElementById('productsGrid');
+  const gb = document.getElementById('gridBtn');
+  const lb = document.getElementById('listBtn');
+  if (v === 'list') {
+    grid.classList.add('list-view');
+    gb.classList.remove('active');
+    lb.classList.add('active');
+  } else {
+    grid.classList.remove('list-view');
+    gb.classList.add('active');
+    lb.classList.remove('active');
+  }
+}
+
+// Wishlist
+function toggleWishlist(btn) {
+  const liked = btn.classList.contains('liked');
+  btn.classList.toggle('liked');
+  btn.textContent = liked ? '🤍' : '❤️';
+  showToast(liked ? '💔 Retiré des souhaits' : '❤️ Ajouté aux souhaits !');
+}
+
+// Filter toggle
+function toggleFilter(header) {
+  const body = header.nextElementSibling;
+  const icon = header.querySelector('.filter-toggle-icon');
+  if (body.style.display === 'none') {
+    body.style.display = 'block';
+    icon.style.transform = 'rotate(0deg)';
+  } else {
+    body.style.display = 'none';
+    icon.style.transform = 'rotate(-90deg)';
+  }
+}
+
+// Pagination
+function changePage(btn) {
+  document.querySelectorAll('.page-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  window.scrollTo({ top: 300, behavior: 'smooth' });
+}
+
+// Mobile filter
+function openMobileFilter() {
+  document.getElementById('filterOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeMobileFilter() {
+  document.getElementById('filterOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function filterCatMobile(el, cat) {
+  document.querySelectorAll('.filters-mobile [onclick^="filterCatMobile"]').forEach(e => {
+    e.style.borderColor = 'var(--border)';
+    e.style.background = '';
+    e.style.color = 'var(--text-dark)';
+  });
+  el.style.borderColor = 'var(--violet)';
+  el.style.background = 'rgba(107,70,193,0.08)';
+}
+function toggleMobileFilter(el) {
+  const active = el.style.borderColor === 'var(--violet)' || el.style.borderColor === 'rgb(107, 70, 193)';
+  el.style.borderColor = active ? 'var(--border)' : 'var(--violet)';
+  el.style.background = active ? '' : 'rgba(107,70,193,0.08)';
+  el.style.color = active ? 'var(--text-dark)' : 'var(--violet-light)';
+}
+
+// Toast
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// Scroll animations
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.style.opacity = '1';
+      e.target.style.transform = 'translateY(0)';
+    }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.product-card').forEach(card => {
+  card.style.opacity = '0';
+  card.style.transform = 'translateY(20px)';
+  card.style.transition = 'opacity .4s ease, transform .4s ease';
+  observer.observe(card);
+});
+
+// Init active filters display
+updateActiveFiltersDisplay();
+</script>
+<script id="kh-loader-script"></script>
+
+</body>
+</html>

@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KoraHub – Dashboard Affilié</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --violet: #2D1B69;
+  --violet-mid: #4A2E9E;
+  --violet-light: #6B46C1;
+  --gold: #F5C518;
+  --gold-light: #FFD95A;
+  --white: #FFFFFF;
+  --off-white: #F8F6FF;
+  --text-dark: #1A0F3C;
+  --text-muted: #7C6FAD;
+  --border: rgba(107,70,193,0.12);
+  --shadow: 0 8px 32px rgba(45,27,105,0.12);
+  --success: #2ed573;
+  --danger: #ff4757;
+  --warning: #ffa502;
+  --sidebar-w: 240px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--text-dark);display:flex;min-height:100vh;overflow-x:hidden}
+
+/* SIDEBAR */
+.sidebar{width:var(--sidebar-w);background:linear-gradient(180deg,#1a0a3d 0%,#0d0520 100%);min-height:100vh;position:fixed;left:0;top:0;display:flex;flex-direction:column;z-index:100;transition:transform .3s;border-right:1px solid rgba(245,197,24,0.08)}
+.sidebar-logo{padding:22px 20px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-icon{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--gold),var(--gold-light));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:var(--violet)}
+.logo-text{font-family:'Syne',sans-serif;font-weight:700;font-size:18px;color:white}
+.logo-text span{color:var(--gold)}
+.affiliate-tag{background:rgba(245,197,24,0.12);border:1px solid rgba(245,197,24,0.25);border-radius:100px;padding:2px 10px;font-size:10px;font-weight:700;color:var(--gold);margin-top:2px;display:inline-block}
+.sidebar-user{padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:12px}
+.user-avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#f093fb,#f5576c);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:white;font-family:'Syne',sans-serif;border:2px solid rgba(245,197,24,0.3)}
+.user-name{font-weight:600;color:white;font-size:13px}
+.user-rank{font-size:10px;color:var(--gold);font-weight:700;margin-top:2px}
+.sidebar-nav{flex:1;padding:12px 0;overflow-y:auto}
+.nav-section-label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.25);padding:12px 20px 6px}
+.nav-item{display:flex;align-items:center;gap:11px;padding:10px 20px;cursor:pointer;transition:all .2s;color:rgba(255,255,255,0.55);font-size:13px;font-weight:500;text-decoration:none}
+.nav-item:hover{color:white;background:rgba(255,255,255,0.05)}
+.nav-item.active{color:white;background:rgba(245,197,24,0.08);border-right:3px solid var(--gold)}
+.nav-item.active .nav-icon{color:var(--gold)}
+.nav-icon{font-size:16px;width:20px;text-align:center}
+.nav-badge{margin-left:auto;background:var(--success);color:white;font-size:10px;font-weight:700;padding:2px 7px;border-radius:100px}
+.sidebar-footer{padding:14px 20px;border-top:1px solid rgba(255,255,255,0.06)}
+.btn-logout{display:flex;align-items:center;gap:10px;color:rgba(255,255,255,0.4);font-size:13px;cursor:pointer;padding:8px;border-radius:8px;transition:all .2s;border:none;background:none;width:100%}
+.btn-logout:hover{color:var(--danger);background:rgba(255,71,87,0.08)}
+
+/* MAIN */
+.main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-height:100vh}
+
+/* TOPBAR */
+.topbar{background:white;border-bottom:1px solid var(--border);padding:0 28px;height:62px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.topbar-left{display:flex;align-items:center;gap:14px}
+.menu-toggle{display:none;background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-dark)}
+.page-title{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;color:var(--text-dark)}
+.page-sub{font-size:12px;color:var(--text-muted)}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.earnings-badge{background:linear-gradient(135deg,var(--violet),var(--violet-light));border-radius:10px;padding:7px 16px;text-align:center}
+.earnings-val{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:var(--gold)}
+.earnings-label{font-size:10px;color:rgba(255,255,255,0.6)}
+.topbar-btn{width:36px;height:36px;border-radius:9px;border:1.5px solid var(--border);background:white;display:flex;align-items:center;justify-content:center;font-size:15px;cursor:pointer;transition:all .2s;position:relative}
+.topbar-btn:hover{border-color:var(--violet-light)}
+.notif-dot{position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:50%;background:var(--success);border:1.5px solid white}
+
+/* CONTENT */
+.content{padding:24px 28px;flex:1}
+.page-section{display:none}
+.page-section.active{display:block;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* BTNS */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:9px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .2s;text-decoration:none}
+.btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--violet)}
+.btn-gold:hover{transform:translateY(-1px);box-shadow:0 4px 18px rgba(245,197,24,0.3)}
+.btn-violet{background:linear-gradient(135deg,var(--violet-mid),var(--violet-light));color:white}
+.btn-violet:hover{transform:translateY(-1px);box-shadow:0 4px 18px rgba(74,46,158,0.3)}
+.btn-ghost{background:white;border:1.5px solid var(--border);color:var(--text-dark)}
+.btn-ghost:hover{border-color:var(--violet-light)}
+.btn-sm{padding:5px 11px;font-size:12px;border-radius:7px}
+.btn-copy{background:rgba(107,70,193,0.08);border:1.5px solid rgba(107,70,193,0.2);color:var(--violet-light);padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:5px}
+.btn-copy:hover{background:rgba(107,70,193,0.15)}
+
+/* STATS */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.stat-card{background:white;border:1.5px solid var(--border);border-radius:14px;padding:18px;transition:all .25s;position:relative;overflow:hidden}
+.stat-card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+.stat-card::after{content:'';position:absolute;top:0;right:0;width:70px;height:70px;border-radius:0 0 0 70px;opacity:.07}
+.stat-card.gold::after{background:var(--gold)}
+.stat-card.violet::after{background:var(--violet)}
+.stat-card.green::after{background:var(--success)}
+.stat-card.blue::after{background:#4facfe}
+.stat-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;margin-bottom:10px}
+.stat-card.gold .stat-icon{background:rgba(245,197,24,0.12)}
+.stat-card.violet .stat-icon{background:rgba(107,70,193,0.12)}
+.stat-card.green .stat-icon{background:rgba(46,213,115,0.12)}
+.stat-card.blue .stat-icon{background:rgba(79,172,254,0.12)}
+.stat-val{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:var(--text-dark)}
+.stat-label{font-size:11px;color:var(--text-muted);margin-top:3px}
+.stat-change{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:600;margin-top:7px;padding:2px 7px;border-radius:100px}
+.stat-change.up{background:rgba(46,213,115,0.1);color:var(--success)}
+
+/* CARDS */
+.card{background:white;border:1.5px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:18px}
+.card-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.card-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--text-dark)}
+.card-body{padding:18px}
+
+/* LINK BOX */
+.link-box{background:linear-gradient(135deg,var(--violet) 0%,#1A0F3C 100%);border-radius:16px;padding:24px;margin-bottom:18px;position:relative;overflow:hidden}
+.link-box::before{content:'';position:absolute;top:-40px;right:-40px;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle,rgba(245,197,24,0.1) 0%,transparent 70%)}
+.link-box-label{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:8px}
+.link-box-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:white;margin-bottom:4px}
+.link-box-sub{font-size:13px;color:rgba(255,255,255,0.55);margin-bottom:18px}
+.link-display{background:rgba(255,255,255,0.08);border:1px solid rgba(245,197,24,0.2);border-radius:10px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.link-url{font-family:monospace;font-size:13px;color:var(--gold-light);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.share-row{display:flex;gap:8px;flex-wrap:wrap}
+.share-btn{padding:8px 14px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s}
+.share-btn:hover{transform:scale(1.05)}
+.share-fb{background:#1877F2;color:white}
+.share-ig{background:linear-gradient(135deg,#f9ce34,#ee2a7b,#6228d7);color:white}
+.share-tt{background:#010101;color:white;border:1px solid #333}
+.share-wa{background:#25D366;color:white}
+
+/* TABLE */
+.table{width:100%;border-collapse:collapse}
+.table th{text-align:left;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--text-muted);padding:10px 16px;border-bottom:1px solid var(--border)}
+.table td{padding:12px 16px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:middle}
+.table tr:last-child td{border-bottom:none}
+.table tr:hover td{background:var(--off-white)}
+
+/* STATUS */
+.status-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:100px;font-size:11px;font-weight:700}
+.status-badge.confirmed{background:rgba(46,213,115,0.1);color:var(--success)}
+.status-badge.pending{background:rgba(255,165,2,0.1);color:var(--warning)}
+.status-badge.cancelled{background:rgba(255,71,87,0.1);color:var(--danger)}
+
+/* CHART */
+.chart-bars{display:flex;align-items:flex-end;gap:6px;height:110px;padding:0 2px}
+.bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px}
+.bar{width:100%;border-radius:5px 5px 0 0;background:linear-gradient(180deg,var(--gold-light),var(--gold));transition:height .8s cubic-bezier(.34,1.56,.64,1);cursor:pointer}
+.bar:hover{background:linear-gradient(180deg,var(--violet-light),var(--violet))}
+.bar-label{font-size:9px;color:var(--text-muted)}
+
+/* GRID */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}
+
+/* PRODUCT CARD */
+.product-promo-card{border:1.5px solid var(--border);border-radius:14px;overflow:hidden;transition:all .25s;background:white}
+.product-promo-card:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:rgba(107,70,193,0.2)}
+.product-cover{height:100px;display:flex;align-items:center;justify-content:center;font-size:38px;position:relative}
+.products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
+.product-body{padding:14px}
+.product-cat{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--violet-light);margin-bottom:4px}
+.product-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--text-dark);margin-bottom:6px;line-height:1.3}
+.product-commission{font-size:12px;color:var(--success);font-weight:700}
+.product-price{font-size:11px;color:var(--text-muted)}
+
+/* RANK CARD */
+.rank-card{background:linear-gradient(135deg,var(--gold),var(--gold-light));border-radius:16px;padding:24px;text-align:center;margin-bottom:18px}
+.rank-icon{font-size:48px;margin-bottom:10px}
+.rank-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--violet);margin-bottom:4px}
+.rank-sub{font-size:13px;color:rgba(45,27,105,0.7)}
+.rank-progress{margin-top:16px}
+.rank-progress-label{display:flex;justify-content:space-between;font-size:12px;color:rgba(45,27,105,0.7);margin-bottom:6px}
+.progress-bar{height:8px;background:rgba(45,27,105,0.15);border-radius:100px;overflow:hidden}
+.progress-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--violet),var(--violet-mid));transition:width 1s ease}
+
+/* FORM */
+.form-group{margin-bottom:15px}
+.form-label{display:block;font-size:12px;font-weight:600;color:var(--text-dark);margin-bottom:6px}
+.form-input,.form-select{width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:9px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text-dark);background:var(--off-white);outline:none;transition:border-color .2s}
+.form-input:focus,.form-select:focus{border-color:var(--violet-light);background:white}
+
+/* PAYMENT REQUEST */
+.pay-request-card{background:linear-gradient(135deg,rgba(46,213,115,0.06),rgba(46,213,115,0.02));border:1.5px solid rgba(46,213,115,0.2);border-radius:14px;padding:20px;margin-bottom:18px}
+.pay-request-header{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.pay-request-icon{font-size:28px}
+.pay-request-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--text-dark)}
+.pay-request-sub{font-size:12px;color:var(--text-muted)}
+.pay-amount{font-family:'Syne',sans-serif;font-size:32px;font-weight:800;color:var(--success);text-align:center;margin:16px 0}
+.pay-methods{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.pay-method-opt{border:1.5px solid var(--border);border-radius:10px;padding:12px;text-align:center;cursor:pointer;transition:all .2s;background:var(--off-white)}
+.pay-method-opt:hover,.pay-method-opt.selected{border-color:var(--violet-light);background:rgba(107,70,193,0.06)}
+.pay-method-icon{font-size:22px}
+.pay-method-name{font-size:11px;font-weight:600;color:var(--text-dark);margin-top:4px}
+
+/* TIPS */
+.tip-card{background:rgba(245,197,24,0.06);border:1.5px solid rgba(245,197,24,0.2);border-radius:12px;padding:14px;margin-bottom:10px;display:flex;gap:12px;align-items:flex-start}
+.tip-icon{font-size:20px;flex-shrink:0}
+.tip-text strong{display:block;font-size:13px;color:var(--text-dark);margin-bottom:2px}
+.tip-text span{font-size:12px;color:var(--text-muted);line-height:1.5}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;z-index:2000;background:var(--violet);border:1px solid var(--gold);color:white;padding:13px 18px;border-radius:11px;font-size:13px;display:flex;align-items:center;gap:9px;transform:translateX(120%);transition:transform .3s;box-shadow:var(--shadow);max-width:300px}
+.toast.show{transform:translateX(0)}
+
+/* RESPONSIVE */
+@media(max-width:1024px){.stats-row{grid-template-columns:repeat(2,1fr)}.grid-2{grid-template-columns:1fr}}
+@media(max-width:768px){.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.main{margin-left:0}.menu-toggle{display:flex}.content{padding:18px 14px}.topbar{padding:0 14px}.stats-row{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.stats-row{grid-template-columns:1fr}}
+</style>
+<link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImZnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3R5bGU9InN0b3AtY29sb3I6I0Y1QzUxOCIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNGRkQ5NUEiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgcng9IjgiIGZpbGw9InVybCgjZmcpIi8+CiAgPHRleHQgeD0iNCIgeT0iMjQiIGZvbnQtZmFtaWx5PSJBcmlhbCBCbGFjayxzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iOTAwIiBmb250LXNpemU9IjIyIiBmaWxsPSIjMkQxQjY5Ij5LPC90ZXh0Pgo8L3N2Zz4=" type="image/svg+xml">
+
+<!-- Firebase SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+  import { getFirestore, collection, doc, setDoc, getDoc, getDocs, addDoc, updateDoc, deleteDoc, query, where, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBUM1tOdkfEZA4z1ts6tyRhlcRqotHE4zs",
+    authDomain: "korahub-7160.firebaseapp.com",
+    projectId: "korahub-7160",
+    storageBucket: "korahub-7160.firebasestorage.app",
+    messagingSenderId: "334789190484",
+    appId: "1:334789190484:web:90a21186adb353409f5ec1"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // Make available globally
+  window.firebaseAuth = auth;
+  window.firebaseDB = db;
+  window.firebaseFunctions = {
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    signOut,
+    onAuthStateChanged,
+    collection, doc, setDoc, getDoc, getDocs,
+    addDoc, updateDoc, deleteDoc, query, where, orderBy, onSnapshot
+  };
+
+  // Auth state listener
+  onAuthStateChanged(auth, (user) => {
+    window.currentUser = user;
+    if (user) {
+      console.log('✅ Connecté:', user.email);
+      document.dispatchEvent(new CustomEvent('userLoggedIn', { detail: user }));
+    } else {
+      console.log('❌ Non connecté');
+      document.dispatchEvent(new CustomEvent('userLoggedOut'));
+    }
+  });
+
+  console.log('🔥 Firebase KoraHub initialisé !');
+
+// ═══ FIREBASE FIRESTORE FUNCTIONS ═══
+
+// ── PRODUCTS ──
+async function loadProducts() {
+  try {
+    const db = window.firebaseDB;
+    const { collection, getDocs, orderBy, query } = window.firebaseFunctions;
+    const q = query(collection(db, 'products'), orderBy('createdAt', 'desc'));
+    const snapshot = await getDocs(q);
+    const products = [];
+    snapshot.forEach(doc => products.push({ id: doc.id, ...doc.data() }));
+    return products;
+  } catch(e) {
+    console.error('Error loading products:', e);
+    return [];
+  }
+}
+
+async function saveProduct(productData) {
+  try {
+    const db = window.firebaseDB;
+    const auth = window.firebaseAuth;
+    const { collection, addDoc } = window.firebaseFunctions;
+    const product = {
+      ...productData,
+      sellerId: auth.currentUser?.uid,
+      sellerEmail: auth.currentUser?.email,
+      createdAt: new Date().toISOString(),
+      views: 0,
+      sales: 0,
+      status: 'active'
+    };
+    const docRef = await addDoc(collection(db, 'products'), product);
+    showToast('🚀 Produit publié sur KoraHub !');
+    return docRef.id;
+  } catch(e) {
+    showToast('❌ Erreur lors de la publication');
+    console.error(e);
+  }
+}
+
+// ── ORDERS ──
+async function saveOrder(orderData) {
+  try {
+    const db = window.firebaseDB;
+    const { collection, addDoc } = window.firebaseFunctions;
+    const order = {
+      ...orderData,
+      status: 'pending',
+      createdAt: new Date().toISOString(),
+      expiresAt: new Date(Date.now() + 24*60*60*1000).toISOString()
+    };
+    const docRef = await addDoc(collection(db, 'orders'), order);
+    showToast('✅ Commande envoyée ! En attente de confirmation.');
+    
+    // Send WhatsApp notification to admin
+    sendWhatsAppNotification(order);
+    return docRef.id;
+  } catch(e) {
+    showToast('❌ Erreur lors de la commande');
+    console.error(e);
+  }
+}
+
+async function loadMyOrders() {
+  try {
+    const db = window.firebaseDB;
+    const auth = window.firebaseAuth;
+    const { collection, query, where, getDocs, orderBy } = window.firebaseFunctions;
+    if (!auth.currentUser) return [];
+    const q = query(
+      collection(db, 'orders'),
+      where('buyerEmail', '==', auth.currentUser.email),
+      orderBy('createdAt', 'desc')
+    );
+    const snapshot = await getDocs(q);
+    const orders = [];
+    snapshot.forEach(doc => orders.push({ id: doc.id, ...doc.data() }));
+    return orders;
+  } catch(e) {
+    console.error(e);
+    return [];
+  }
+}
+
+// ── VENDORS ──
+async function loadMyProducts() {
+  try {
+    const db = window.firebaseDB;
+    const auth = window.firebaseAuth;
+    const { collection, query, where, getDocs } = window.firebaseFunctions;
+    if (!auth.currentUser) return [];
+    const q = query(
+      collection(db, 'products'),
+      where('sellerId', '==', auth.currentUser.uid)
+    );
+    const snapshot = await getDocs(q);
+    const products = [];
+    snapshot.forEach(doc => products.push({ id: doc.id, ...doc.data() }));
+    return products;
+  } catch(e) {
+    console.error(e);
+    return [];
+  }
+}
+
+// ── WHATSAPP NOTIFICATION ──
+function sendWhatsAppNotification(order) {
+  const msg = encodeURIComponent(
+    "🛒 Nouvelle commande KoraHub !\n\n" +
+    "📦 Produit : " + (order.productName || 'N/A') + "\n" +
+    "👤 Client : " + (order.buyerName || order.buyerEmail || 'N/A') + "\n" +
+    "📧 Email : " + (order.buyerEmail || 'N/A') + "\n" +
+    "💰 Montant : " + (order.amount || 'N/A') + " FCFA\n" +
+    "💳 Paiement : " + (order.paymentMethod || 'N/A') + "\n\n" +
+    "⏳ En attente de votre confirmation."
+  );
+  // Auto open WhatsApp
+  window.open("https://wa.me/226selon vendeur?text=" + msg, '_blank');
+}
+
+// ── USER PROFILE ──
+async function getUserProfile() {
+  try {
+    const auth = window.firebaseAuth;
+    const db = window.firebaseDB;
+    const { doc, getDoc } = window.firebaseFunctions;
+    if (!auth.currentUser) return null;
+    const userDoc = await getDoc(doc(db, 'users', auth.currentUser.uid));
+    return userDoc.exists() ? userDoc.data() : null;
+  } catch(e) {
+    console.error(e);
+    return null;
+  }
+}
+
+async function updateUserProfile(data) {
+  try {
+    const auth = window.firebaseAuth;
+    const db = window.firebaseDB;
+    const { doc, updateDoc } = window.firebaseFunctions;
+    if (!auth.currentUser) return;
+    await updateDoc(doc(db, 'users', auth.currentUser.uid), data);
+    showToast('✅ Profil mis à jour !');
+  } catch(e) {
+    showToast('❌ Erreur mise à jour profil');
+    console.error(e);
+  }
+}
+
+// ── AUTH GUARD ──
+function requireAuth(redirectTo) {
+  const auth = window.firebaseAuth;
+  if (auth && !auth.currentUser) {
+    setTimeout(() => {
+      if (!window.currentUser) {
+        window.location.href = redirectTo || 'korahub-auth.html';
+      }
+    }, 2000);
+  }
+}
+
+// ── LOGOUT ──
+async function doLogout() {
+  try {
+    const { signOut } = window.firebaseFunctions;
+    await signOut(window.firebaseAuth);
+    showToast('👋 Déconnecté avec succès !');
+    setTimeout(() => { window.location.href = 'korahub.html'; }, 1000);
+  } catch(e) {
+    console.error(e);
+  }
+}
+
+console.log('✅ Firestore functions loaded!');
+
+</script>
+
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <a href="korahub.html" class="sidebar-logo">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 40" style="height:34px;width:auto;display:block"><defs><linearGradient id="kg1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#F5C518"/><stop offset="100%" style="stop-color:#FFD95A"/></linearGradient></defs><rect x="0" y="2" width="36" height="36" rx="9" fill="url(#kg1)"/><text x="8" y="28" font-family="Arial Black,sans-serif" font-weight="900" font-size="23" fill="#2D1B69">K</text><text x="44" y="25" font-family="Arial,sans-serif" font-weight="700" font-size="16" fill="white">Kora</text><text x="80" y="25" font-family="Arial,sans-serif" font-weight="700" font-size="16" fill="#F5C518">Hub</text><text x="44" y="35" font-family="Arial,sans-serif" font-size="7" fill="rgba(255,255,255,0.45)" letter-spacing="1.5">LEARN · SELL · GROW</text></svg>
+    <div>
+      
+      <div class="affiliate-tag">AFFILIÉ</div>
+    </div>
+  </a>
+
+  <div class="sidebar-user">
+    <div class="user-avatar">Y</div>
+    <div>
+      <div class="user-name">Youssouf Compaoré</div>
+      <div class="user-rank">🏆 Affilié Expert</div>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">Principal</div>
+    <a class="nav-item active" onclick="showPage('overview')">
+      <span class="nav-icon">📊</span> Tableau de bord
+    </a>
+    <a class="nav-item" onclick="showPage('earnings')">
+      <span class="nav-icon">💰</span> Mes gains
+      <span class="nav-badge">+500F</span>
+    </a>
+    <a class="nav-item" onclick="showPage('links')">
+      <span class="nav-icon">🔗</span> Mes liens
+    </a>
+
+    <div class="nav-section-label">Produits</div>
+    <a class="nav-item" onclick="showPage('products')">
+      <span class="nav-icon">📦</span> Produits à promouvoir
+    </a>
+    <a class="nav-item" onclick="showPage('stats')">
+      <span class="nav-icon">📈</span> Statistiques clics
+    </a>
+
+    <div class="nav-section-label">Paiement</div>
+    <a class="nav-item" onclick="showPage('withdraw')">
+      <span class="nav-icon">💸</span> Demander paiement
+    </a>
+    <a class="nav-item" onclick="showPage('history')">
+      <span class="nav-icon">📋</span> Historique paiements
+    </a>
+
+    <div class="nav-section-label">Compte</div>
+    <a class="nav-item" onclick="showPage('tips')">
+      <span class="nav-icon">💡</span> Conseils marketing
+    </a>
+    <a class="nav-item" onclick="showPage('settings')">
+      <span class="nav-icon">⚙️</span> Paramètres
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <button class="btn-logout" onclick="doLogout()">
+      <span>🚪</span> Se déconnecter
+    </button>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+      <div>
+        <div class="page-title" id="pageTitle">Tableau de bord</div>
+        <div class="page-sub" id="pageSub">Affilié · KoraHub</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="earnings-badge">
+        <div class="earnings-val">23 500 F</div>
+        <div class="earnings-label">Gains totaux</div>
+      </div>
+      <button class="topbar-btn" onclick="showToast('🔔 Nouvelle vente via votre lien ! +500 FCFA')">
+        🔔<span class="notif-dot"></span>
+      </button>
+      <button class="btn btn-gold btn-sm" onclick="showPage('withdraw')">💸 Retirer mes gains</button>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- ══ OVERVIEW ══ -->
+    <div class="page-section active" id="page-overview">
+
+      <!-- Welcome -->
+      <div style="background:linear-gradient(135deg,var(--violet) 0%,#1A0F3C 100%);border-radius:16px;padding:24px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap">
+        <div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:6px">Bienvenue 👋</div>
+          <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:white">Youssouf Compaoré</div>
+          <div style="font-size:13px;color:rgba(255,255,255,0.6);margin-top:4px">🏆 Affilié Expert · Commission : <strong style="color:var(--gold)">10% par vente</strong></div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-bottom:4px">Gains disponibles</div>
+          <div style="font-family:'Syne',sans-serif;font-size:32px;font-weight:800;color:var(--gold)">5 500 F</div>
+          <button class="btn btn-gold btn-sm" style="margin-top:8px" onclick="showPage('withdraw')">Retirer maintenant</button>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-row">
+        <div class="stat-card gold">
+          <div class="stat-icon">💰</div>
+          <div class="stat-val">23 500 F</div>
+          <div class="stat-label">Gains totaux</div>
+          <div class="stat-change up">↑ +500F aujourd'hui</div>
+        </div>
+        <div class="stat-card violet">
+          <div class="stat-icon">🖱️</div>
+          <div class="stat-val">1 234</div>
+          <div class="stat-label">Clics totaux</div>
+          <div class="stat-change up">↑ +47 cette semaine</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-icon">🛒</div>
+          <div class="stat-val">47</div>
+          <div class="stat-label">Ventes générées</div>
+          <div class="stat-change up">↑ +3 cette semaine</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-icon">📊</div>
+          <div class="stat-val">3.8%</div>
+          <div class="stat-label">Taux de conversion</div>
+          <div class="stat-change up">↑ Excellent !</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <!-- Chart -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">📈 Gains des 7 derniers jours</span>
+          </div>
+          <div class="card-body">
+            <div class="chart-bars" id="chartGains"></div>
+          </div>
+        </div>
+
+        <!-- Mon lien principal -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">🔗 Mon lien principal</span>
+            <button class="btn-copy" onclick="copyLink('korahub.bf/ref/youssouf')">📋 Copier</button>
+          </div>
+          <div class="card-body">
+            <div style="background:var(--off-white);border:1.5px solid var(--border);border-radius:10px;padding:12px;font-family:monospace;font-size:13px;color:var(--violet);margin-bottom:14px;word-break:break-all">
+              korahub.bf/ref/youssouf
+            </div>
+            <div style="font-size:12px;color:var(--text-muted);margin-bottom:12px">Partagez ce lien sur vos réseaux. Chaque achat via ce lien = <strong style="color:var(--success)">10% pour vous !</strong></div>
+            <div class="share-row">
+              <button class="share-btn share-fb" onclick="showToast('📘 Lien partagé sur Facebook !')">📘 Facebook</button>
+              <button class="share-btn share-ig" onclick="showToast('📸 Lien partagé sur Instagram !')">📸 Instagram</button>
+              <button class="share-btn share-tt" onclick="showToast('🎵 Lien partagé sur TikTok !')">🎵 TikTok</button>
+              <button class="share-btn share-wa" onclick="showToast('💬 Lien partagé sur WhatsApp !')">💬 WhatsApp</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent sales -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">🛒 Dernières ventes via mes liens</span>
+          <button class="btn btn-ghost btn-sm" onclick="showPage('earnings')">Voir tout</button>
+        </div>
+        <div class="card-body" style="padding:0">
+          <table class="table">
+            <thead><tr><th>Produit</th><th>Vendeur</th><th>Prix vente</th><th>Ma commission (10%)</th><th>Lien utilisé</th><th>Date</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><strong>Gagner avec ChatGPT</strong></td>
+                <td>Moussa T.</td>
+                <td>2 500 F</td>
+                <td><strong style="color:var(--success)">+250 F</strong></td>
+                <td><span style="font-family:monospace;font-size:11px;color:var(--violet-light)">/ref/youssouf</span></td>
+                <td style="font-size:11px">Auj. 14h32</td>
+              </tr>
+              <tr>
+                <td><strong>Marketing Digital</strong></td>
+                <td>Aminata D.</td>
+                <td>8 000 F</td>
+                <td><strong style="color:var(--success)">+800 F</strong></td>
+                <td><span style="font-family:monospace;font-size:11px;color:var(--violet-light)">/ref/youssouf-mkt</span></td>
+                <td style="font-size:11px">Auj. 11h15</td>
+              </tr>
+              <tr>
+                <td><strong>Coaching Business</strong></td>
+                <td>Moussa T.</td>
+                <td>25 000 F</td>
+                <td><strong style="color:var(--success)">+2 500 F</strong></td>
+                <td><span style="font-family:monospace;font-size:11px;color:var(--violet-light)">/ref/youssouf</span></td>
+                <td style="font-size:11px">Hier 18h44</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ EARNINGS ══ -->
+    <div class="page-section" id="page-earnings">
+      <div style="margin-bottom:18px">
+        <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800">Mes Gains 💰</div>
+        <div style="font-size:13px;color:var(--text-muted)">10% sur chaque vente générée via vos liens</div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card gold"><div class="stat-icon">💰</div><div class="stat-val">23 500 F</div><div class="stat-label">Total gagné</div></div>
+        <div class="stat-card green"><div class="stat-icon">✅</div><div class="stat-val">18 000 F</div><div class="stat-label">Déjà reçu</div></div>
+        <div class="stat-card violet"><div class="stat-icon">⏳</div><div class="stat-val">5 500 F</div><div class="stat-label">Disponible à retirer</div></div>
+        <div class="stat-card blue"><div class="stat-icon">📅</div><div class="stat-val">3 200 F</div><div class="stat-label">Ce mois-ci</div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">📊 Gains mensuels</span>
+        </div>
+        <div class="card-body">
+          <div class="chart-bars" id="chartMonthly"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">💸 Détail de toutes mes commissions</span>
+          <select class="form-select" style="width:auto;padding:6px 10px;font-size:12px">
+            <option>Tous les produits</option>
+            <option>Gagner avec ChatGPT</option>
+            <option>Marketing Digital</option>
+            <option>Coaching Business</option>
+          </select>
+        </div>
+        <div class="card-body" style="padding:0">
+          <table class="table">
+            <thead><tr><th>Produit</th><th>Prix vendu</th><th>Commission (10%)</th><th>Lien</th><th>Statut</th><th>Date</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Coaching Business</strong></td><td>25 000 F</td><td><strong style="color:var(--success)">2 500 F</strong></td><td><span style="font-family:monospace;font-size:11px">/ref/youssouf</span></td><td><span class="status-badge confirmed">✓ Crédité</span></td><td style="font-size:11px">Hier 18h44</td></tr>
+              <tr><td><strong>Marketing Digital</strong></td><td>8 000 F</td><td><strong style="color:var(--success)">800 F</strong></td><td><span style="font-family:monospace;font-size:11px">/ref/youssouf-mkt</span></td><td><span class="status-badge confirmed">✓ Crédité</span></td><td style="font-size:11px">Auj. 11h15</td></tr>
+              <tr><td><strong>Gagner avec ChatGPT</strong></td><td>2 500 F</td><td><strong style="color:var(--success)">250 F</strong></td><td><span style="font-family:monospace;font-size:11px">/ref/youssouf</span></td><td><span class="status-badge pending">⏳ En attente</span></td><td style="font-size:11px">Auj. 14h32</td></tr>
+              <tr><td><strong>Gérer son stress</strong></td><td>5 000 F</td><td><strong style="color:var(--success)">500 F</strong></td><td><span style="font-family:monospace;font-size:11px">/ref/youssouf</span></td><td><span class="status-badge confirmed">✓ Crédité</span></td><td style="font-size:11px">il y a 3j</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ LINKS ══ -->
+    <div class="page-section" id="page-links">
+      <div style="margin-bottom:18px">
+        <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800">Mes Liens d'affiliation 🔗</div>
+        <div style="font-size:13px;color:var(--text-muted)">Chaque lien est unique et tracké automatiquement</div>
+      </div>
+
+      <div class="link-box">
+        <div class="link-box-label">Lien principal</div>
+        <div class="link-box-title">Votre lien KoraHub unique</div>
+        <div class="link-box-sub">Partagez ce lien partout. Chaque achat = 10% pour vous automatiquement !</div>
+        <div class="link-display">
+          <span class="link-url">korahub.bf/ref/youssouf</span>
+          <button class="btn-copy" onclick="copyLink('korahub.bf/ref/youssouf')" style="background:rgba(245,197,24,0.15);border-color:rgba(245,197,24,0.3);color:var(--gold)">📋 Copier</button>
+        </div>
+        <div class="share-row">
+          <button class="share-btn share-fb" onclick="showToast('📘 Lien copié + partagé sur Facebook !')">📘 Facebook</button>
+          <button class="share-btn share-ig" onclick="showToast('📸 Lien copié + partagé sur Instagram !')">📸 Instagram</button>
+          <button class="share-btn share-tt" onclick="showToast('🎵 Lien copié + partagé sur TikTok !')">🎵 TikTok</button>
+          <button class="share-btn share-wa" onclick="showToast('💬 Lien envoyé sur WhatsApp !')">💬 WhatsApp</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><span class="card-title">🔗 Liens par produit</span></div>
+        <div class="card-body" style="padding:0">
+          <table class="table">
+            <thead><tr><th>Produit</th><th>Lien unique</th><th>Clics</th><th>Ventes</th><th>Gains</th><th>Actions</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><strong>Gagner avec ChatGPT</strong><div style="font-size:11px;color:var(--text-muted)">Moussa Traoré</div></td>
+                <td><span style="font-family:monospace;font-size:11px;color:var(--violet-light)">korahub.bf/ref/youssouf/chatgpt</span></td>
+                <td><strong>567</strong></td>
+                <td>14</td>
+                <td style="color:var(--success);font-weight:700">3 500 F</td>
+                <td>
+                  <div style="display:flex;gap:5px">
+                    <button class="btn-copy btn-sm" onclick="copyLink('korahub.bf/ref/youssouf/chatgpt')">📋</button>
+                    <button class="share-btn share-wa" style="padding:5px 10px;font-size:11px" onclick="showToast('💬 Partagé sur WhatsApp !')">💬</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><strong>Marketing Digital</strong><div style="font-size:11px;color:var(--text-muted)">Aminata Diallo</div></td>
+                <td><span style="font-family:monospace;font-size:11px;color:var(--violet-light)">korahub.bf/ref/youssouf/marketing</span></td>
+                <td><strong>312</strong></td>
+                <td>8</td>
+                <td style="color:var(--success);font-weight:700">6 400 F</td>
+                <td>
+                  <div style="display:flex;gap:5px">
+                    <button class="btn-copy btn-sm" onclick="copyLink('korahub.bf/ref/youssouf/marketing')">📋</button>
+                    <button class="share-btn share-wa" style="padding:5px 10px;font-size:11px" onclick="showToast('💬 Partagé sur WhatsApp !')">💬</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><strong>Coaching Business</strong><div style="font-size:11px;color:var(--text-muted)">Moussa Traoré</div></td>
+                <td><span style="font-family:monospace;font-size:11px;color:var(--violet-light)">korahub.bf/ref/youssouf/coaching</span></td>
+                <td><strong>189</strong></td>
+                <td>5</td>
+                <td style="color:var(--success);font-weight:700">12 500 F</td>
+                <td>
+                  <div style="display:flex;gap:5px">
+                    <button class="btn-copy btn-sm" onclick="copyLink('korahub.bf/ref/youssouf/coaching')">📋</button>
+                    <button class="share-btn share-wa" style="padding:5px 10px;font-size:11px" onclick="showToast('💬 Partagé sur WhatsApp !')">💬</button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ PRODUCTS ══ -->
+    <div class="page-section" id="page-products">
+      <div style="margin-bottom:18px">
+        <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800">Produits à promouvoir 📦</div>
+        <div style="font-size:13px;color:var(--text-muted)">Choisissez les produits les plus rentables à promouvoir</div>
+      </div>
+
+      <div style="background:rgba(46,213,115,0.06);border:1.5px solid rgba(46,213,115,0.2);border-radius:12px;padding:14px 18px;margin-bottom:18px;display:flex;align-items:center;gap:12px">
+        <span style="font-size:22px">💡</span>
+        <span style="font-size:13px;color:var(--text-dark)">Seuls les produits avec <strong>affiliation activée</strong> par le vendeur apparaissent ici. Commission fixe : <strong style="color:var(--success)">10% par vente</strong></span>
+      </div>
+
+      <div class="products-grid">
+        <div class="product-promo-card">
+          <div class="product-cover" style="background:linear-gradient(135deg,#667eea,#764ba2)">📚</div>
+          <div class="product-body">
+            <div class="product-cat">Ebook</div>
+            <div class="product-name">Gagner avec ChatGPT</div>
+            <div class="product-price">Prix : 2 500 FCFA</div>
+            <div class="product-commission">+250 F par vente (10%)</div>
+            <button class="btn btn-violet" style="width:100%;justify-content:center;margin-top:10px;font-size:12px" onclick="showToast('🔗 Lien copié : korahub.bf/ref/youssouf/chatgpt')">🔗 Copier mon lien</button>
+          </div>
+        </div>
+
+        <div class="product-promo-card">
+          <div class="product-cover" style="background:linear-gradient(135deg,#f093fb,#f5576c)">🎓</div>
+          <div class="product-body">
+            <div class="product-cat">Formation</div>
+            <div class="product-name">Marketing Digital pour Débutants</div>
+            <div class="product-price">Prix : 8 000 FCFA</div>
+            <div class="product-commission">+800 F par vente (10%)</div>
+            <button class="btn btn-violet" style="width:100%;justify-content:center;margin-top:10px;font-size:12px" onclick="showToast('🔗 Lien copié : korahub.bf/ref/youssouf/marketing')">🔗 Copier mon lien</button>
+          </div>
+        </div>
+
+        <div class="product-promo-card">
+          <div class="product-cover" style="background:linear-gradient(135deg,#4facfe,#00f2fe)">🎯</div>
+          <div class="product-body">
+            <div class="product-cat">Coaching</div>
+            <div class="product-name">Coaching Business : De 0 à 100K</div>
+            <div class="product-price">Prix : 25 000 FCFA</div>
+            <div class="product-commission">+2 500 F par vente (10%)</div>
+            <button class="btn btn-violet" style="width:100%;justify-content:center;margin-top:10px;font-size:12px" onclick="showToast('🔗 Lien copié : korahub.bf/ref/youssouf/coaching')">🔗 Copier mon lien</button>
+          </div>
+        </div>
+
+        <div class="product-promo-card">
+          <div class="product-cover" style="background:linear-gradient(135deg,#43e97b,#38f9d7)">🧠</div>
+          <div class="product-body">
+            <div class="product-cat">Bien-être</div>
+            <div class="product-name">Gérer son stress et s'épanouir</div>
+            <div class="product-price">Prix : 5 000 FCFA</div>
+            <div class="product-commission">+500 F par vente (10%)</div>
+            <button class="btn btn-violet" style="width:100%;justify-content:center;margin-top:10px;font-size:12px" onclick="showToast('🔗 Lien copié : korahub.bf/ref/youssouf/stress')">🔗 Copier mon lien</button>
+          </div>
+        </div>
+
+        <div class="product-promo-card">
+          <div class="product-cover" style="background:linear-gradient(135deg,#fa709a,#fee140)">🎥</div>
+          <div class="product-body">
+            <div class="product-cat">Cours Vidéo</div>
+            <div class="product-name">Apprendre à coder en 30 jours</div>
+            <div class="product-price">Prix : 12 000 FCFA</div>
+            <div class="product-commission">+1 200 F par vente (10%)</div>
+            <button class="btn btn-violet" style="width:100%;justify-content:center;margin-top:10px;font-size:12px" onclick="showToast('🔗 Lien copié : korahub.bf/ref/youssouf/coder')">🔗 Copier mon lien</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ STATS ══ -->
+    <div class="page-section" id="page-stats">
+      <div style="margin-bottom:18px">
+        <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800">Statistiques Clics 📈</div>
+        <div style="font-size:13px;color:var(--text-muted)">Analysez la performance de vos liens</div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card violet"><div class="stat-icon">🖱️</div><div class="stat-val">1 234</div><div class="stat-label">Clics totaux</div></div>
+        <div class="stat-card green"><div class="stat-icon">🛒</div><div class="stat-val">47</div><div class="stat-label">Conversions</div></div>
+        <div class="stat-card gold"><div class="stat-icon">📊</div><div class="stat-val">3.8%</div><div class="stat-label">Taux conversion</div></div>
+        <div class="stat-card blue"><div class="stat-icon">🌍</div><div class="stat-val">8</div><div class="stat-label">Pays touchés</div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><span class="card-title">📊 Clics par lien cette semaine</span></div>
+        <div class="card-body"><div class="chart-bars" id="chartClicks"></div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><span class="card-title">🌍 Sources de trafic</span></div>
+        <div class="card-body">
+          <div style="margin-bottom:14px">
+            <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-muted);margin-bottom:6px"><span>📘 Facebook</span><span>42% · 518 clics</span></div>
+            <div class="progress-bar"><div class="progress-fill" style="width:42%;background:linear-gradient(90deg,#1877F2,#4299e1)"></div></div>
+          </div>
+          <div style="margin-bottom:14px">
+            <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-muted);margin-bottom:6px"><span>💬 WhatsApp</span><span>31% · 382 clics</span></div>
+            <div class="progress-bar"><div class="progress-fill" style="width:31%;background:linear-gradient(90deg,#25D366,#128c7e)"></div></div>
+          </div>
+          <div style="margin-bottom:14px">
+            <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-muted);margin-bottom:6px"><span>🎵 TikTok</span><span>18% · 222 clics</span></div>
+            <div class="progress-bar"><div class="progress-fill" style="width:18%;background:linear-gradient(90deg,#010101,#555)"></div></div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-muted);margin-bottom:6px"><span>📸 Instagram</span><span>9% · 112 clics</span></div>
+            <div class="progress-bar"><div class="progress-fill" style="width:9%;background:linear-gradient(90deg,#ee2a7b,#6228d7)"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ WITHDRAW ══ -->
+    <div class="page-section" id="page-withdraw">
+      <div style="margin-bottom:18px">
+        <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800">Demander un paiement 💸</div>
+        <div style="font-size:13px;color:var(--text-muted)">Retirez vos gains sur votre Mobile Money</div>
+      </div>
+
+      <div class="pay-request-card">
+        <div class="pay-request-header">
+          <div class="pay-request-icon">💰</div>
+          <div>
+            <div class="pay-request-title">Solde disponible</div>
+            <div class="pay-request-sub">Gains confirmés et disponibles au retrait</div>
+          </div>
+        </div>
+        <div class="pay-amount">5 500 FCFA</div>
+        <div style="font-size:12px;color:var(--text-muted);text-align:center;margin-bottom:16px">Choisissez votre moyen de réception</div>
+        <div class="pay-methods">
+          <div class="pay-method-opt selected" onclick="selectPayMethod(this)">
+            <div class="pay-method-icon">🟠</div>
+            <div class="pay-method-name">Orange Money</div>
+          </div>
+          <div class="pay-method-opt" onclick="selectPayMethod(this)">
+            <div class="pay-method-icon">🔵</div>
+            <div class="pay-method-name">Wave</div>
+          </div>
+          <div class="pay-method-opt" onclick="selectPayMethod(this)">
+            <div class="pay-method-icon">🟣</div>
+            <div class="pay-method-name">Moov Money</div>
+          </div>
+          <div class="pay-method-opt" onclick="selectPayMethod(this)">
+            <div class="pay-method-icon">🔴</div>
+            <div class="pay-method-name">Coris Money</div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Votre numéro de réception</label>
+          <input type="text" class="form-input" placeholder="Ex: 75XXXXXX" id="withdrawNum">
+        </div>
+        <button class="btn btn-gold" style="width:100%;justify-content:center;padding:13px;font-size:15px" onclick="requestWithdraw()">💸 Demander le paiement</button>
+        <p style="text-align:center;margin-top:10px;font-size:11px;color:var(--text-muted)">⏱️ L'admin traite les demandes sous 24-48h</p>
+      </div>
+    </div>
+
+    <!-- ══ HISTORY ══ -->
+    <div class="page-section" id="page-history">
+      <div style="margin-bottom:18px">
+        <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800">Historique paiements 📋</div>
+        <div style="font-size:13px;color:var(--text-muted)">Tous vos retraits effectués</div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">💳 Retraits effectués</span></div>
+        <div class="card-body" style="padding:0">
+          <table class="table">
+            <thead><tr><th>Montant</th><th>Moyen</th><th>Numéro</th><th>Statut</th><th>Date</th></tr></thead>
+            <tbody>
+              <tr><td><strong style="color:var(--success)">10 000 F</strong></td><td>🟠 Orange Money</td><td style="font-family:monospace">selon vendeur</td><td><span class="status-badge confirmed">✓ Reçu</span></td><td style="font-size:11px">il y a 7 jours</td></tr>
+              <tr><td><strong style="color:var(--success)">5 000 F</strong></td><td>🔵 Wave</td><td style="font-family:monospace">selon vendeur</td><td><span class="status-badge confirmed">✓ Reçu</span></td><td style="font-size:11px">il y a 14 jours</td></tr>
+              <tr><td><strong style="color:var(--success)">3 000 F</strong></td><td>🟠 Orange Money</td><td style="font-family:monospace">selon vendeur</td><td><span class="status-badge confirmed">✓ Reçu</span></td><td style="font-size:11px">il y a 21 jours</td></tr>
+              <tr><td><strong style="color:var(--warning)">5 500 F</strong></td><td>🟠 Orange Money</td><td style="font-family:monospace">selon vendeur</td><td><span class="status-badge pending">⏳ En attente</span></td><td style="font-size:11px">Aujourd'hui</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ TIPS ══ -->
+    <div class="page-section" id="page-tips">
+      <div style="margin-bottom:18px">
+        <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800">Conseils Marketing 💡</div>
+        <div style="font-size:13px;color:var(--text-muted)">Maximisez vos gains avec ces stratégies</div>
+      </div>
+
+      <div class="rank-card">
+        <div class="rank-icon">🏆</div>
+        <div class="rank-title">Affilié Expert</div>
+        <div class="rank-sub">47 ventes générées · Continuez comme ça !</div>
+        <div class="rank-progress">
+          <div class="rank-progress-label"><span>Progression</span><span>47/100 ventes</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:47%"></div></div>
+        </div>
+      </div>
+
+      <div class="tip-card">
+        <div class="tip-icon">📱</div>
+        <div class="tip-text">
+          <strong>Partagez sur WhatsApp d'abord</strong>
+          <span>31% de vos clics viennent de WhatsApp. C'est votre meilleur canal. Envoyez votre lien dans les groupes actifs de votre réseau.</span>
+        </div>
+      </div>
+
+      <div class="tip-card">
+        <div class="tip-icon">🎯</div>
+        <div class="tip-text">
+          <strong>Promouvez les produits chers en priorité</strong>
+          <span>Un coaching à 25 000 F vous rapporte 2 500 F par vente. Focalisez-vous sur les produits à haute valeur pour maximiser vos gains.</span>
+        </div>
+      </div>
+
+      <div class="tip-card">
+        <div class="tip-icon">📘</div>
+        <div class="tip-text">
+          <strong>Créez du contenu Facebook régulièrement</strong>
+          <span>Postez des témoignages, des extraits de produits, des conseils gratuits. Puis glissez votre lien en commentaire ou en story.</span>
+        </div>
+      </div>
+
+      <div class="tip-card">
+        <div class="tip-icon">🎵</div>
+        <div class="tip-text">
+          <strong>TikTok = explosion de clics</strong>
+          <span>Une seule vidéo virale sur TikTok peut générer des centaines de clics. Montrez les résultats du produit, pas juste le lien.</span>
+        </div>
+      </div>
+
+      <div class="tip-card">
+        <div class="tip-icon">⏰</div>
+        <div class="tip-text">
+          <strong>Postez aux bonnes heures</strong>
+          <span>Au Burkina, les meilleurs moments sont 7h-9h le matin, 12h-14h à midi, et 19h-21h le soir. Votre audience est en ligne à ces heures.</span>
+        </div>
+      </div>
+
+      <div class="tip-card">
+        <div class="tip-icon">🔥</div>
+        <div class="tip-text">
+          <strong>Profitez des promos vendeurs</strong>
+          <span>Quand un vendeur active une promo, partagez immédiatement ! Les produits en promo se vendent 3x plus vite.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ SETTINGS ══ -->
+    <div class="page-section" id="page-settings">
+      <div style="margin-bottom:18px">
+        <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800">Paramètres ⚙️</div>
+        <div style="font-size:13px;color:var(--text-muted)">Gérez votre profil affilié</div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">👤 Mon profil</span></div>
+        <div class="card-body">
+          <div class="form-group">
+            <label class="form-label">Nom complet</label>
+            <input type="text" class="form-input" value="Youssouf Compaoré">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-input" value="youssouf@gmail.com">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Numéro Mobile Money principal</label>
+            <input type="text" class="form-input" value="selon vendeur">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Mon identifiant affilié</label>
+            <input type="text" class="form-input" value="youssouf" readonly style="opacity:.7">
+          </div>
+          <button class="btn btn-violet" style="width:100%;justify-content:center" onclick="showToast('✅ Profil mis à jour !')">Sauvegarder</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><span>✅</span><span id="toastMsg">Action effectuée !</span></div>
+
+<script>
+// Navigation
+const titles = {
+  overview:['Tableau de bord','Affilié · KoraHub'],
+  earnings:['Mes Gains','Commissions et revenus'],
+  links:['Mes Liens','Liens d\'affiliation uniques'],
+  products:['Produits à promouvoir','Catalogue affilié'],
+  stats:['Statistiques Clics','Performance de vos liens'],
+  withdraw:['Demander un paiement','Retrait de gains'],
+  history:['Historique paiements','Retraits effectués'],
+  tips:['Conseils Marketing','Stratégies pour gagner plus'],
+  settings:['Paramètres','Mon profil affilié']
+};
+
+function showPage(page) {
+  document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  if (titles[page]) {
+    document.getElementById('pageTitle').textContent = titles[page][0];
+    document.getElementById('pageSub').textContent = titles[page][1];
+  }
+  document.getElementById('sidebar').classList.remove('open');
+}
+
+function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function copyLink(link) {
+  showToast('📋 Lien copié : ' + link);
+}
+
+function selectPayMethod(el) {
+  document.querySelectorAll('.pay-method-opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function requestWithdraw() {
+  const num = document.getElementById('withdrawNum').value;
+  if (!num) { showToast('⚠️ Entrez votre numéro de réception'); return; }
+  showToast('✅ Demande envoyée ! L\'admin va vous payer sous 24-48h');
+  showPage('history');
+}
+
+// Charts
+function buildChart(id, data, labels) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const max = Math.max(...data);
+  el.innerHTML = data.map((v,i) => `
+    <div class="bar-wrap">
+      <div class="bar" style="height:${max>0?(v/max)*100:2}%" title="${v.toLocaleString()} F"></div>
+      <div class="bar-label">${labels[i]}</div>
+    </div>
+  `).join('');
+}
+
+buildChart('chartGains', [800,1200,500,2500,1800,3200,2100], ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim']);
+buildChart('chartMonthly', [1200,1800,2400,3100,2800,3800,3200,3500,0,0,0,0], ['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc']);
+buildChart('chartClicks', [89,134,67,201,156,312,275], ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim']);
+
+// Nav highlight
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', function() {
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>

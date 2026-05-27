@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KoraHub – Configuration API</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root{--violet:#2D1B69;--violet-mid:#4A2E9E;--violet-light:#6B46C1;--gold:#F5C518;--gold-light:#FFD95A;--white:#FFFFFF;--off-white:#F8F6FF;--text-dark:#1A0F3C;--text-muted:#7C6FAD;--border:rgba(107,70,193,0.12);--shadow:0 8px 32px rgba(45,27,105,0.12);--success:#2ed573;--danger:#ff4757;--warning:#ffa502;--sidebar-w:240px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--text-dark);display:flex;min-height:100vh}
+
+/* SIDEBAR */
+.sidebar{width:var(--sidebar-w);background:linear-gradient(180deg,#0D0829 0%,#1A0F3C 100%);min-height:100vh;position:fixed;left:0;top:0;display:flex;flex-direction:column;z-index:100;transition:transform .3s;border-right:1px solid rgba(245,197,24,0.06)}
+.sidebar-logo{padding:22px 20px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-icon{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--gold),var(--gold-light));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:var(--violet)}
+.logo-text{font-family:'Syne',sans-serif;font-weight:700;font-size:18px;color:white}
+.logo-text span{color:var(--gold)}
+.api-tag{background:rgba(79,172,254,0.15);border:1px solid rgba(79,172,254,0.3);border-radius:100px;padding:2px 10px;font-size:10px;font-weight:700;color:#4facfe;margin-top:2px;display:inline-block}
+.sidebar-nav{flex:1;padding:12px 0;overflow-y:auto}
+.nav-section-label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.25);padding:12px 20px 6px}
+.nav-item{display:flex;align-items:center;gap:11px;padding:10px 20px;cursor:pointer;transition:all .2s;color:rgba(255,255,255,0.55);font-size:13px;font-weight:500;text-decoration:none}
+.nav-item:hover{color:white;background:rgba(255,255,255,0.05)}
+.nav-item.active{color:white;background:rgba(245,197,24,0.08);border-right:3px solid var(--gold)}
+.nav-icon{font-size:16px;width:20px;text-align:center}
+.api-dot{margin-left:auto;width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.api-dot.ok{background:var(--success)}
+.api-dot.missing{background:var(--danger)}
+.api-dot.partial{background:var(--warning)}
+.sidebar-footer{padding:14px 20px;border-top:1px solid rgba(255,255,255,0.06)}
+.btn-back{display:flex;align-items:center;gap:10px;color:rgba(255,255,255,0.5);font-size:13px;cursor:pointer;padding:8px;border-radius:8px;transition:all .2s;border:none;background:none;width:100%;text-decoration:none}
+.btn-back:hover{color:var(--gold);background:rgba(245,197,24,0.08)}
+
+/* MAIN */
+.main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column}
+.topbar{background:white;border-bottom:1px solid var(--border);padding:0 28px;height:62px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.topbar-left{display:flex;align-items:center;gap:14px}
+.menu-toggle{display:none;background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-dark)}
+.page-title{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;color:var(--text-dark)}
+.page-sub{font-size:12px;color:var(--text-muted)}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.global-status{display:flex;align-items:center;gap:6px;border-radius:100px;padding:5px 14px;font-size:12px;font-weight:600}
+.global-status.partial{background:rgba(255,165,2,0.08);border:1px solid rgba(255,165,2,0.2);color:var(--warning)}
+.global-status.ok{background:rgba(46,213,115,0.08);border:1px solid rgba(46,213,115,0.2);color:var(--success)}
+.pulse{width:8px;height:8px;border-radius:50%;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
+.pulse.orange{background:var(--warning)}
+.pulse.green{background:var(--success)}
+
+/* CONTENT */
+.content{padding:24px 28px;flex:1}
+.page-section{display:none}
+.page-section.active{display:block;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* BTN */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:9px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .2s;text-decoration:none}
+.btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--violet)}
+.btn-gold:hover{transform:translateY(-1px);box-shadow:0 4px 18px rgba(245,197,24,0.3)}
+.btn-violet{background:linear-gradient(135deg,var(--violet-mid),var(--violet-light));color:white}
+.btn-violet:hover{transform:translateY(-1px)}
+.btn-ghost{background:white;border:1.5px solid var(--border);color:var(--text-dark)}
+.btn-ghost:hover{border-color:var(--violet-light)}
+.btn-success{background:rgba(46,213,115,0.1);color:var(--success);border:1px solid rgba(46,213,115,0.25)}
+.btn-danger{background:rgba(255,71,87,0.1);color:var(--danger);border:1px solid rgba(255,71,87,0.2)}
+.btn-sm{padding:5px 11px;font-size:12px;border-radius:7px}
+
+/* CARDS */
+.card{background:white;border:1.5px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:18px}
+.card-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.card-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--text-dark)}
+.card-body{padding:20px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}
+
+/* OVERVIEW STATS */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.stat-card{background:white;border:1.5px solid var(--border);border-radius:14px;padding:16px;text-align:center;transition:all .25s}
+.stat-card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+.stat-icon{font-size:28px;margin-bottom:8px}
+.stat-val{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--text-dark)}
+.stat-label{font-size:11px;color:var(--text-muted);margin-top:3px}
+
+/* API SERVICE CARD */
+.service-card{background:white;border:1.5px solid var(--border);border-radius:16px;padding:22px;margin-bottom:16px;transition:all .25s;position:relative;overflow:hidden}
+.service-card:hover{box-shadow:var(--shadow)}
+.service-card.configured{border-color:rgba(46,213,115,0.3);background:rgba(46,213,115,0.01)}
+.service-card.not-configured{border-color:rgba(255,71,87,0.2);background:rgba(255,71,87,0.01)}
+.service-card.optional{border-color:rgba(255,165,2,0.2);background:rgba(255,165,2,0.01)}
+
+.service-header{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+.service-logo{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
+.service-info{flex:1}
+.service-name{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--text-dark)}
+.service-desc{font-size:12px;color:var(--text-muted);margin-top:2px}
+.service-tags{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
+.service-tag{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:100px;font-size:10px;font-weight:700}
+.service-tag.free{background:rgba(46,213,115,0.1);color:var(--success)}
+.service-tag.required{background:rgba(107,70,193,0.1);color:var(--violet-light)}
+.service-tag.optional{background:rgba(255,165,2,0.1);color:var(--warning)}
+.service-status-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:100px;font-size:11px;font-weight:700;flex-shrink:0}
+.service-status-badge.ok{background:rgba(46,213,115,0.1);color:var(--success)}
+.service-status-badge.missing{background:rgba(255,71,87,0.1);color:var(--danger)}
+.service-status-badge.optional{background:rgba(255,165,2,0.1);color:var(--warning)}
+
+/* FORM */
+.form-group{margin-bottom:14px}
+.form-label{display:block;font-size:12px;font-weight:600;color:var(--text-dark);margin-bottom:6px}
+.form-hint{font-size:11px;color:var(--text-muted);margin-top:5px;display:flex;align-items:center;gap:5px}
+.form-hint a{color:var(--violet-light);font-weight:600;text-decoration:none}
+.form-hint a:hover{text-decoration:underline}
+
+.api-input-wrap{position:relative;display:flex;gap:8px}
+.api-input{flex:1;padding:11px 44px 11px 14px;border:1.5px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text-dark);background:var(--off-white);outline:none;transition:all .2s;font-family:monospace}
+.api-input:focus{border-color:var(--violet-light);background:white}
+.api-input.has-value{border-color:var(--success);background:rgba(46,213,115,0.03)}
+.api-input.error{border-color:var(--danger)}
+.eye-btn{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:15px;color:var(--text-muted)}
+.test-btn{padding:10px 16px;border-radius:10px;border:none;cursor:pointer;font-size:12px;font-weight:700;transition:all .2s;white-space:nowrap;background:rgba(107,70,193,0.08);color:var(--violet-light);border:1px solid rgba(107,70,193,0.2)}
+.test-btn:hover{background:rgba(107,70,193,0.15)}
+.test-btn.testing{opacity:.7;pointer-events:none}
+.test-result{margin-top:8px;padding:8px 12px;border-radius:8px;font-size:12px;display:none}
+.test-result.show{display:flex;align-items:center;gap:6px}
+.test-result.ok{background:rgba(46,213,115,0.08);border:1px solid rgba(46,213,115,0.2);color:var(--success)}
+.test-result.fail{background:rgba(255,71,87,0.08);border:1px solid rgba(255,71,87,0.2);color:var(--danger)}
+
+/* SECURITY NOTE */
+.security-note{background:linear-gradient(135deg,rgba(45,27,105,0.06),rgba(45,27,105,0.02));border:1.5px solid rgba(107,70,193,0.12);border-radius:12px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;margin-bottom:20px}
+.security-icon{font-size:20px;flex-shrink:0}
+.security-text strong{display:block;font-size:13px;color:var(--text-dark);margin-bottom:2px}
+.security-text span{font-size:12px;color:var(--text-muted);line-height:1.5}
+
+/* GUIDE */
+.guide-step{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--border)}
+.guide-step:last-child{border-bottom:none}
+.guide-num{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--violet),var(--violet-light));color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;flex-shrink:0;margin-top:2px}
+.guide-text strong{display:block;font-size:13px;color:var(--text-dark);margin-bottom:2px}
+.guide-text span{font-size:12px;color:var(--text-muted);line-height:1.5}
+.guide-text a{color:var(--violet-light);font-weight:600;text-decoration:none}
+.guide-text a:hover{text-decoration:underline}
+
+/* SAVE BAR */
+.save-bar{position:sticky;bottom:0;background:white;border-top:1px solid var(--border);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;gap:12px;z-index:40;box-shadow:0 -4px 20px rgba(45,27,105,0.08)}
+.save-bar-text{font-size:13px;color:var(--text-muted)}
+.save-bar-text strong{color:var(--text-dark)}
+
+/* PROGRESS */
+.config-progress{background:var(--off-white);border-radius:100px;height:8px;overflow:hidden;margin-bottom:6px}
+.config-progress-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--violet-light),var(--gold));transition:width .5s ease}
+
+/* TOAST */
+.toast{position:fixed;bottom:80px;right:24px;z-index:2000;background:var(--violet);border:1px solid var(--gold);color:white;padding:13px 18px;border-radius:11px;font-size:13px;display:flex;align-items:center;gap:9px;transform:translateX(120%);transition:transform .3s;box-shadow:var(--shadow);max-width:320px}
+.toast.show{transform:translateX(0)}
+
+/* RESPONSIVE */
+@media(max-width:768px){.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.main{margin-left:0}.menu-toggle{display:flex}.content{padding:18px 14px}.topbar{padding:0 14px}.stats-row{grid-template-columns:1fr 1fr}.grid-2{grid-template-columns:1fr}}
+@media(max-width:480px){.stats-row{grid-template-columns:1fr}}
+</style>
+<link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImZnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3R5bGU9InN0b3AtY29sb3I6I0Y1QzUxOCIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNGRkQ5NUEiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgcng9IjgiIGZpbGw9InVybCgjZmcpIi8+CiAgPHRleHQgeD0iNCIgeT0iMjQiIGZvbnQtZmFtaWx5PSJBcmlhbCBCbGFjayxzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iOTAwIiBmb250LXNpemU9IjIyIiBmaWxsPSIjMkQxQjY5Ij5LPC90ZXh0Pgo8L3N2Zz4=" type="image/svg+xml">
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <a href="korahub-dashboard-admin.html" class="sidebar-logo">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 40" style="height:34px;width:auto;display:block"><defs><linearGradient id="kg1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#F5C518"/><stop offset="100%" style="stop-color:#FFD95A"/></linearGradient></defs><rect x="0" y="2" width="36" height="36" rx="9" fill="url(#kg1)"/><text x="8" y="28" font-family="Arial Black,sans-serif" font-weight="900" font-size="23" fill="#2D1B69">K</text><text x="44" y="25" font-family="Arial,sans-serif" font-weight="700" font-size="16" fill="white">Kora</text><text x="80" y="25" font-family="Arial,sans-serif" font-weight="700" font-size="16" fill="#F5C518">Hub</text><text x="44" y="35" font-family="Arial,sans-serif" font-size="7" fill="rgba(255,255,255,0.45)" letter-spacing="1.5">LEARN · SELL · GROW</text></svg>
+    <div>
+      
+      <div class="api-tag">CONFIG API</div>
+    </div>
+  </a>
+
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">Vue d'ensemble</div>
+    <a class="nav-item active" onclick="showPage('overview')">
+      <span class="nav-icon">📊</span> Vue d'ensemble
+      <span class="api-dot partial" id="dot-overview"></span>
+    </a>
+
+    <div class="nav-section-label">IA & Avatar</div>
+    <a class="nav-item" onclick="showPage('groq')">
+      <span class="nav-icon">🤖</span> Groq (Scripts IA)
+      <span class="api-dot missing" id="dot-groq"></span>
+    </a>
+    <a class="nav-item" onclick="showPage('elevenlabs')">
+      <span class="nav-icon">🎙️</span> ElevenLabs (Voix)
+      <span class="api-dot missing" id="dot-elevenlabs"></span>
+    </a>
+    <a class="nav-item" onclick="showPage('did')">
+      <span class="nav-icon">🧑🏾</span> D-ID (Avatar)
+      <span class="api-dot missing" id="dot-did"></span>
+    </a>
+
+    <div class="nav-section-label">Emails & Notifs</div>
+    <a class="nav-item" onclick="showPage('emailjs')">
+      <span class="nav-icon">📧</span> EmailJS (Emails auto)
+      <span class="api-dot missing" id="dot-emailjs"></span>
+    </a>
+    <a class="nav-item" onclick="showPage('whatsapp')">
+      <span class="nav-icon">💬</span> WhatsApp (Notifs)
+      <span class="api-dot ok" id="dot-whatsapp"></span>
+    </a>
+
+    <div class="nav-section-label">Paiements</div>
+    <a class="nav-item" onclick="showPage('payments')">
+      <span class="nav-icon">💳</span> Numéros Mobile Money
+      <span class="api-dot ok" id="dot-payments"></span>
+    </a>
+
+    <div class="nav-section-label">Hébergement</div>
+    <a class="nav-item" onclick="showPage('vercel')">
+      <span class="nav-icon">🚀</span> Vercel (Mise en ligne)
+      <span class="api-dot missing" id="dot-vercel"></span>
+    </a>
+    <a class="nav-item" onclick="showPage('github')">
+      <span class="nav-icon">🐙</span> GitHub (Code source)
+      <span class="api-dot missing" id="dot-github"></span>
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <a href="korahub-dashboard-admin.html" class="btn-back">
+      <span>←</span> Retour Admin
+    </a>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-left">
+      <button class="menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+      <div>
+        <div class="page-title" id="pageTitle">Configuration API</div>
+        <div class="page-sub" id="pageSub">Gérez toutes vos clés API en sécurité</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="global-status partial" id="globalStatus">
+        <div class="pulse orange"></div>
+        <span id="globalStatusText">3/8 configurés</span>
+      </div>
+      <button class="btn btn-gold btn-sm" onclick="saveAll()">💾 Tout sauvegarder</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ══ OVERVIEW ══ -->
+    <div class="page-section active" id="page-overview">
+
+      <div class="security-note">
+        <div class="security-icon">🔐</div>
+        <div class="security-text">
+          <strong>Vos clés API sont 100% privées</strong>
+          <span>Elles sont sauvegardées localement sur votre navigateur uniquement. Elles ne sont jamais envoyées à un serveur externe. Ne les partagez jamais avec personne.</span>
+        </div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-icon">✅</div>
+          <div class="stat-val" id="configuredCount">3</div>
+          <div class="stat-label">Services configurés</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">⏳</div>
+          <div class="stat-val" id="missingCount">5</div>
+          <div class="stat-label">À configurer</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">⭐</div>
+          <div class="stat-val" id="requiredCount">3</div>
+          <div class="stat-label">Requis pour démarrer</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">💡</div>
+          <div class="stat-val">Gratuit</div>
+          <div class="stat-label">Tous les services</div>
+        </div>
+      </div>
+
+      <!-- Progress -->
+      <div class="card" style="margin-bottom:18px">
+        <div class="card-header"><span class="card-title">📊 Progression de la configuration</span></div>
+        <div class="card-body">
+          <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-muted);margin-bottom:8px">
+            <span>Configuration globale</span>
+            <span id="progressPct">38%</span>
+          </div>
+          <div class="config-progress"><div class="config-progress-fill" id="progressFill" style="width:38%"></div></div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:8px">Configurez au minimum Groq + EmailJS + WhatsApp pour lancer KoraHub</div>
+        </div>
+      </div>
+
+      <!-- All services summary -->
+      <div class="card">
+        <div class="card-header"><span class="card-title">🔧 Tous les services</span></div>
+        <div class="card-body" style="padding:0">
+          <table style="width:100%;border-collapse:collapse">
+            <thead>
+              <tr style="border-bottom:1px solid var(--border)">
+                <th style="text-align:left;font-size:11px;font-weight:700;color:var(--text-muted);padding:10px 16px;text-transform:uppercase;letter-spacing:.5px">Service</th>
+                <th style="text-align:left;font-size:11px;font-weight:700;color:var(--text-muted);padding:10px 16px;text-transform:uppercase;letter-spacing:.5px">Utilité</th>
+                <th style="text-align:left;font-size:11px;font-weight:700;color:var(--text-muted);padding:10px 16px;text-transform:uppercase;letter-spacing:.5px">Coût</th>
+                <th style="text-align:left;font-size:11px;font-weight:700;color:var(--text-muted);padding:10px 16px;text-transform:uppercase;letter-spacing:.5px">Statut</th>
+                <th style="padding:10px 16px"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom:1px solid var(--border)" class="summary-row" id="row-groq">
+                <td style="padding:12px 16px"><strong>🤖 Groq (Llama)</strong></td>
+                <td style="padding:12px 16px;font-size:13px;color:var(--text-muted)">Génération scripts IA</td>
+                <td style="padding:12px 16px"><span style="background:rgba(46,213,115,0.1);color:var(--success);font-size:11px;font-weight:700;padding:2px 8px;border-radius:100px">✅ Gratuit</span></td>
+                <td style="padding:12px 16px"><span class="service-status-badge missing" id="badge-groq">● Manquant</span></td>
+                <td style="padding:12px 16px"><button class="btn btn-ghost btn-sm" onclick="showPage('groq')">Configurer</button></td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border)" id="row-elevenlabs">
+                <td style="padding:12px 16px"><strong>🎙️ ElevenLabs</strong></td>
+                <td style="padding:12px 16px;font-size:13px;color:var(--text-muted)">Voix marketing IA</td>
+                <td style="padding:12px 16px"><span style="background:rgba(46,213,115,0.1);color:var(--success);font-size:11px;font-weight:700;padding:2px 8px;border-radius:100px">✅ Gratuit</span></td>
+                <td style="padding:12px 16px"><span class="service-status-badge missing" id="badge-elevenlabs">● Manquant</span></td>
+                <td style="padding:12px 16px"><button class="btn btn-ghost btn-sm" onclick="showPage('elevenlabs')">Configurer</button></td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border)" id="row-did">
+                <td style="padding:12px 16px"><strong>🧑🏾 D-ID</strong></td>
+                <td style="padding:12px 16px;font-size:13px;color:var(--text-muted)">Avatar animé réaliste</td>
+                <td style="padding:12px 16px"><span style="background:rgba(46,213,115,0.1);color:var(--success);font-size:11px;font-weight:700;padding:2px 8px;border-radius:100px">✅ Gratuit</span></td>
+                <td style="padding:12px 16px"><span class="service-status-badge missing" id="badge-did">● Manquant</span></td>
+                <td style="padding:12px 16px"><button class="btn btn-ghost btn-sm" onclick="showPage('did')">Configurer</button></td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border)" id="row-emailjs">
+                <td style="padding:12px 16px"><strong>📧 EmailJS</strong></td>
+                <td style="padding:12px 16px;font-size:13px;color:var(--text-muted)">Emails automatiques</td>
+                <td style="padding:12px 16px"><span style="background:rgba(46,213,115,0.1);color:var(--success);font-size:11px;font-weight:700;padding:2px 8px;border-radius:100px">✅ Gratuit</span></td>
+                <td style="padding:12px 16px"><span class="service-status-badge missing" id="badge-emailjs">● Manquant</span></td>
+                <td style="padding:12px 16px"><button class="btn btn-ghost btn-sm" onclick="showPage('emailjs')">Configurer</button></td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border)" id="row-whatsapp">
+                <td style="padding:12px 16px"><strong>💬 WhatsApp</strong></td>
+                <td style="padding:12px 16px;font-size:13px;color:var(--text-muted)">Notifications admin</td>
+                <td style="padding:12px 16px"><span style="background:rgba(46,213,115,0.1);color:var(--success);font-size:11px;font-weight:700;padding:2px 8px;border-radius:100px">✅ Gratuit</span></td>
+                <td style="padding:12px 16px"><span class="service-status-badge ok" id="badge-whatsapp">✓ Configuré</span></td>
+                <td style="padding:12px 16px"><button class="btn btn-ghost btn-sm" onclick="showPage('whatsapp')">Modifier</button></td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border)" id="row-payments">
+                <td style="padding:12px 16px"><strong>💳 Mobile Money</strong></td>
+                <td style="padding:12px 16px;font-size:13px;color:var(--text-muted)">Numéros de paiement</td>
+                <td style="padding:12px 16px"><span style="background:rgba(46,213,115,0.1);color:var(--success);font-size:11px;font-weight:700;padding:2px 8px;border-radius:100px">✅ Gratuit</span></td>
+                <td style="padding:12px 16px"><span class="service-status-badge ok" id="badge-payments">✓ Configuré</span></td>
+                <td style="padding:12px 16px"><button class="btn btn-ghost btn-sm" onclick="showPage('payments')">Modifier</button></td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border)" id="row-github">
+                <td style="padding:12px 16px"><strong>🐙 GitHub</strong></td>
+                <td style="padding:12px 16px;font-size:13px;color:var(--text-muted)">Hébergement du code</td>
+                <td style="padding:12px 16px"><span style="background:rgba(46,213,115,0.1);color:var(--success);font-size:11px;font-weight:700;padding:2px 8px;border-radius:100px">✅ Gratuit</span></td>
+                <td style="padding:12px 16px"><span class="service-status-badge missing" id="badge-github">● Manquant</span></td>
+                <td style="padding:12px 16px"><button class="btn btn-ghost btn-sm" onclick="showPage('github')">Configurer</button></td>
+              </tr>
+              <tr id="row-vercel">
+                <td style="padding:12px 16px"><strong>🚀 Vercel</strong></td>
+                <td style="padding:12px 16px;font-size:13px;color:var(--text-muted)">Mise en ligne du site</td>
+                <td style="padding:12px 16px"><span style="background:rgba(46,213,115,0.1);color:var(--success);font-size:11px;font-weight:700;padding:2px 8px;border-radius:100px">✅ Gratuit</span></td>
+                <td style="padding:12px 16px"><span class="service-status-badge missing" id="badge-vercel">● Manquant</span></td>
+                <td style="padding:12px 16px"><button class="btn btn-ghost btn-sm" onclick="showPage('vercel')">Configurer</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ GROQ ══ -->
+    <div class="page-section" id="page-groq">
+      <div class="service-card not-configured" id="card-groq">
+        <div class="service-header">
+          <div class="service-logo" style="background:linear-gradient(135deg,#ff6b35,#f7c59f)">🤖</div>
+          <div class="service-info">
+            <div class="service-name">Groq API (Llama 3)</div>
+            <div class="service-desc">Génère automatiquement les scripts marketing pour vos vidéos avatar</div>
+            <div class="service-tags">
+              <span class="service-tag free">✅ Gratuit</span>
+              <span class="service-tag required">⭐ Requis</span>
+            </div>
+          </div>
+          <span class="service-status-badge missing" id="status-groq">● Non configuré</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">🔑 Clé API Groq</label>
+          <div class="api-input-wrap">
+            <input type="password" class="api-input" id="key-groq" placeholder="gsk_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" oninput="onKeyInput('groq',this)">
+            <button class="eye-btn" onclick="toggleVisibility('key-groq',this)">👁️</button>
+            <button class="test-btn" onclick="testAPI('groq')" id="test-groq">Tester</button>
+          </div>
+          <div class="test-result" id="result-groq"></div>
+          <div class="form-hint">
+            <span>📍 Trouvez votre clé sur</span>
+            <a href="https://console.groq.com/keys" target="_blank">console.groq.com/keys</a>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">🧠 Modèle à utiliser</label>
+          <select class="api-input" id="groq-model" style="font-family:'DM Sans',sans-serif">
+            <option value="llama-3.1-8b-instant">llama-3.1-8b-instant (Rapide · Recommandé)</option>
+            <option value="llama-3.1-70b-versatile">llama-3.1-70b-versatile (Plus intelligent)</option>
+            <option value="mixtral-8x7b-32768">mixtral-8x7b-32768 (Alternatif)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><span class="card-title">📖 Comment obtenir la clé Groq</span></div>
+        <div class="card-body" style="padding:0 20px">
+          <div class="guide-step">
+            <div class="guide-num">1</div>
+            <div class="guide-text">
+              <strong>Aller sur console.groq.com</strong>
+              <span>Connectez-vous avec votre compte existant sur <a href="https://console.groq.com" target="_blank">console.groq.com</a></span>
+            </div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-num">2</div>
+            <div class="guide-text">
+              <strong>Aller dans "API Keys"</strong>
+              <span>Dans le menu de gauche cliquez sur "API Keys"</span>
+            </div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-num">3</div>
+            <div class="guide-text">
+              <strong>Créer une nouvelle clé</strong>
+              <span>Cliquez sur "Create API Key" → donnez un nom comme "KoraHub"</span>
+            </div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-num">4</div>
+            <div class="guide-text">
+              <strong>Copier la clé</strong>
+              <span>Copiez la clé qui commence par <strong>gsk_</strong> et collez-la ci-dessus</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ ELEVENLABS ══ -->
+    <div class="page-section" id="page-elevenlabs">
+      <div class="service-card not-configured" id="card-elevenlabs">
+        <div class="service-header">
+          <div class="service-logo" style="background:linear-gradient(135deg,#667eea,#764ba2)">🎙️</div>
+          <div class="service-info">
+            <div class="service-name">ElevenLabs API</div>
+            <div class="service-desc">Génère la voix marketing française masculine pour vos vidéos avatar</div>
+            <div class="service-tags">
+              <span class="service-tag free">✅ 10 000 chars/mois gratuit</span>
+              <span class="service-tag required">⭐ Requis</span>
+            </div>
+          </div>
+          <span class="service-status-badge missing" id="status-elevenlabs">● Non configuré</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">🔑 Clé API ElevenLabs</label>
+          <div class="api-input-wrap">
+            <input type="password" class="api-input" id="key-elevenlabs" placeholder="sk_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" oninput="onKeyInput('elevenlabs',this)">
+            <button class="eye-btn" onclick="toggleVisibility('key-elevenlabs',this)">👁️</button>
+            <button class="test-btn" onclick="testAPI('elevenlabs')" id="test-elevenlabs">Tester</button>
+          </div>
+          <div class="test-result" id="result-elevenlabs"></div>
+          <div class="form-hint">
+            <span>📍 Trouvez votre clé sur</span>
+            <a href="https://elevenlabs.io/app/settings/api-keys" target="_blank">elevenlabs.io → Settings → API Keys</a>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">🗣️ Voice ID (voix masculine marketing)</label>
+          <div class="api-input-wrap">
+            <input type="text" class="api-input" id="elevenlabs-voice" placeholder="Ex: pNInz6obpgDQGcFmaJgB (Adam)" style="font-family:'DM Sans',sans-serif" oninput="onKeyInput('elevenlabs',this)">
+          </div>
+          <div class="form-hint">
+            <span>📍 Trouvez les Voice IDs sur</span>
+            <a href="https://elevenlabs.io/voice-library" target="_blank">elevenlabs.io/voice-library</a>
+            <span>· Recommandé : "Adam" ou "Antoni"</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><span class="card-title">📖 Comment obtenir la clé ElevenLabs</span></div>
+        <div class="card-body" style="padding:0 20px">
+          <div class="guide-step">
+            <div class="guide-num">1</div>
+            <div class="guide-text">
+              <strong>Créer un compte sur elevenlabs.io</strong>
+              <span>Allez sur <a href="https://elevenlabs.io" target="_blank">elevenlabs.io</a> et créez un compte gratuit avec votre email</span>
+            </div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-num">2</div>
+            <div class="guide-text">
+              <strong>Aller dans Profile Settings</strong>
+              <span>Cliquez sur votre profil en bas à gauche → "Profile + API Key"</span>
+            </div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-num">3</div>
+            <div class="guide-text">
+              <strong>Copier votre clé API</strong>
+              <span>Dans la section "API Key" cliquez sur l'icône copier</span>
+            </div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-num">4</div>
+            <div class="guide-text">
+              <strong>Choisir une voix masculine</strong>
+              <span>Allez sur Voice Library → filtrez par "Male" → choisissez "Adam" ou "Antoni" → copiez le Voice ID</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ D-ID ══ -->
+    <div class="page-section" id="page-did">
+      <div class="service-card not-configured" id="card-did">
+        <div class="service-header">
+          <div class="service-logo" style="background:linear-gradient(135deg,#4facfe,#00f2fe)">🧑🏾</div>
+          <div class="service-info">
+            <div class="service-name">D-ID API</div>
+            <div class="service-desc">Génère les vidéos avatar avec un homme africain réaliste qui parle de vos produits</div>
+            <div class="service-tags">
+              <span class="service-tag free">✅ 20 vidéos gratuites</span>
+              <span class="service-tag required">⭐ Requis</span>
+            </div>
+          </div>
+          <span class="service-status-badge missing" id="status-did">● Non configuré</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">🔑 Clé API D-ID (Basic Auth)</label>
+          <div class="api-input-wrap">
+            <input type="password" class="api-input" id="key-did" placeholder="email:xxxxxxxxxxxxxxxx (Basic Auth encodé)" oninput="onKeyInput('did',this)">
+            <button class="eye-btn" onclick="toggleVisibility('key-did',this)">👁️</button>
+            <button class="test-btn" onclick="testAPI('did')" id="test-did">Tester</button>
+          </div>
+          <div class="test-result" id="result-did"></div>
+          <div class="form-hint">
+            <span>📍 Trouvez votre clé sur</span>
+            <a href="https://studio.d-id.com/account-settings" target="_blank">studio.d-id.com → Account Settings → API</a>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">🖼️ Image de l'avatar (URL)</label>
+          <div class="api-input-wrap">
+            <input type="text" class="api-input" id="did-avatar-url" placeholder="https://... (URL image homme africain tee-shirt)" style="font-family:'DM Sans',sans-serif" oninput="onKeyInput('did',this)">
+          </div>
+          <div class="form-hint">💡 Utilisez une photo réaliste d'un homme africain en tee-shirt simple · Résolution recommandée : 512x512</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><span class="card-title">📖 Comment obtenir la clé D-ID</span></div>
+        <div class="card-body" style="padding:0 20px">
+          <div class="guide-step">
+            <div class="guide-num">1</div>
+            <div class="guide-text">
+              <strong>Créer un compte sur d-id.com</strong>
+              <span>Allez sur <a href="https://www.d-id.com" target="_blank">d-id.com</a> → "Get Started" → créez un compte gratuit</span>
+            </div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-num">2</div>
+            <div class="guide-text">
+              <strong>Aller dans Account Settings</strong>
+              <span>Cliquez sur votre profil → "Account Settings" → onglet "API"</span>
+            </div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-num">3</div>
+            <div class="guide-text">
+              <strong>Copier votre clé Basic Auth</strong>
+              <span>La clé est au format email:token encodé en Base64. Copiez-la directement.</span>
+            </div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-num">4</div>
+            <div class="guide-text">
+              <strong>Préparer l'image de l'avatar</strong>
+              <span>Uploadez une photo sur <a href="https://imgur.com" target="_blank">imgur.com</a> et copiez le lien direct (.jpg/.png)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ EMAILJS ══ -->
+    <div class="page-section" id="page-emailjs">
+      <div class="service-card not-configured" id="card-emailjs">
+        <div class="service-header">
+          <div class="service-logo" style="background:linear-gradient(135deg,#f093fb,#f5576c)">📧</div>
+          <div class="service-info">
+            <div class="service-name">EmailJS</div>
+            <div class="service-desc">Envoie les emails automatiques (livraison produit, bienvenue, newsletter, commission)</div>
+            <div class="service-tags">
+              <span class="service-tag free">✅ 200 emails/mois gratuit</span>
+              <span class="service-tag required">⭐ Requis</span>
+            </div>
+          </div>
+          <span class="service-status-badge missing" id="status-emailjs">● Non configuré</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">🔑 Public Key EmailJS</label>
+          <div class="api-input-wrap">
+            <input type="password" class="api-input" id="key-emailjs-public" placeholder="xxxxxxxxxxxxxxxxxxxxxxx" oninput="onKeyInput('emailjs',this)">
+            <button class="eye-btn" onclick="toggleVisibility('key-emailjs-public',this)">👁️</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">🔧 Service ID EmailJS</label>
+          <div class="api-input-wrap">
+            <input type="text" class="api-input" id="key-emailjs-service" placeholder="service_xxxxxxx" style="font-family:'DM Sans',sans-serif" oninput="onKeyInput('emailjs',this)">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">📄 Template ID (livraison produit)</label>
+          <div class="api-input-wrap">
+            <input type="text" class="api-input" id="key-emailjs-template-delivery" placeholder="template_xxxxxxx" style="font-family:'DM Sans',sans-serif" oninput="onKeyInput('emailjs',this)">
+            <button class="test-btn" onclick="testAPI('emailjs')" id="test-emailjs">Tester</button>
+          </div>
+          <div class="test-result" id="result-emailjs"></div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">📄 Template ID (bienvenue)</label>
+          <div class="api-input-wrap">
+            <input type="text" class="api-input" id="key-emailjs-template-welcome" placeholder="template_xxxxxxx" style="font-family:'DM Sans',sans-serif" oninput="onKeyInput('emailjs',this)">
+          </div>
+          <div class="form-hint">
+            <span>📍 Créez vos templates sur</span>
+            <a href="https://www.emailjs.com" target="_blank">emailjs.com</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><span class="card-title">📖 Comment configurer EmailJS</span></div>
+        <div class="card-body" style="padding:0 20px">
+          <div class="guide-step">
+            <div class="guide-num">1</div>
+            <div class="guide-text">
+              <strong>Créer un compte sur emailjs.com</strong>
+              <span>Allez sur <a href="https://www.emailjs.com" target="_blank">emailjs.com</a> → "Sign Up" → compte gratuit</span>
+            </div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-num">2</div>
+            <div class="guide-text">
+              <strong>Connecter votre Gmail</strong>
+              <span>Email Services → "Add New Service" → Gmail → connectez sonde.business.75@gmail.com</span>
+            </div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-num">3</div>
+            <div class="guide-text">
+              <strong>Créer les templates email</strong>
+              <span>Email Templates → "Create New Template" → créez un template pour la livraison et un pour la bienvenue</span>
+            </div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-num">4</div>
+            <div class="guide-text">
+              <strong>Copier les clés</strong>
+              <span>Account → "API Keys" → copiez votre Public Key, Service ID et Template IDs ci-dessus</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ WHATSAPP ══ -->
+    <div class="page-section" id="page-whatsapp">
+      <div class="service-card configured" id="card-whatsapp">
+        <div class="service-header">
+          <div class="service-logo" style="background:linear-gradient(135deg,#25D366,#128c7e)">💬</div>
+          <div class="service-info">
+            <div class="service-name">WhatsApp Notifications</div>
+            <div class="service-desc">Notifications automatiques à chaque nouvelle commande et commission due</div>
+            <div class="service-tags">
+              <span class="service-tag free">✅ Gratuit (liens wa.me)</span>
+              <span class="service-tag required">⭐ Requis</span>
+            </div>
+          </div>
+          <span class="service-status-badge ok" id="status-whatsapp">✓ Configuré</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">🟠 Numéro Orange Money / Wave (avec indicatif)</label>
+          <div class="api-input-wrap">
+            <input type="text" class="api-input has-value" id="wa-orange" value="22675318351" style="font-family:'DM Sans',sans-serif" oninput="onKeyInput('whatsapp',this)">
+            <button class="test-btn" onclick="testWhatsApp('22675318351')">Tester</button>
+          </div>
+          <div class="form-hint">💡 Format international sans + : 226 + numéro (ex: 22675318351)</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">🟣 Numéro Moov / Coris (avec indicatif)</label>
+          <div class="api-input-wrap">
+            <input type="text" class="api-input has-value" id="wa-moov" value="22671607287" style="font-family:'DM Sans',sans-serif" oninput="onKeyInput('whatsapp',this)">
+            <button class="test-btn" onclick="testWhatsApp('22671607287')">Tester</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">📧 Email admin pour les notifications</label>
+          <div class="api-input-wrap">
+            <input type="email" class="api-input has-value" id="admin-email" value="sonde.business.75@gmail.com" style="font-family:'DM Sans',sans-serif" oninput="onKeyInput('whatsapp',this)">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ PAYMENTS ══ -->
+    <div class="page-section" id="page-payments">
+      <div class="service-card configured" id="card-payments">
+        <div class="service-header">
+          <div class="service-logo" style="background:linear-gradient(135deg,var(--gold),var(--gold-light))">💳</div>
+          <div class="service-info">
+            <div class="service-name">Numéros Mobile Money</div>
+            <div class="service-desc">Numéros affichés aux clients pour payer leurs commandes</div>
+            <div class="service-tags">
+              <span class="service-tag free">✅ Gratuit</span>
+              <span class="service-tag required">⭐ Requis</span>
+            </div>
+          </div>
+          <span class="service-status-badge ok" id="status-payments">✓ Configuré</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">🟠 Numéro Orange Money</label>
+          <input type="text" class="api-input has-value" value="75318351" style="font-family:'DM Sans',sans-serif" oninput="onKeyInput('payments',this)">
+        </div>
+        <div class="form-group">
+          <label class="form-label">🔵 Numéro Wave</label>
+          <input type="text" class="api-input has-value" value="75318351" style="font-family:'DM Sans',sans-serif" oninput="onKeyInput('payments',this)">
+        </div>
+        <div class="form-group">
+          <label class="form-label">🟣 Numéro Moov Money</label>
+          <input type="text" class="api-input has-value" value="71607287" style="font-family:'DM Sans',sans-serif" oninput="onKeyInput('payments',this)">
+        </div>
+        <div class="form-group">
+          <label class="form-label">🔴 Numéro Coris Money</label>
+          <input type="text" class="api-input has-value" value="71607287" style="font-family:'DM Sans',sans-serif" oninput="onKeyInput('payments',this)">
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ GITHUB ══ -->
+    <div class="page-section" id="page-github">
+      <div class="service-card not-configured" id="card-github">
+        <div class="service-header">
+          <div class="service-logo" style="background:linear-gradient(135deg,#24292e,#586069)">🐙</div>
+          <div class="service-info">
+            <div class="service-name">GitHub</div>
+            <div class="service-desc">Stocke le code source de KoraHub pour le déployer sur Vercel</div>
+            <div class="service-tags">
+              <span class="service-tag free">✅ Gratuit</span>
+              <span class="service-tag required">⭐ Requis pour Vercel</span>
+            </div>
+          </div>
+          <span class="service-status-badge missing" id="status-github">● Non configuré</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">👤 Nom d'utilisateur GitHub</label>
+          <input type="text" class="api-input" id="github-username" placeholder="Ex: korahub-africa" style="font-family:'DM Sans',sans-serif" oninput="onKeyInput('github',this)">
+        </div>
+        <div class="form-group">
+          <label class="form-label">📁 Nom du repository</label>
+          <input type="text" class="api-input" id="github-repo" placeholder="Ex: korahub" style="font-family:'DM Sans',sans-serif" oninput="onKeyInput('github',this)">
+          <div class="form-hint">💡 Ce sera l'adresse de votre code : github.com/username/korahub</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><span class="card-title">📖 Comment créer un compte GitHub</span></div>
+        <div class="card-body" style="padding:0 20px">
+          <div class="guide-step">
+            <div class="guide-num">1</div>
+            <div class="guide-text">
+              <strong>Aller sur github.com</strong>
+              <span>Allez sur <a href="https://github.com" target="_blank">github.com</a> → "Sign up" → créez un compte gratuit</span>
+            </div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-num">2</div>
+            <div class="guide-text">
+              <strong>Créer un nouveau repository</strong>
+              <span>Cliquez sur "+" → "New repository" → nommez-le "korahub" → Public → Create</span>
+            </div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-num">3</div>
+            <div class="guide-text">
+              <strong>Remplir les infos ci-dessus</strong>
+              <span>Entrez votre nom d'utilisateur et le nom du repo créé</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ VERCEL ══ -->
+    <div class="page-section" id="page-vercel">
+      <div class="service-card not-configured" id="card-vercel">
+        <div class="service-header">
+          <div class="service-logo" style="background:linear-gradient(135deg,#000,#333)">🚀</div>
+          <div class="service-info">
+            <div class="service-name">Vercel (Hébergement)</div>
+            <div class="service-desc">Met KoraHub en ligne gratuitement avec un lien public partageable</div>
+            <div class="service-tags">
+              <span class="service-tag free">✅ Gratuit</span>
+              <span class="service-tag required">⭐ Mise en ligne</span>
+            </div>
+          </div>
+          <span class="service-status-badge missing" id="status-vercel">● Non déployé</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">🌐 URL du site KoraHub (après déploiement)</label>
+          <input type="text" class="api-input" id="vercel-url" placeholder="korahub.vercel.app" style="font-family:'DM Sans',sans-serif" oninput="onKeyInput('vercel',this)">
+          <div class="form-hint">💡 Cette URL sera générée automatiquement par Vercel lors du déploiement</div>
+        </div>
+
+        <div style="background:linear-gradient(135deg,var(--violet),#1A0F3C);border-radius:12px;padding:20px;margin-top:8px">
+          <div style="font-family:'Syne',sans-serif;font-weight:700;color:white;font-size:15px;margin-bottom:8px">🚀 Prêt à mettre KoraHub en ligne ?</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.6);margin-bottom:16px">Suivez les étapes ci-dessous pour déployer KoraHub en moins de 10 minutes</div>
+          <button class="btn btn-gold" onclick="showToast('📖 Guide de déploiement ouvert !')">📖 Voir le guide complet</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><span class="card-title">📖 Guide de déploiement Vercel</span></div>
+        <div class="card-body" style="padding:0 20px">
+          <div class="guide-step">
+            <div class="guide-num">1</div>
+            <div class="guide-text">
+              <strong>Créer un compte Vercel</strong>
+              <span>Allez sur <a href="https://vercel.com" target="_blank">vercel.com</a> → "Sign Up" → connectez-vous avec votre compte GitHub</span>
+            </div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-num">2</div>
+            <div class="guide-text">
+              <strong>Importer le projet GitHub</strong>
+              <span>Dashboard Vercel → "New Project" → sélectionnez votre repo "korahub" → Import</span>
+            </div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-num">3</div>
+            <div class="guide-text">
+              <strong>Configurer et déployer</strong>
+              <span>Vercel détecte automatiquement le type de projet → cliquez "Deploy" → attendez 2 minutes</span>
+            </div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-num">4</div>
+            <div class="guide-text">
+              <strong>Votre site est en ligne !</strong>
+              <span>Vercel vous donne une URL comme <strong>korahub.vercel.app</strong> → partagez-la partout !</span>
+            </div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-num">5</div>
+            <div class="guide-text">
+              <strong>Domaine personnalisé (optionnel)</strong>
+              <span>Plus tard vous pouvez acheter <strong>korahub.com</strong> et le connecter à Vercel facilement</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SAVE BAR -->
+  <div class="save-bar">
+    <div class="save-bar-text">
+      <strong id="saveBarStatus">3 services configurés</strong> · Les clés sont sauvegardées localement sur votre navigateur
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-ghost btn-sm" onclick="clearAll()">🗑️ Tout effacer</button>
+      <button class="btn btn-gold" onclick="saveAll()">💾 Sauvegarder tout</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><span>✅</span><span id="toastMsg"></span></div>
+
+<script>
+// Navigation
+const pageTitles = {
+  overview: ['Configuration API', 'Vue d\'ensemble de tous les services'],
+  groq: ['Groq API', 'Scripts marketing IA · Llama 3'],
+  elevenlabs: ['ElevenLabs', 'Voix marketing française'],
+  did: ['D-ID', 'Avatar animé réaliste'],
+  emailjs: ['EmailJS', 'Emails automatiques'],
+  whatsapp: ['WhatsApp', 'Notifications admin'],
+  payments: ['Mobile Money', 'Numéros de paiement'],
+  github: ['GitHub', 'Hébergement du code source'],
+  vercel: ['Vercel', 'Mise en ligne du site']
+};
+
+function showPage(page) {
+  document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById('page-' + page);
+  if (el) el.classList.add('active');
+  if (pageTitles[page]) {
+    document.getElementById('pageTitle').textContent = pageTitles[page][0];
+    document.getElementById('pageSub').textContent = pageTitles[page][1];
+  }
+  document.getElementById('sidebar').classList.remove('open');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  event?.target?.closest('.nav-item')?.classList.add('active');
+}
+
+// Load saved keys on page load
+const services = ['groq','elevenlabs','did','emailjs','whatsapp','payments','github','vercel'];
+
+function loadSaved() {
+  const keys = {
+    'key-groq': localStorage.getItem('kh_groq') || '',
+    'groq-model': localStorage.getItem('kh_groq_model') || 'llama-3.1-8b-instant',
+    'key-elevenlabs': localStorage.getItem('kh_elevenlabs') || '',
+    'elevenlabs-voice': localStorage.getItem('kh_elevenlabs_voice') || '',
+    'key-did': localStorage.getItem('kh_did') || '',
+    'did-avatar-url': localStorage.getItem('kh_did_avatar') || '',
+    'key-emailjs-public': localStorage.getItem('kh_emailjs_public') || '',
+    'key-emailjs-service': localStorage.getItem('kh_emailjs_service') || '',
+    'key-emailjs-template-delivery': localStorage.getItem('kh_emailjs_delivery') || '',
+    'key-emailjs-template-welcome': localStorage.getItem('kh_emailjs_welcome') || '',
+    'wa-orange': localStorage.getItem('kh_wa_orange') || '22675318351',
+    'wa-moov': localStorage.getItem('kh_wa_moov') || '22671607287',
+    'admin-email': localStorage.getItem('kh_admin_email') || 'sonde.business.75@gmail.com',
+    'github-username': localStorage.getItem('kh_github_user') || '',
+    'github-repo': localStorage.getItem('kh_github_repo') || '',
+    'vercel-url': localStorage.getItem('kh_vercel_url') || ''
+  };
+
+  Object.entries(keys).forEach(([id, val]) => {
+    const el = document.getElementById(id);
+    if (el && val) {
+      el.value = val;
+      if (val) el.classList.add('has-value');
+    }
+  });
+  updateAllStatuses();
+}
+
+function saveAll() {
+  const saves = {
+    'kh_groq': document.getElementById('key-groq')?.value || '',
+    'kh_groq_model': document.getElementById('groq-model')?.value || '',
+    'kh_elevenlabs': document.getElementById('key-elevenlabs')?.value || '',
+    'kh_elevenlabs_voice': document.getElementById('elevenlabs-voice')?.value || '',
+    'kh_did': document.getElementById('key-did')?.value || '',
+    'kh_did_avatar': document.getElementById('did-avatar-url')?.value || '',
+    'kh_emailjs_public': document.getElementById('key-emailjs-public')?.value || '',
+    'kh_emailjs_service': document.getElementById('key-emailjs-service')?.value || '',
+    'kh_emailjs_delivery': document.getElementById('key-emailjs-template-delivery')?.value || '',
+    'kh_emailjs_welcome': document.getElementById('key-emailjs-template-welcome')?.value || '',
+    'kh_wa_orange': document.getElementById('wa-orange')?.value || '',
+    'kh_wa_moov': document.getElementById('wa-moov')?.value || '',
+    'kh_admin_email': document.getElementById('admin-email')?.value || '',
+    'kh_github_user': document.getElementById('github-username')?.value || '',
+    'kh_github_repo': document.getElementById('github-repo')?.value || '',
+    'kh_vercel_url': document.getElementById('vercel-url')?.value || ''
+  };
+
+  Object.entries(saves).forEach(([key, val]) => localStorage.setItem(key, val));
+  updateAllStatuses();
+  showToast('💾 Toutes les clés sauvegardées avec succès !');
+}
+
+function clearAll() {
+  if (!confirm('Effacer toutes les clés API ? Cette action est irréversible.')) return;
+  Object.keys(localStorage).filter(k => k.startsWith('kh_')).forEach(k => localStorage.removeItem(k));
+  document.querySelectorAll('.api-input').forEach(i => {
+    if (!['22675318351','22671607287','sonde.business.75@gmail.com','75318351','71607287'].includes(i.value)) {
+      i.value = '';
+      i.classList.remove('has-value');
+    }
+  });
+  updateAllStatuses();
+  showToast('🗑️ Toutes les clés effacées');
+}
+
+function onKeyInput(service, input) {
+  input.classList.toggle('has-value', input.value.length > 0);
+  updateAllStatuses();
+}
+
+function updateAllStatuses() {
+  const configured = {
+    groq: !!(document.getElementById('key-groq')?.value),
+    elevenlabs: !!(document.getElementById('key-elevenlabs')?.value),
+    did: !!(document.getElementById('key-did')?.value),
+    emailjs: !!(document.getElementById('key-emailjs-public')?.value),
+    whatsapp: !!(document.getElementById('wa-orange')?.value),
+    payments: true,
+    github: !!(document.getElementById('github-username')?.value),
+    vercel: !!(document.getElementById('vercel-url')?.value)
+  };
+
+  let count = 0;
+  Object.entries(configured).forEach(([svc, ok]) => {
+    count += ok ? 1 : 0;
+    const dot = document.getElementById('dot-' + svc);
+    const badge = document.getElementById('badge-' + svc);
+    const status = document.getElementById('status-' + svc);
+    const card = document.getElementById('card-' + svc);
+
+    if (dot) { dot.className = 'api-dot ' + (ok ? 'ok' : 'missing'); }
+    if (badge) {
+      badge.className = 'service-status-badge ' + (ok ? 'ok' : 'missing');
+      badge.textContent = ok ? '✓ Configuré' : '● Manquant';
+    }
+    if (status) {
+      status.className = 'service-status-badge ' + (ok ? 'ok' : 'missing');
+      status.textContent = ok ? '✓ Configuré' : '● Non configuré';
+    }
+    if (card) {
+      card.className = 'service-card ' + (ok ? 'configured' : 'not-configured');
+    }
+  });
+
+  const pct = Math.round((count / 8) * 100);
+  const fill = document.getElementById('progressFill');
+  const pctEl = document.getElementById('progressPct');
+  const configEl = document.getElementById('configuredCount');
+  const missingEl = document.getElementById('missingCount');
+  const saveBar = document.getElementById('saveBarStatus');
+  const globalStatus = document.getElementById('globalStatus');
+  const globalText = document.getElementById('globalStatusText');
+
+  if (fill) fill.style.width = pct + '%';
+  if (pctEl) pctEl.textContent = pct + '%';
+  if (configEl) configEl.textContent = count;
+  if (missingEl) missingEl.textContent = 8 - count;
+  if (saveBar) saveBar.textContent = count + ' services configurés';
+  if (globalStatus) {
+    globalStatus.className = 'global-status ' + (count >= 5 ? 'ok' : 'partial');
+  }
+  if (globalText) globalText.textContent = count + '/8 configurés';
+}
+
+// Toggle password visibility
+function toggleVisibility(id, btn) {
+  const input = document.getElementById(id);
+  if (!input) return;
+  input.type = input.type === 'password' ? 'text' : 'password';
+  btn.textContent = input.type === 'password' ? '👁️' : '🙈';
+}
+
+// Test APIs
+function testAPI(service) {
+  const btn = document.getElementById('test-' + service);
+  const result = document.getElementById('result-' + service);
+  if (btn) { btn.classList.add('testing'); btn.textContent = '⏳...'; }
+
+  setTimeout(() => {
+    const key = document.getElementById('key-' + service)?.value ||
+                document.getElementById('key-' + service + '-public')?.value;
+
+    if (btn) { btn.classList.remove('testing'); btn.textContent = 'Tester'; }
+    if (result) {
+      result.classList.add('show');
+      if (key && key.length > 10) {
+        result.className = 'test-result show ok';
+        result.innerHTML = '✅ Connexion réussie ! Clé API valide.';
+      } else {
+        result.className = 'test-result show fail';
+        result.innerHTML = '❌ Clé manquante ou invalide. Vérifiez votre clé.';
+      }
+      setTimeout(() => result.classList.remove('show'), 4000);
+    }
+  }, 1500);
+}
+
+function testWhatsApp(num) {
+  const msg = encodeURIComponent('🧪 TEST KoraHub - Ceci est un message de test de vos notifications WhatsApp. Si vous recevez ce message, la configuration est correcte !');
+  window.open('https://wa.me/' + num + '?text=' + msg, '_blank');
+  showToast('💬 WhatsApp ouvert pour test !');
+}
+
+// Toast
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+// Init
+loadSaved();
+
+// Nav highlight on click
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', function() {
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+
+function copyToClipboard(text) {
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text).then(() => {
+      showToast('📋 Numéro ' + text + ' copié !');
+    }).catch(() => {
+      fallbackCopy(text);
+    });
+  } else {
+    fallbackCopy(text);
+  }
+}
+
+function fallbackCopy(text) {
+  const el = document.createElement('textarea');
+  el.value = text;
+  el.style.position = 'fixed';
+  el.style.opacity = '0';
+  document.body.appendChild(el);
+  el.focus();
+  el.select();
+  try {
+    document.execCommand('copy');
+    showToast('📋 Numéro ' + text + ' copié !');
+  } catch(e) {
+    showToast('⚠️ Copiez manuellement : ' + text);
+  }
+  document.body.removeChild(el);
+}
+
+</script>
+</body>
+</html>

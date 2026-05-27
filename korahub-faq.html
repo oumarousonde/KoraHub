@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KoraHub – FAQ · Questions fréquentes</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root{--violet:#2D1B69;--violet-mid:#4A2E9E;--violet-light:#6B46C1;--gold:#F5C518;--gold-light:#FFD95A;--white:#FFFFFF;--off-white:#F8F6FF;--text-dark:#1A0F3C;--text-muted:#7C6FAD;--border:rgba(107,70,193,0.12);--shadow:0 8px 32px rgba(45,27,105,0.12);--success:#2ed573;--danger:#ff4757}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--text-dark)}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:64px;background:rgba(45,27,105,0.97);backdrop-filter:blur(12px);border-bottom:1px solid rgba(245,197,24,0.12)}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-icon{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--gold),var(--gold-light));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:var(--violet)}
+.logo-text{font-family:'Syne',sans-serif;font-weight:700;font-size:18px;color:white}
+.logo-text span{color:var(--gold)}
+.nav-right{display:flex;gap:10px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:9px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .2s;text-decoration:none}
+.btn-ghost{background:transparent;color:white;border:1px solid rgba(255,255,255,0.25)}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold)}
+.btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--violet);font-weight:700}
+.btn-gold:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(245,197,24,0.35)}
+.btn-violet{background:linear-gradient(135deg,var(--violet-mid),var(--violet-light));color:white}
+
+/* HERO */
+.hero{background:linear-gradient(145deg,var(--violet) 0%,#1A0F3C 60%,#0D0829 100%);padding:60px 5% 50px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(245,197,24,0.07) 0%,transparent 70%);border-radius:50%}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(245,197,24,0.1);border:1px solid rgba(245,197,24,0.25);border-radius:100px;padding:5px 14px;font-size:12px;font-weight:600;color:var(--gold-light);margin-bottom:18px;position:relative;z-index:1}
+.hero-title{font-family:'Syne',sans-serif;font-size:clamp(28px,4vw,46px);font-weight:800;color:white;margin-bottom:10px;position:relative;z-index:1}
+.hero-title span{color:var(--gold)}
+.hero-sub{font-size:15px;color:rgba(255,255,255,0.6);margin-bottom:28px;position:relative;z-index:1;max-width:500px;margin-left:auto;margin-right:auto;line-height:1.7}
+
+/* SEARCH */
+.search-wrap{max-width:520px;margin:0 auto;position:relative;z-index:1}
+.faq-search{width:100%;padding:14px 20px 14px 46px;border-radius:14px;border:none;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text-dark);outline:none;box-shadow:0 4px 24px rgba(0,0,0,0.2)}
+.search-icon{position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:18px;color:var(--text-muted)}
+
+/* STATS */
+.faq-stats{display:flex;gap:32px;justify-content:center;margin-top:28px;flex-wrap:wrap;position:relative;z-index:1}
+.faq-stat-val{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--gold)}
+.faq-stat-label{font-size:11px;color:rgba(255,255,255,0.5);margin-top:2px}
+
+/* MAIN LAYOUT */
+.faq-layout{display:grid;grid-template-columns:240px 1fr;gap:32px;max-width:1100px;margin:0 auto;padding:40px 5%}
+
+/* CATEGORIES SIDEBAR */
+.faq-sidebar{position:sticky;top:84px;height:fit-content}
+.faq-cat-card{background:white;border:1.5px solid var(--border);border-radius:16px;padding:8px;overflow:hidden}
+.faq-cat-title{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);padding:10px 12px 6px}
+.faq-cat-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;transition:all .2s;font-size:13px;font-weight:500;color:var(--text-muted)}
+.faq-cat-item:hover{background:var(--off-white);color:var(--violet-light)}
+.faq-cat-item.active{background:rgba(107,70,193,0.08);color:var(--violet);font-weight:700}
+.faq-cat-item.active .cat-icon{color:var(--gold)}
+.cat-icon{font-size:16px;width:22px;text-align:center}
+.cat-count{margin-left:auto;background:var(--off-white);color:var(--text-muted);font-size:10px;font-weight:700;padding:2px 7px;border-radius:100px}
+.faq-cat-item.active .cat-count{background:rgba(107,70,193,0.1);color:var(--violet-light)}
+
+/* FAQ CONTENT */
+.faq-content{}
+.faq-section{margin-bottom:36px;display:none}
+.faq-section.active{display:block;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.faq-section-header{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.faq-section-icon{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px}
+.faq-section-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--text-dark)}
+.faq-section-sub{font-size:13px;color:var(--text-muted);margin-top:2px}
+
+/* ACCORDION */
+.faq-item{background:white;border:1.5px solid var(--border);border-radius:14px;margin-bottom:10px;overflow:hidden;transition:all .25s}
+.faq-item:hover{border-color:rgba(107,70,193,0.2);box-shadow:0 4px 16px rgba(45,27,105,0.08)}
+.faq-item.open{border-color:rgba(107,70,193,0.25);box-shadow:var(--shadow)}
+.faq-question{display:flex;align-items:center;gap:14px;padding:18px 20px;cursor:pointer;user-select:none}
+.faq-q-icon{width:32px;height:32px;border-radius:10px;background:rgba(107,70,193,0.08);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;transition:all .25s}
+.faq-item.open .faq-q-icon{background:linear-gradient(135deg,var(--violet),var(--violet-light));color:white}
+.faq-q-text{flex:1;font-size:14px;font-weight:600;color:var(--text-dark);line-height:1.4}
+.faq-arrow{font-size:12px;color:var(--text-muted);transition:transform .3s;flex-shrink:0}
+.faq-item.open .faq-arrow{transform:rotate(180deg);color:var(--violet-light)}
+.faq-answer{max-height:0;overflow:hidden;transition:max-height .35s ease,padding .25s ease}
+.faq-item.open .faq-answer{max-height:600px}
+.faq-answer-inner{padding:0 20px 20px 66px;font-size:14px;color:var(--text-dark);line-height:1.8}
+.faq-answer-inner p{margin-bottom:10px}
+.faq-answer-inner p:last-child{margin-bottom:0}
+.faq-answer-inner ul{padding-left:18px;margin:8px 0}
+.faq-answer-inner li{margin-bottom:6px}
+.faq-answer-inner strong{color:var(--violet)}
+.faq-answer-inner .highlight{background:rgba(245,197,24,0.08);border:1px solid rgba(245,197,24,0.2);border-radius:8px;padding:10px 14px;margin:10px 0;font-size:13px}
+.faq-answer-inner .tip{background:rgba(46,213,115,0.06);border:1px solid rgba(46,213,115,0.2);border-radius:8px;padding:10px 14px;margin:10px 0;font-size:13px;color:var(--text-dark)}
+.faq-answer-inner .warning{background:rgba(255,71,87,0.06);border:1px solid rgba(255,71,87,0.2);border-radius:8px;padding:10px 14px;margin:10px 0;font-size:13px;color:var(--text-dark)}
+
+/* HELPFUL */
+.helpful-row{display:flex;align-items:center;gap:10px;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
+.helpful-text{font-size:12px;color:var(--text-muted)}
+.helpful-btns{display:flex;gap:6px}
+.helpful-btn{padding:5px 12px;border-radius:8px;border:1.5px solid var(--border);background:white;font-size:12px;cursor:pointer;transition:all .2s;font-weight:600}
+.helpful-btn:hover{border-color:var(--violet-light);color:var(--violet-light)}
+.helpful-btn.voted{background:rgba(46,213,115,0.1);border-color:rgba(46,213,115,0.3);color:var(--success)}
+
+/* CONTACT BANNER */
+.contact-banner{background:linear-gradient(135deg,var(--violet) 0%,#1A0F3C 100%);border-radius:20px;padding:32px;text-align:center;margin-top:32px;position:relative;overflow:hidden}
+.contact-banner::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(245,197,24,0.1) 0%,transparent 70%)}
+.contact-banner-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:white;margin-bottom:8px}
+.contact-banner-sub{font-size:14px;color:rgba(255,255,255,0.6);margin-bottom:24px}
+.contact-options{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.contact-opt{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:12px;padding:12px 20px;color:white;text-decoration:none;font-size:13px;font-weight:600;transition:all .2s;cursor:pointer}
+.contact-opt:hover{background:rgba(245,197,24,0.15);border-color:rgba(245,197,24,0.3);color:var(--gold)}
+.contact-opt-icon{font-size:20px}
+
+/* NO RESULTS */
+.no-results{text-align:center;padding:48px 20px;display:none}
+.no-results.show{display:block}
+.no-results-icon{font-size:48px;margin-bottom:12px}
+.no-results-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--text-dark);margin-bottom:6px}
+.no-results-sub{font-size:13px;color:var(--text-muted)}
+
+/* FOOTER */
+footer{background:var(--violet);padding:32px 5%;margin-top:0}
+.footer-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.footer-copy{font-size:13px;color:rgba(255,255,255,0.5)}
+.footer-links{display:flex;gap:16px;flex-wrap:wrap}
+.footer-links a{font-size:13px;color:rgba(255,255,255,0.6);text-decoration:none;transition:color .2s}
+.footer-links a:hover{color:var(--gold)}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;z-index:2000;background:var(--violet);border:1px solid var(--gold);color:white;padding:13px 18px;border-radius:11px;font-size:13px;display:flex;align-items:center;gap:9px;transform:translateX(120%);transition:transform .3s;box-shadow:var(--shadow);max-width:300px}
+.toast.show{transform:translateX(0)}
+
+/* RESPONSIVE */
+@media(max-width:900px){.faq-layout{grid-template-columns:1fr}.faq-sidebar{position:static;margin-bottom:20px}.faq-cat-card{display:flex;flex-wrap:wrap;gap:4px;padding:8px}.faq-cat-title{display:none}.faq-cat-item{flex:0 0 auto;border-radius:100px;padding:7px 14px}}
+@media(max-width:600px){.faq-answer-inner{padding-left:20px}.hero{padding:60px 4% 40px}}
+</style>
+
+<link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImZnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3R5bGU9InN0b3AtY29sb3I6I0Y1QzUxOCIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNGRkQ5NUEiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgcng9IjgiIGZpbGw9InVybCgjZmcpIi8+CiAgPHRleHQgeD0iNCIgeT0iMjQiIGZvbnQtZmFtaWx5PSJBcmlhbCBCbGFjayxzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iOTAwIiBmb250LXNpemU9IjIyIiBmaWxsPSIjMkQxQjY5Ij5LPC90ZXh0Pgo8L3N2Zz4=" type="image/svg+xml">
+
+<!-- PWA Manifest -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2D1B69">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="KoraHub">
+
+</head>
+<body>
+<div class="kh-logo">K</div></div><div class="kh-name">Kora<span style="color:#F5C518">Hub</span></div><div class="kh-dots"><div class="kh-dot"></div><div class="kh-dot"></div><div class="kh-dot"></div></div></div>
+<div class="kh-logo">K</div></div><div class="kh-name">Kora<span style="color:#F5C518">Hub</span></div><div class="kh-dots"><div class="kh-dot"></div><div class="kh-dot"></div><div class="kh-dot"></div></div></div>
+
+<!-- NAV -->
+<nav>
+  <a href="korahub.html" class="nav-logo">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 40" style="height:34px;width:auto;display:block"><defs><linearGradient id="kg1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#F5C518"/><stop offset="100%" style="stop-color:#FFD95A"/></linearGradient></defs><rect x="0" y="2" width="36" height="36" rx="9" fill="url(#kg1)"/><text x="8" y="28" font-family="Arial Black,sans-serif" font-weight="900" font-size="23" fill="#2D1B69">K</text><text x="44" y="25" font-family="Arial,sans-serif" font-weight="700" font-size="16" fill="white">Kora</text><text x="80" y="25" font-family="Arial,sans-serif" font-weight="700" font-size="16" fill="#F5C518">Hub</text><text x="44" y="35" font-family="Arial,sans-serif" font-size="7" fill="rgba(255,255,255,0.45)" letter-spacing="1.5">LEARN · SELL · GROW</text></svg>
+    
+  </a>
+  <div class="nav-right">
+    <a href="korahub.html" class="btn btn-ghost">🏠 Accueil</a>
+    <a href="korahub-auth.html" class="btn btn-gold">Mon compte</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">❓ Centre d'aide</div>
+  <h1 class="hero-title">Questions <span>fréquentes</span></h1>
+  <p class="hero-sub">Trouvez rapidement les réponses à toutes vos questions sur KoraHub</p>
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input type="text" class="faq-search" placeholder="Rechercher une question..." id="faqSearch" oninput="searchFAQ(this.value)">
+  </div>
+  <div class="faq-stats">
+    <div>
+      <div class="faq-stat-val">32</div>
+      <div class="faq-stat-label">Questions répondues</div>
+    </div>
+    <div>
+      <div class="faq-stat-val">6</div>
+      <div class="faq-stat-label">Catégories</div>
+    </div>
+    <div>
+      <div class="faq-stat-val">24h</div>
+      <div class="faq-stat-label">Délai de réponse support</div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="faq-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="faq-sidebar">
+    <div class="faq-cat-card">
+      <div class="faq-cat-title">Catégories</div>
+      <div class="faq-cat-item active" onclick="showCat('all',this)">
+        <span class="cat-icon">📋</span> Toutes les questions
+        <span class="cat-count">32</span>
+      </div>
+      <div class="faq-cat-item" onclick="showCat('achat',this)">
+        <span class="cat-icon">🛒</span> Acheter
+        <span class="cat-count">8</span>
+      </div>
+      <div class="faq-cat-item" onclick="showCat('paiement',this)">
+        <span class="cat-icon">💳</span> Paiement
+        <span class="cat-count">6</span>
+      </div>
+      <div class="faq-cat-item" onclick="showCat('vendeur',this)">
+        <span class="cat-icon">💼</span> Vendeurs
+        <span class="cat-count">8</span>
+      </div>
+      <div class="faq-cat-item" onclick="showCat('affiliation',this)">
+        <span class="cat-icon">📢</span> Affiliation
+        <span class="cat-count">5</span>
+      </div>
+      <div class="faq-cat-item" onclick="showCat('technique',this)">
+        <span class="cat-icon">⚙️</span> Technique
+        <span class="cat-count">3</span>
+      </div>
+      <div class="faq-cat-item" onclick="showCat('compte',this)">
+        <span class="cat-icon">👤</span> Mon compte
+        <span class="cat-count">2</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- FAQ CONTENT -->
+  <div class="faq-content">
+
+    <!-- NO RESULTS -->
+    <div class="no-results" id="noResults">
+      <div class="no-results-icon">🔍</div>
+      <div class="no-results-title">Aucun résultat trouvé</div>
+      <div class="no-results-sub">Essayez d'autres mots clés ou contactez notre support</div>
+    </div>
+
+    <!-- ══ ACHAT ══ -->
+    <div class="faq-section active" id="cat-achat" data-cat="achat">
+      <div class="faq-section-header">
+        <div class="faq-section-icon" style="background:rgba(107,70,193,0.1)">🛒</div>
+        <div>
+          <div class="faq-section-title">Acheter sur KoraHub</div>
+          <div class="faq-section-sub">Tout savoir sur le processus d'achat</div>
+        </div>
+      </div>
+
+      <div class="faq-item" onclick="toggleFAQ(this)">
+        <div class="faq-question">
+          <div class="faq-q-icon">🛒</div>
+          <div class="faq-q-text">Comment acheter un produit sur KoraHub ?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p>Acheter sur KoraHub est très simple :</p>
+            <ul>
+              <li>Parcourez le catalogue ou recherchez un produit</li>
+              <li>Cliquez sur le produit qui vous intéresse</li>
+              <li>Cliquez sur <strong>"Acheter maintenant"</strong></li>
+              <li>Entrez votre email pour recevoir le produit</li>
+              <li>Choisissez votre moyen de paiement (le moyen de paiement accepté par le vendeur)</li>
+              <li>Envoyez le montant sur le numéro affiché</li>
+              <li>Uploadez votre capture d'écran de paiement</li>
+              <li>Attendez la confirmation (quelques heures maximum)</li>
+            </ul>
+            <div class="tip">✅ Pas besoin de créer un compte pour acheter ! Vous avez juste besoin de votre email.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" onclick="toggleFAQ(this)">
+        <div class="faq-question">
+          <div class="faq-q-icon">📧</div>
+          <div class="faq-q-text">Comment vais-je recevoir mon produit après l'achat ?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p>Après confirmation de votre paiement par l'admin, vous recevez automatiquement un email à l'adresse que vous avez fournie lors de l'achat.</p>
+            <p>Cet email contient :</p>
+            <ul>
+              <li>Un lien de téléchargement direct pour votre produit</li>
+              <li>Les instructions d'utilisation si nécessaire</li>
+            </ul>
+            <div class="highlight">⏱️ Le lien de téléchargement est valable <strong>7 jours</strong>. Si votre lien expire, contactez le support pour le renouveler.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" onclick="toggleFAQ(this)">
+        <div class="faq-question">
+          <div class="faq-q-icon">⏳</div>
+          <div class="faq-q-text">Combien de temps faut-il attendre pour recevoir son produit ?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p>Le délai dépend de la rapidité de confirmation par l'admin KoraHub :</p>
+            <ul>
+              <li><strong>En journée (8h-20h) :</strong> généralement moins de 2 heures</li>
+              <li><strong>La nuit :</strong> confirmation le matin suivant</li>
+              <li><strong>Maximum :</strong> 24 heures après réception de votre paiement</li>
+            </ul>
+            <div class="tip">💡 Si vous n'avez rien reçu après 24h, contactez le support sur WhatsApp au +226 75 31 83 51</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" onclick="toggleFAQ(this)">
+        <div class="faq-question">
+          <div class="faq-q-icon">🔄</div>
+          <div class="faq-q-text">Est-ce que je peux me faire rembourser ?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p>Les produits digitaux ne sont généralement pas remboursables car ils sont livrés instantanément par email.</p>
+            <p>Cependant, un remboursement est possible si :</p>
+            <ul>
+              <li>Votre paiement a été confirmé mais vous n'avez jamais reçu le produit</li>
+              <li>Le produit reçu est différent de ce qui était décrit</li>
+              <li>Le fichier téléchargé est corrompu ou inutilisable</li>
+            </ul>
+            <div class="warning">⚠️ Contactez le support dans les <strong>48 heures</strong> suivant l'achat avec des preuves pour toute réclamation.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" onclick="toggleFAQ(this)">
+        <div class="faq-question">
+          <div class="faq-q-icon">🛍️</div>
+          <div class="faq-q-text">Puis-je acheter plusieurs produits en même temps ?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p>Oui ! KoraHub dispose d'un panier qui vous permet d'ajouter plusieurs produits et de payer en une seule fois.</p>
+            <ul>
+              <li>Cliquez sur <strong>"Ajouter au panier"</strong> sur chaque produit</li>
+              <li>Accédez à votre panier via l'icône 🛒 en haut</li>
+              <li>Payez le montant total en une seule transaction</li>
+            </ul>
+            <div class="tip">💡 Vous recevrez tous vos produits dans le même email de livraison.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" onclick="toggleFAQ(this)">
+        <div class="faq-question">
+          <div class="faq-q-icon">❤️</div>
+          <div class="faq-q-text">Comment sauvegarder un produit pour plus tard ?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p>Vous pouvez ajouter des produits à votre <strong>liste de souhaits</strong> en cliquant sur l'icône ❤️ sur la carte du produit.</p>
+            <p>Pour accéder à votre liste de souhaits :</p>
+            <ul>
+              <li>Créez un compte sur KoraHub</li>
+              <li>Connectez-vous</li>
+              <li>Allez dans <strong>Mon Profil → Liste de souhaits</strong></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" onclick="toggleFAQ(this)">
+        <div class="faq-question">
+          <div class="faq-q-icon">🆓</div>
+          <div class="faq-q-text">Comment obtenir des produits gratuits ?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p>Certains vendeurs offrent des produits gratuits sur KoraHub. Pour les trouver :</p>
+            <ul>
+              <li>Dans la recherche, cliquez sur le filtre <strong>"Gratuits"</strong></li>
+              <li>Les produits gratuits affichent le badge <strong>🆓 Gratuit</strong></li>
+              <li>Cliquez sur <strong>"Télécharger"</strong> directement sans paiement</li>
+            </ul>
+            <div class="tip">💡 Les produits gratuits sont une excellente façon de découvrir un vendeur avant d'acheter ses produits payants.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" onclick="toggleFAQ(this)">
+        <div class="faq-question">
+          <div class="faq-q-icon">💬</div>
+          <div class="faq-q-text">Puis-je laisser un commentaire sur un produit ?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p>Oui ! KoraHub permet à tout visiteur de laisser un commentaire public sur n'importe quel produit.</p>
+            <p>Vous n'avez pas besoin d'avoir acheté le produit pour commenter. Cela permet de poser des questions aux vendeurs et partager des avis.</p>
+            <div class="highlight">⭐ Si vous avez acheté le produit, votre avis sera marqué comme "Acheteur vérifié" ce qui lui donne plus de crédibilité.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ PAIEMENT ══ -->
+    <div class="faq-section" id="cat-paiement" data-cat="paiement">
+      <div class="faq-section-header">
+        <div class="faq-section-icon" style="background:rgba(245,197,24,0.1)">💳</div>
+        <div>
+          <div class="faq-section-title">Paiement</div>
+          <div class="faq-section-sub">Tout sur les moyens de paiement acceptés</div>
+        </div>
+      </div>
+
+      <div class="faq-item" onclick="toggleFAQ(this)">
+        <div class="faq-question">
+          <div class="faq-q-icon">💳</div>
+          <div class="faq-q-text">Quels moyens de paiement sont acceptés sur KoraHub ?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p>KoraHub accepte les moyens de paiement définis par chaque vendeur :</p>
+            <ul>
+              <li>🟠 <strong>Orange Money</strong></li>
+              <li>🔵 <strong>Wave</strong></li>
+              <li>🟣 <strong>Moov Money</strong></li>
+              <li>🔴 <strong>Coris Money</strong></li>
+            </ul>
+            <div class="highlight">💡 Les cartes bancaires ne sont pas acceptées actuellement. D'autres moyens de paiement africains (MTN MoMo, M-Pesa) seront ajoutés prochainement.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" onclick="toggleFAQ(this)">
+        <div class="faq-question">
+          <div class="faq-q-icon">📸</div>
+          <div class="faq-q-text">Pourquoi dois-je envoyer une capture d'écran de mon paiement ?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p>KoraHub utilise un système de paiement manuel où l'admin vérifie chaque transaction avant de livrer le produit.</p>
+            <p>La capture d'écran sert de preuve que vous avez bien effectué le paiement. Elle doit montrer :</p>
+            <ul>
+              <li>Le montant envoyé</li>
+              <li>Le numéro du destinataire</li>
+              <li>La date et l'heure de la transaction</li>
+              <li>La confirmation de succès</li>
+            </ul>
+            <div class="warning">⚠️ N'envoyez jamais une fausse capture d'écran. Cela entraîne le blocage définitif de votre accès à KoraHub.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" onclick="toggleFAQ(this)">
+        <div class="faq-question">
+          <div class="faq-q-icon">⏱️</div>
+          <div class="faq-q-text">Que se passe-t-il si je ne paie pas dans les 24 heures ?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p>Si vous ne soumettez pas votre preuve de paiement dans les <strong>24 heures</strong> suivant votre commande, celle-ci est automatiquement annulée.</p>
+            <p>Vous recevrez un email d'annulation. Vous pourrez recommencer une nouvelle commande si vous le souhaitez.</p>
+            <div class="tip">💡 Payez et uploadez votre capture immédiatement après avoir passé votre commande pour éviter l'annulation automatique.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" onclick="toggleFAQ(this)">
+        <div class="faq-question">
+          <div class="faq-q-icon">🔢</div>
+          <div class="faq-q-text">Sur quel numéro dois-je envoyer mon paiement ?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p>Le numéro s'affiche automatiquement selon le moyen de paiement que vous choisissez :</p>
+            <ul>
+              <li>🟠 <strong>Orange Money :</strong> selon vendeur</li>
+              <li>🔵 <strong>Wave :</strong> selon vendeur</li>
+              <li>🟣 <strong>Moov Money :</strong> selon vendeur</li>
+              <li>🔴 <strong>Coris Money :</strong> selon vendeur</li>
+            </ul>
+            <div class="highlight">💡 Le numéro exact s'affiche toujours sur la page de paiement. Vérifiez bien avant d'envoyer l'argent.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" onclick="toggleFAQ(this)">
+        <div class="faq-question">
+          <div class="faq-q-icon">🎟️</div>
+          <div class="faq-q-text">Comment utiliser un code promo ?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p>Pour utiliser un code promo :</p>
+            <ul>
+              <li>Ajoutez le produit à votre panier</li>
+              <li>Sur la page de paiement, entrez votre code dans le champ <strong>"Code promo"</strong></li>
+              <li>La réduction s'applique automatiquement sur le montant à payer</li>
+            </ul>
+            <div class="tip">💡 Les codes promo sont créés par les vendeurs. Suivez leurs pages sur les réseaux sociaux pour ne pas en rater !</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" onclick="toggleFAQ(this)">
+        <div class="faq-question">
+          <div class="faq-q-icon">🌍</div>
+          <div class="faq-q-text">Puis-je acheter depuis n'importe quel pays africain ?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p>Oui ! KoraHub est ouvert à toute l'Afrique. Vous pouvez acheter depuis n'importe quel pays africain.</p>
+            <p>Cependant, les moyens de paiement actuels (Orange Money, Wave, Moov, Coris) sont principalement disponibles en Afrique de l'Ouest francophone.</p>
+            <div class="highlight">🌍 D'autres moyens de paiement africains comme MTN MoMo, M-Pesa seront ajoutés bientôt pour couvrir toute l'Afrique.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ VENDEUR ══ -->
+    <div class="faq-section" id="cat-vendeur" data-cat="vendeur">
+      <div class="faq-section-header">
+        <div class="faq-section-icon" style="background:rgba(107,70,193,0.1)">💼</div>
+        <div>
+          <div class="faq-section-title">Devenir vendeur</div>
+          <div class="faq-section-sub">Tout sur la vente de produits sur KoraHub</div>
+        </div>
+      </div>
+
+      <div class="faq-item" onclick="toggleFAQ(this)">
+        <div class="faq-question">
+          <div class="faq-q-icon">💼</div>
+          <div class="faq-q-text">Comment devenir vendeur sur KoraHub ?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p>Devenir vendeur sur KoraHub est gratuit et rapide :</p>
+            <ul>
+              <li>Cliquez sur <strong>"S'inscrire"</strong> en haut du site</li>
+              <li>Sélectionnez le rôle <strong>"Vendeur"</strong></li>
+              <li>Remplissez vos informations et vos numéros Mobile Money</li>
+              <li>Votre compte vendeur est immédiatement actif</li>
+              <li>Ajoutez vos premiers produits depuis votre dashboard</li>
+            </ul>
+            <div class="tip">✅ Pas de validation manuelle requise ! Vous pouvez commencer à vendre immédiatement après inscription.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" onclick="toggleFAQ(this)">
+        <div class="faq-question">
+          <div class="faq-q-icon">💰</div>
+          <div class="faq-q-text">Quelle est la commission prélevée par KoraHub ?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p>KoraHub prélève une commission de <strong>10%</strong> sur chaque vente confirmée.</p>
+            <ul>
+              <li><strong>Sans affiliation :</strong> vous gardez 90% du prix de vente</li>
+              <li><strong>Avec affiliation :</strong> vous gardez 80% (10% KoraHub + 10% affilié)</li>
+            </ul>
+            <div class="warning">⚠️ La commission doit être payée à KoraHub dans les <strong>24 heures</strong> suivant chaque vente. Passé ce délai, votre compte sera bloqué automatiquement.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" onclick="toggleFAQ(this)">
+        <div class="faq-question">
+          <div class="faq-q-icon">📦</div>
+          <div class="faq-q-text">Quels types de produits puis-je vendre ?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p>KoraHub accepte tous les produits digitaux légaux :</p>
+            <ul>
+              <li>📚 Ebooks et guides PDF</li>
+              <li>🎓 Formations en ligne et cours vidéo</li>
+              <li>🎯 Sessions de coaching et mentorat</li>
+              <li>🧠 Contenus de bien-être mental (soutien léger)</li>
+              <li>💼 Ressources business (templates, business plans)</li>
+              <li>🎨 Contenus créatifs et techniques</li>
+            </ul>
+            <div class="warning">⚠️ Les produits physiques ne sont pas encore disponibles. Les contenus illégaux, pornographiques ou frauduleux sont strictement interdits.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" onclick="toggleFAQ(this)">
+        <div class="faq-question">
+          <div class="faq-q-icon">🤖</div>
+          <div class="faq-q-text">Comment fonctionne l'outils marketing pour faire la publicité ?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p>KoraHub génère automatiquement des vidéos publicitaires pour vos produits en 4 étapes :</p>
+            <ul>
+              <li><strong>Étape 1 :</strong> Choisissez le produit et le format (vertical/horizontal)</li>
+              <li><strong>Étape 2 :</strong> L'IA génère un script marketing percutant que vous pouvez modifier</li>
+              <li><strong>Étape 3 :</strong> Prévisualisez la vidéo avec l'avatar africain réaliste</li>
+              <li><strong>Étape 4 :</strong> Publiez directement sur Facebook, TikTok, Instagram ou WhatsApp</li>
+            </ul>
+            <div class="tip">💡 L'avatar est un homme africain de 25-35 ans en tee-shirt simple avec une voix marketing française dynamique.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" onclick="toggleFAQ(this)">
+        <div class="faq-question">
+          <div class="faq-q-icon">🚫</div>
+          <div class="faq-q-text">Pourquoi mon compte vendeur a été bloqué ?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p>Un compte vendeur peut être bloqué pour les raisons suivantes :</p>
+            <ul>
+              <li><strong>Commission impayée :</strong> vous n'avez pas payé votre 10% dans les 24h</li>
+              <li><strong>Produit interdit :</strong> vous avez publié un contenu non conforme</li>
+              <li><strong>Fraude :</strong> activité suspecte détectée sur votre compte</li>
+            </ul>
+            <p>Pour débloquer votre compte :</p>
+            <ul>
+              <li>Payez le montant de commission dû</li>
+              <li>Contactez l'admin sur WhatsApp : +226 75 31 83 51</li>
+            </ul>
+            <div class="warning">⚠️ Chaque vendeur n'a droit qu'à <strong>une seule chance</strong> en cas de retard de commission.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" onclick="toggleFAQ(this)">
+        <div class="faq-question">
+          <div class="faq-q-icon">📊</div>
+          <div class="faq-q-text">Comment suivre mes ventes et revenus ?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p>Votre dashboard vendeur vous donne accès à toutes vos statistiques :</p>
+            <ul>
+              <li>Chiffre d'affaires total et mensuel</li>
+              <li>Nombre de ventes par produit</li>
+              <li>Graphique d'évolution des ventes</li>
+              <li>Commissions dues et payées</li>
+              <li>Historique complet des commandes</li>
+            </ul>
+            <div class="tip">💡 Vous recevez aussi une notification WhatsApp à chaque nouvelle vente !</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" onclick="toggleFAQ(this)">
+        <div class="faq-question">
+          <div class="faq-q-icon">🏷️</div>
+          <div class="faq-q-text">Comment créer une promotion sur mon produit ?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p>Pour mettre un produit en promotion :</p>
+            <ul>
+              <li>Allez dans <strong>Dashboard → Mes produits</strong></li>
+              <li>Cliquez sur ✏️ pour modifier votre produit</li>
+              <li>Entrez un <strong>Prix promo</strong> inférieur au prix normal</li>
+              <li>Sauvegardez → le badge <strong>🔥 PROMO</strong> apparaît automatiquement</li>
+            </ul>
+            <p>Vous pouvez aussi créer des <strong>codes promo</strong> depuis <strong>Dashboard → Codes Promo</strong></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" onclick="toggleFAQ(this)">
+        <div class="faq-question">
+          <div class="faq-q-icon">🌟</div>
+          <div class="faq-q-text">Que signifient les badges Débutant, Pro et Expert ?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p>Les badges récompensent votre activité sur KoraHub :</p>
+            <ul>
+              <li>🌱 <strong>Débutant :</strong> 0 à 10 ventes</li>
+              <li>⭐ <strong>Pro :</strong> 11 à 50 ventes</li>
+              <li>🏆 <strong>Expert :</strong> 51 ventes et plus</li>
+            </ul>
+            <div class="tip">💡 Un badge élevé inspire plus de confiance aux acheteurs et peut augmenter vos ventes !</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ AFFILIATION ══ -->
+    <div class="faq-section" id="cat-affiliation" data-cat="affiliation">
+      <div class="faq-section-header">
+        <div class="faq-section-icon" style="background:rgba(240,147,251,0.1)">📢</div>
+        <div>
+          <div class="faq-section-title">Programme d'affiliation</div>
+          <div class="faq-section-sub">Gagner des commissions en promouvant des produits</div>
+        </div>
+      </div>
+
+      <div class="faq-item" onclick="toggleFAQ(this)">
+        <div class="faq-question">
+          <div class="faq-q-icon">📢</div>
+          <div class="faq-q-text">Comment fonctionne le programme d'affiliation ?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p>Le programme d'affiliation vous permet de gagner de l'argent en promouvant les produits des autres :</p>
+            <ul>
+              <li>Inscrivez-vous avec le rôle <strong>"Affilié"</strong></li>
+              <li>Obtenez votre <strong>lien unique</strong> personnalisé</li>
+              <li>Partagez ce lien sur vos réseaux sociaux</li>
+              <li>Chaque achat via votre lien vous rapporte <strong>10% de commission</strong></li>
+            </ul>
+            <div class="tip">✅ Vous pouvez être affilié ET vendeur ET acheteur en même temps sur KoraHub !</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" onclick="toggleFAQ(this)">
+        <div class="faq-question">
+          <div class="faq-q-icon">💰</div>
+          <div class="faq-q-text">Combien puis-je gagner avec l'affiliation ?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p>Vos gains dépendent des produits que vous promouvez et de votre audience :</p>
+            <ul>
+              <li>Produit à <strong>2 500 FCFA</strong> → vous gagnez <strong>250 FCFA</strong> par vente</li>
+              <li>Produit à <strong>8 000 FCFA</strong> → vous gagnez <strong>800 FCFA</strong> par vente</li>
+              <li>Produit à <strong>25 000 FCFA</strong> → vous gagnez <strong>2 500 FCFA</strong> par vente</li>
+            </ul>
+            <div class="highlight">💡 Avec 10 ventes d'un coaching à 25 000 FCFA, vous gagnez <strong>25 000 FCFA</strong> sans rien créer !</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" onclick="toggleFAQ(this)">
+        <div class="faq-question">
+          <div class="faq-q-icon">💸</div>
+          <div class="faq-q-text">Comment retirer mes gains d'affiliation ?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p>Pour retirer vos gains :</p>
+            <ul>
+              <li>Allez dans <strong>Dashboard Affilié → Demander un paiement</strong></li>
+              <li>Choisissez votre moyen de paiement (le moyen de paiement accepté par le vendeur)</li>
+              <li>Entrez votre numéro</li>
+              <li>Soumettez votre demande</li>
+            </ul>
+            <div class="tip">⏱️ L'admin traite les demandes de retrait sous <strong>24 à 48 heures</strong>.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" onclick="toggleFAQ(this)">
+        <div class="faq-question">
+          <div class="faq-q-icon">🔗</div>
+          <div class="faq-q-text">Puis-je créer des liens d'affiliation pour chaque produit ?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p>Oui ! Vous pouvez créer un lien unique par produit depuis votre dashboard affilié.</p>
+            <p>Exemple :</p>
+            <ul>
+              <li>Lien général : <strong>korahub.vercel.app/ref/votrenom</strong></li>
+              <li>Lien produit spécifique : <strong>korahub.vercel.app/ref/votrenom/chatgpt</strong></li>
+            </ul>
+            <div class="tip">💡 Créez un lien spécifique par produit pour mieux suivre vos statistiques de clics et conversions.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" onclick="toggleFAQ(this)">
+        <div class="faq-question">
+          <div class="faq-q-icon">📊</div>
+          <div class="faq-q-text">Comment suivre mes clics et conversions ?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p>Votre dashboard affilié affiche en temps réel :</p>
+            <ul>
+              <li>Nombre total de clics sur vos liens</li>
+              <li>Taux de conversion (clics → achats)</li>
+              <li>Sources de trafic (Facebook, WhatsApp, TikTok...)</li>
+              <li>Gains par produit et par période</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ TECHNIQUE ══ -->
+    <div class="faq-section" id="cat-technique" data-cat="technique">
+      <div class="faq-section-header">
+        <div class="faq-section-icon" style="background:rgba(79,172,254,0.1)">⚙️</div>
+        <div>
+          <div class="faq-section-title">Questions techniques</div>
+          <div class="faq-section-sub">Problèmes techniques et solutions</div>
+        </div>
+      </div>
+
+      <div class="faq-item" onclick="toggleFAQ(this)">
+        <div class="faq-question">
+          <div class="faq-q-icon">📱</div>
+          <div class="faq-q-text">Comment installer KoraHub sur mon téléphone ?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p>KoraHub est une application web progressive (PWA) que vous pouvez installer sur votre téléphone sans passer par le Play Store :</p>
+            <ul>
+              <li>Ouvrez KoraHub dans <strong>Chrome</strong> sur Android</li>
+              <li>Un message apparaît : <strong>"Ajouter à l'écran d'accueil"</strong></li>
+              <li>Appuyez dessus et confirmez</li>
+              <li>KoraHub apparaît comme une vraie application sur votre téléphone !</li>
+            </ul>
+            <div class="tip">💡 L'application s'ouvre sans navigateur et fonctionne rapidement comme une vraie app.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" onclick="toggleFAQ(this)">
+        <div class="faq-question">
+          <div class="faq-q-icon">📧</div>
+          <div class="faq-q-text">Je n'ai pas reçu l'email avec mon produit, que faire ?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p>Si vous n'avez pas reçu votre email de livraison :</p>
+            <ul>
+              <li>Vérifiez votre <strong>dossier spam/indésirables</strong></li>
+              <li>Vérifiez que l'email entré lors de l'achat est correct</li>
+              <li>Attendez au maximum <strong>24 heures</strong> après confirmation</li>
+            </ul>
+            <p>Si le problème persiste, contactez le support avec :</p>
+            <ul>
+              <li>Votre email d'achat</li>
+              <li>Le nom du produit acheté</li>
+              <li>Votre capture de paiement</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" onclick="toggleFAQ(this)">
+        <div class="faq-question">
+          <div class="faq-q-icon">🔗</div>
+          <div class="faq-q-text">Mon lien de téléchargement a expiré, comment le renouveler ?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p>Les liens de téléchargement sont valables <strong>7 jours</strong>. Si votre lien a expiré :</p>
+            <ul>
+              <li>Connectez-vous à votre compte KoraHub</li>
+              <li>Allez dans <strong>Mon Profil → Mes téléchargements</strong></li>
+              <li>Cliquez sur <strong>📧 Renvoyer par email</strong></li>
+            </ul>
+            <p>Ou contactez directement le support sur WhatsApp : <strong>+226 75 31 83 51</strong></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ COMPTE ══ -->
+    <div class="faq-section" id="cat-compte" data-cat="compte">
+      <div class="faq-section-header">
+        <div class="faq-section-icon" style="background:rgba(46,213,115,0.1)">👤</div>
+        <div>
+          <div class="faq-section-title">Mon compte</div>
+          <div class="faq-section-sub">Gestion de votre compte KoraHub</div>
+        </div>
+      </div>
+
+      <div class="faq-item" onclick="toggleFAQ(this)">
+        <div class="faq-question">
+          <div class="faq-q-icon">👤</div>
+          <div class="faq-q-text">Puis-je avoir plusieurs rôles sur KoraHub ?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p>Oui ! KoraHub vous permet d'avoir les 3 rôles en même temps :</p>
+            <ul>
+              <li>🛒 <strong>Acheteur</strong> : accéder aux produits</li>
+              <li>💼 <strong>Vendeur</strong> : vendre vos propres produits</li>
+              <li>📢 <strong>Affilié</strong> : promouvoir les produits des autres</li>
+            </ul>
+            <div class="tip">💡 Avoir les 3 rôles vous permet de maximiser vos revenus sur KoraHub. Vous achetez, vous vendez ET vous promouvez !</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" onclick="toggleFAQ(this)">
+        <div class="faq-question">
+          <div class="faq-q-icon">🗑️</div>
+          <div class="faq-q-text">Comment supprimer mon compte ?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p>Pour supprimer votre compte :</p>
+            <ul>
+              <li>Allez dans <strong>Mon Profil → Sécurité</strong></li>
+              <li>Cliquez sur <strong>"Supprimer mon compte"</strong></li>
+              <li>Confirmez par email</li>
+            </ul>
+            <div class="warning">⚠️ La suppression est <strong>irréversible</strong>. Tous vos achats, produits et gains seront perdus définitivement. Assurez-vous d'avoir retiré tous vos gains avant de supprimer votre compte.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTACT BANNER -->
+    <div class="contact-banner">
+      <div class="contact-banner-title">Vous n'avez pas trouvé votre réponse ? 🤔</div>
+      <div class="contact-banner-sub">Notre équipe est disponible pour vous aider dans les 24 heures</div>
+      <div class="contact-options">
+        <div class="contact-opt" onclick="openWhatsApp()">
+          <span class="contact-opt-icon">💬</span>
+          <div>
+            <div style="font-size:13px;font-weight:700">WhatsApp</div>
+            <div style="font-size:11px;opacity:.7">+226 75 31 83 51</div>
+          </div>
+        </div>
+        <div class="contact-opt" onclick="openEmail()">
+          <span class="contact-opt-icon">📧</span>
+          <div>
+            <div style="font-size:13px;font-weight:700">Email</div>
+            <div style="font-size:11px;opacity:.7">sonde.business.75@gmail.com</div>
+          </div>
+        </div>
+        <a href="korahub-apropos.html" class="contact-opt">
+          <span class="contact-opt-icon">🌍</span>
+          <div>
+            <div style="font-size:13px;font-weight:700">À propos</div>
+            <div style="font-size:11px;opacity:.7">Notre histoire</div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-copy">© 2025 KoraHub · Learn. Sell. Grow. · Pour toute l'Afrique 🌍</div>
+    <div class="footer-links">
+      <a href="korahub.html">Accueil</a>
+      <a href="korahub-recherche.html">Catalogue</a>
+      <a href="korahub-apropos.html">À propos</a>
+      <a href="korahub-kids.html">Kids</a>
+      <a href="korahub-templates.html">Templates</a>
+      <a href="korahub-conditions.html">CGU</a>
+      <a href="korahub-auth.html">Connexion</a>
+    </div>
+  </div>
+</footer>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><span>✅</span><span id="toastMsg"></span></div>
+
+<script>
+// Toggle FAQ item
+function toggleFAQ(item) {
+  const isOpen = item.classList.contains('open');
+  // Close all
+  document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+  // Open clicked if was closed
+  if (!isOpen) item.classList.add('open');
+}
+
+// Show category
+function showCat(cat, el) {
+  document.querySelectorAll('.faq-cat-item').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+
+  if (cat === 'all') {
+    document.querySelectorAll('.faq-section').forEach(s => s.classList.add('active'));
+  } else {
+    document.querySelectorAll('.faq-section').forEach(s => {
+      s.classList.toggle('active', s.dataset.cat === cat);
+    });
+  }
+  document.getElementById('noResults').classList.remove('show');
+}
+
+// Search FAQ
+function searchFAQ(query) {
+  const q = query.toLowerCase().trim();
+  if (!q) {
+    document.querySelectorAll('.faq-section').forEach(s => s.classList.add('active'));
+    document.querySelectorAll('.faq-item').forEach(i => i.style.display = '');
+    document.getElementById('noResults').classList.remove('show');
+    return;
+  }
+
+  let found = 0;
+  document.querySelectorAll('.faq-section').forEach(s => s.classList.add('active'));
+  document.querySelectorAll('.faq-item').forEach(item => {
+    const text = item.textContent.toLowerCase();
+    const match = text.includes(q);
+    item.style.display = match ? '' : 'none';
+    if (match) found++;
+  });
+
+  document.getElementById('noResults').classList.toggle('show', found === 0);
+}
+
+// Helpful vote
+function voteHelpful(btn, helpful) {
+  btn.closest('.helpful-btns').querySelectorAll('.helpful-btn').forEach(b => b.classList.remove('voted'));
+  btn.classList.add('voted');
+  showToast(helpful ? '👍 Merci pour votre retour !' : '👎 Nous allons améliorer cette réponse');
+}
+
+// Contact
+function openWhatsApp() {
+  window.open('https://wa.me/226selon vendeur?text=Bonjour, j\'ai besoin d\'aide sur KoraHub', '_blank');
+}
+function openEmail() {
+  window.location.href = 'mailto:sonde.business.75@gmail.com?subject=Support KoraHub';
+}
+
+// Toast
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// Init - show all sections
+document.querySelectorAll('.faq-section').forEach(s => s.classList.add('active'));
+
+// Scroll animations
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.style.opacity = '1';
+      e.target.style.transform = 'translateY(0)';
+    }
+  });
+}, { threshold: 0.05 });
+
+document.querySelectorAll('.faq-item').forEach(item => {
+  item.style.opacity = '0';
+  item.style.transform = 'translateY(12px)';
+  item.style.transition = 'opacity .4s ease, transform .4s ease';
+  observer.observe(item);
+});
+</script>
+<script id="kh-loader-script"></script>
+
+</body>
+</html>

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KoraHub</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden}
+body{font-family:'DM Sans',sans-serif;background:#0D0829}
+
+/* ── LOADER ── */
+.loader{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(145deg,#0D0829 0%,#1A0F3C 50%,#0D0829 100%);transition:opacity .6s ease,transform .6s ease}
+.loader.hide{opacity:0;pointer-events:none;transform:scale(1.05)}
+
+/* ── PARTICLES ── */
+.particles{position:absolute;inset:0;overflow:hidden}
+.particle{position:absolute;border-radius:50%;animation:float-particle linear infinite;opacity:0}
+@keyframes float-particle{
+  0%{transform:translateY(100vh) scale(0);opacity:0}
+  10%{opacity:1}
+  90%{opacity:1}
+  100%{transform:translateY(-100px) scale(1);opacity:0}
+}
+
+/* ── GLOW CIRCLES ── */
+.glow-1{position:absolute;top:-150px;left:-150px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(107,70,193,0.2) 0%,transparent 70%);animation:pulse-glow 3s ease-in-out infinite}
+.glow-2{position:absolute;bottom:-150px;right:-150px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(245,197,24,0.08) 0%,transparent 70%);animation:pulse-glow 3s ease-in-out infinite .5s}
+@keyframes pulse-glow{0%,100%{transform:scale(1);opacity:.6}50%{transform:scale(1.15);opacity:1}}
+
+/* ── LOGO ── */
+.logo-wrap{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:0}
+
+.logo-icon-wrap{position:relative;margin-bottom:20px}
+
+.logo-ring{position:absolute;inset:-16px;border-radius:50%;border:2px solid transparent;background:linear-gradient(#0D0829,#0D0829) padding-box,linear-gradient(135deg,#F5C518,#6B46C1,#F5C518) border-box;animation:spin-ring 3s linear infinite}
+@keyframes spin-ring{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+.logo-ring-2{position:absolute;inset:-28px;border-radius:50%;border:1px solid transparent;background:linear-gradient(#0D0829,#0D0829) padding-box,linear-gradient(135deg,rgba(107,70,193,0.4),transparent,rgba(245,197,24,0.4)) border-box;animation:spin-ring 5s linear infinite reverse}
+
+.logo-box{width:80px;height:80px;border-radius:22px;background:linear-gradient(135deg,#F5C518,#FFD95A);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:40px;color:#2D1B69;box-shadow:0 0 40px rgba(245,197,24,0.4),0 0 80px rgba(245,197,24,0.15);animation:logo-pulse 2s ease-in-out infinite;position:relative;z-index:1}
+@keyframes logo-pulse{0%,100%{box-shadow:0 0 40px rgba(245,197,24,0.4),0 0 80px rgba(245,197,24,0.15)}50%{box-shadow:0 0 60px rgba(245,197,24,0.6),0 0 120px rgba(245,197,24,0.25)}}
+
+.logo-text-wrap{display:flex;align-items:baseline;gap:0}
+.logo-name{font-family:'Syne',sans-serif;font-weight:800;font-size:36px;color:white;letter-spacing:-1px;opacity:0;animation:fade-up .8s .3s ease forwards}
+.logo-name span{color:#F5C518}
+@keyframes fade-up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+.logo-slogan{font-size:13px;font-weight:500;color:rgba(255,255,255,0.5);letter-spacing:3px;text-transform:uppercase;margin-top:8px;opacity:0;animation:fade-up .8s .6s ease forwards}
+
+/* ── PROGRESS ── */
+.progress-wrap{position:relative;z-index:2;width:220px;margin-top:40px;opacity:0;animation:fade-up .8s .8s ease forwards}
+.progress-bar{height:3px;background:rgba(255,255,255,0.08);border-radius:100px;overflow:hidden;margin-bottom:10px}
+.progress-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,#6B46C1,#F5C518);width:0%;transition:width .1s ease;box-shadow:0 0 10px rgba(245,197,24,0.5)}
+.progress-text{text-align:center;font-size:12px;color:rgba(255,255,255,0.4);font-family:'DM Sans',sans-serif}
+
+/* ── LOADING DOTS ── */
+.loading-dots{display:flex;gap:6px;justify-content:center;margin-top:20px;opacity:0;animation:fade-up .8s 1s ease forwards}
+.dot{width:6px;height:6px;border-radius:50%;background:#F5C518;animation:dot-bounce .8s ease-in-out infinite}
+.dot:nth-child(1){animation-delay:0s}
+.dot:nth-child(2){animation-delay:.15s;background:#6B46C1}
+.dot:nth-child(3){animation-delay:.3s;background:rgba(255,255,255,0.4)}
+@keyframes dot-bounce{0%,100%{transform:translateY(0);opacity:.4}50%{transform:translateY(-8px);opacity:1}}
+
+/* ── TIPS ── */
+.tip-wrap{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);z-index:2;text-align:center;opacity:0;animation:fade-up .8s 1.2s ease forwards}
+.tip-text{font-size:12px;color:rgba(255,255,255,0.3);max-width:280px;line-height:1.6}
+.tip-text strong{color:rgba(245,197,24,0.7)}
+
+/* ── MAIN CONTENT (hidden during load) ── */
+.main-content{opacity:0;transition:opacity .8s ease}
+.main-content.show{opacity:1}
+
+/* ── DEMO PAGE (what loads after) ── */
+.demo-page{min-height:100vh;background:#F8F6FF;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:20px}
+.demo-title{font-family:'Syne',sans-serif;font-size:32px;font-weight:800;color:#2D1B69}
+.demo-sub{font-size:15px;color:#7C6FAD}
+.demo-btns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.demo-btn{padding:12px 24px;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;border:none;text-decoration:none;transition:all .2s}
+.demo-btn.gold{background:linear-gradient(135deg,#F5C518,#FFD95A);color:#2D1B69}
+.demo-btn.gold:hover{transform:translateY(-2px);box-shadow:0 4px 20px rgba(245,197,24,0.35)}
+.demo-btn.violet{background:linear-gradient(135deg,#4A2E9E,#6B46C1);color:white}
+.demo-btn.violet:hover{transform:translateY(-2px)}
+.demo-btn.ghost{background:white;border:1.5px solid rgba(107,70,193,0.2);color:#2D1B69}
+</style>
+</head>
+<body>
+
+<!-- ══ LOADER ══ -->
+<div class="loader" id="loader">
+
+  <!-- Glow effects -->
+  <div class="glow-1"></div>
+  <div class="glow-2"></div>
+
+  <!-- Particles -->
+  <div class="particles" id="particles"></div>
+
+  <!-- Logo -->
+  <div class="logo-wrap">
+    <div class="logo-icon-wrap">
+      <div class="logo-ring-2"></div>
+      <div class="logo-ring"></div>
+      <div class="logo-box">K</div>
+    </div>
+
+    <div class="logo-text-wrap">
+      <div class="logo-name">Kora<span>Hub</span></div>
+    </div>
+    <div class="logo-slogan">Learn · Sell · Grow</div>
+  </div>
+
+  <!-- Progress -->
+  <div class="progress-wrap">
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <div class="progress-text" id="progressText">Chargement...</div>
+  </div>
+
+  <!-- Dots -->
+  <div class="loading-dots">
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+  </div>
+
+  <!-- Tips -->
+  <div class="tip-wrap">
+    <div class="tip-text" id="tipText">
+      💡 <strong>Astuce :</strong> Vous pouvez avoir 3 rôles sur KoraHub — Acheteur, Vendeur et Affilié !
+    </div>
+  </div>
+
+</div>
+
+<!-- ══ MAIN CONTENT ══ -->
+<div class="main-content" id="mainContent">
+  <div class="demo-page">
+    <div style="font-size:64px">🎉</div>
+    <div class="demo-title">KoraHub est prêt !</div>
+    <div class="demo-sub">Le loading screen fonctionne parfaitement · Learn. Sell. Grow. 🌍</div>
+    <div class="demo-btns">
+      <a href="korahub.html" class="demo-btn gold">🏠 Page d'accueil</a>
+      <a href="korahub-recherche.html" class="demo-btn violet">🔍 Catalogue</a>
+      <a href="korahub-auth.html" class="demo-btn ghost">👤 S'inscrire</a>
+      <a href="korahub-index.html" class="demo-btn ghost">🗂️ Toutes les pages</a>
+    </div>
+    <div style="margin-top:20px;font-size:12px;color:#7C6FAD">
+      💡 Ce loading screen s'intègre sur toutes les pages KoraHub
+    </div>
+  </div>
+</div>
+
+<script>
+// ── PARTICLES ──
+function createParticles() {
+  const container = document.getElementById('particles');
+  const colors = ['#F5C518','#6B46C1','#4A2E9E','rgba(255,255,255,0.6)','#FFD95A'];
+  const count = 25;
+
+  for (let i = 0; i < count; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = Math.random() * 6 + 2;
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    const left = Math.random() * 100;
+    const duration = Math.random() * 8 + 6;
+    const delay = Math.random() * 8;
+
+    p.style.cssText = `
+      width:${size}px;height:${size}px;
+      background:${color};
+      left:${left}%;
+      animation-duration:${duration}s;
+      animation-delay:${delay}s;
+      box-shadow:0 0 ${size*2}px ${color};
+    `;
+    container.appendChild(p);
+  }
+}
+
+// ── TIPS ──
+const tips = [
+  '💡 <strong>Astuce :</strong> Vous pouvez avoir 3 rôles — Acheteur, Vendeur et Affilié !',
+  '🤖 <strong>IA :</strong> KoraHub génère des vidéos pub avec un avatar africain réaliste',
+  '💳 <strong>Paiement :</strong> Mobile Money, carte bancaire et autres selon le vendeur',
+  '📢 <strong>Affiliation :</strong> Gagnez 10% sur chaque vente que vous générez',
+  '🌍 <strong>Afrique :</strong> KoraHub connecte 15+ pays africains',
+  '🔥 <strong>Promo :</strong> Activez des promotions sur vos produits en 1 clic'
+];
+
+let tipIndex = 0;
+function rotateTips() {
+  const el = document.getElementById('tipText');
+  if (!el) return;
+  el.style.opacity = '0';
+  setTimeout(() => {
+    tipIndex = (tipIndex + 1) % tips.length;
+    el.innerHTML = tips[tipIndex];
+    el.style.transition = 'opacity .5s';
+    el.style.opacity = '1';
+  }, 300);
+}
+
+// ── PROGRESS ──
+const steps = [
+  { pct: 15, text: 'Initialisation...' },
+  { pct: 30, text: 'Chargement des ressources...' },
+  { pct: 50, text: 'Connexion sécurisée...' },
+  { pct: 70, text: 'Préparation du catalogue...' },
+  { pct: 85, text: 'Configuration de l\'interface...' },
+  { pct: 95, text: 'Presque prêt...' },
+  { pct: 100, text: 'Bienvenue sur KoraHub ! 🎉' }
+];
+
+let stepIndex = 0;
+const fill = document.getElementById('progressFill');
+const progressText = document.getElementById('progressText');
+
+function runProgress() {
+  if (stepIndex >= steps.length) return;
+  const step = steps[stepIndex];
+  fill.style.width = step.pct + '%';
+  progressText.textContent = step.text;
+  stepIndex++;
+
+  if (stepIndex < steps.length) {
+    const delay = stepIndex === steps.length - 1 ? 400 : Math.random() * 400 + 200;
+    setTimeout(runProgress, delay);
+  } else {
+    // Done - hide loader
+    setTimeout(hideLoader, 600);
+  }
+}
+
+function hideLoader() {
+  const loader = document.getElementById('loader');
+  const content = document.getElementById('mainContent');
+  loader.classList.add('hide');
+  setTimeout(() => {
+    loader.style.display = 'none';
+    content.classList.add('show');
+    document.body.style.overflow = '';
+  }, 600);
+}
+
+// ── INIT ──
+document.body.style.overflow = 'hidden';
+createParticles();
+
+// Start progress after logo animation
+setTimeout(runProgress, 800);
+
+// Rotate tips every 2.5s
+setTimeout(() => {
+  setInterval(rotateTips, 2500);
+}, 1500);
+
+// ══════════════════════════════════════════
+// HOW TO INTEGRATE ON ALL KORAHUB PAGES
+// ══════════════════════════════════════════
+//
+// Copiez ce code dans le <head> de chaque page :
+//
+// <style>
+// .kh-loader{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;
+// align-items:center;justify-content:center;
+// background:linear-gradient(145deg,#0D0829 0%,#1A0F3C 50%,#0D0829 100%);
+// transition:opacity .6s ease,transform .6s ease}
+// .kh-loader.hide{opacity:0;pointer-events:none;transform:scale(1.05)}
+// .kh-logo-ring{position:absolute;inset:-16px;border-radius:50%;border:2px solid transparent;
+// background:linear-gradient(#0D0829,#0D0829) padding-box,
+// linear-gradient(135deg,#F5C518,#6B46C1,#F5C518) border-box;
+// animation:kh-spin 3s linear infinite}
+// @keyframes kh-spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+// .kh-logo{width:64px;height:64px;border-radius:18px;
+// background:linear-gradient(135deg,#F5C518,#FFD95A);
+// display:flex;align-items:center;justify-content:center;
+// font-family:'Syne',sans-serif;font-weight:800;font-size:32px;color:#2D1B69;
+// box-shadow:0 0 40px rgba(245,197,24,0.4);position:relative;z-index:1}
+// </style>
+//
+// Ajoutez dans le <body> juste après <body> :
+//
+// <div class="kh-loader" id="khLoader">
+//   <div style="position:relative">
+//     <div class="kh-logo-ring"></div>
+//     <div class="kh-logo">K</div>
+//   </div>
+//   <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:28px;color:white;margin-top:16px">
+//     Kora<span style="color:#F5C518">Hub</span>
+//   </div>
+// </div>
+//
+// Ajoutez dans le <script> :
+//
+// setTimeout(() => {
+//   const l = document.getElementById('khLoader');
+//   l.classList.add('hide');
+//   setTimeout(() => l.style.display='none', 600);
+// }, 1500);
+//
+// ══════════════════════════════════════════
+</script>
+</body>
+</html>

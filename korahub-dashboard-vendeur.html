@@ -1,0 +1,2474 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KoraHub – Dashboard Vendeur</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --violet: #2D1B69;
+  --violet-mid: #4A2E9E;
+  --violet-light: #6B46C1;
+  --gold: #F5C518;
+  --gold-light: #FFD95A;
+  --white: #FFFFFF;
+  --off-white: #F8F6FF;
+  --text-dark: #1A0F3C;
+  --text-muted: #7C6FAD;
+  --border: rgba(107,70,193,0.12);
+  --shadow: 0 8px 32px rgba(45,27,105,0.12);
+  --sidebar-w: 240px;
+  --success: #2ed573;
+  --danger: #ff4757;
+  --warning: #ffa502;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'DM Sans', sans-serif; background: var(--off-white); color: var(--text-dark); display: flex; min-height: 100vh; overflow-x: hidden; }
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: var(--sidebar-w);
+  background: linear-gradient(180deg, var(--violet) 0%, #1A0F3C 100%);
+  min-height: 100vh;
+  position: fixed; left: 0; top: 0;
+  display: flex; flex-direction: column;
+  z-index: 100;
+  transition: transform 0.3s;
+}
+
+.sidebar-logo {
+  padding: 24px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  display: flex; align-items: center; gap: 10px;
+  text-decoration: none;
+}
+
+.logo-icon {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px;
+  color: var(--violet);
+}
+
+.logo-text { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 18px; color: white; }
+.logo-text span { color: var(--gold); }
+
+.sidebar-user {
+  padding: 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  display: flex; align-items: center; gap: 12px;
+}
+
+.user-avatar {
+  width: 42px; height: 42px; border-radius: 12px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; font-weight: 700; color: var(--violet);
+  font-family: 'Syne', sans-serif;
+}
+
+.user-name { font-weight: 600; color: white; font-size: 14px; }
+.user-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: rgba(245,197,24,0.15); border: 1px solid rgba(245,197,24,0.3);
+  border-radius: 100px; padding: 2px 8px;
+  font-size: 10px; font-weight: 700; color: var(--gold);
+  margin-top: 3px;
+}
+
+.sidebar-nav { flex: 1; padding: 16px 0; overflow-y: auto; }
+
+.nav-section-label {
+  font-size: 10px; font-weight: 700; letter-spacing: 2px;
+  text-transform: uppercase; color: rgba(255,255,255,0.3);
+  padding: 12px 20px 6px;
+}
+
+.nav-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 20px; cursor: pointer;
+  transition: all 0.2s; border-radius: 0;
+  color: rgba(255,255,255,0.6); font-size: 14px; font-weight: 500;
+  position: relative; text-decoration: none;
+}
+
+.nav-item:hover { color: white; background: rgba(255,255,255,0.05); }
+
+.nav-item.active {
+  color: white; background: rgba(245,197,24,0.1);
+  border-right: 3px solid var(--gold);
+}
+
+.nav-item.active .nav-icon { color: var(--gold); }
+
+.nav-icon { font-size: 18px; width: 22px; text-align: center; }
+
+.nav-badge {
+  margin-left: auto;
+  background: var(--danger); color: white;
+  font-size: 10px; font-weight: 700;
+  padding: 2px 7px; border-radius: 100px;
+}
+
+.sidebar-footer {
+  padding: 16px 20px;
+  border-top: 1px solid rgba(255,255,255,0.07);
+}
+
+.btn-logout {
+  display: flex; align-items: center; gap: 10px;
+  color: rgba(255,255,255,0.5); font-size: 13px;
+  cursor: pointer; padding: 10px; border-radius: 10px;
+  transition: all 0.2s; border: none; background: none; width: 100%;
+}
+.btn-logout:hover { color: var(--danger); background: rgba(255,71,87,0.1); }
+
+/* ── MAIN ── */
+.main {
+  margin-left: var(--sidebar-w);
+  flex: 1; display: flex; flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ── TOPBAR ── */
+.topbar {
+  background: white;
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px;
+  height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 50;
+}
+
+.topbar-left { display: flex; align-items: center; gap: 16px; }
+
+.menu-toggle {
+  display: none; background: none; border: none;
+  font-size: 20px; cursor: pointer; color: var(--text-dark);
+}
+
+.page-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; color: var(--text-dark); }
+.page-breadcrumb { font-size: 13px; color: var(--text-muted); }
+
+.topbar-right { display: flex; align-items: center; gap: 12px; }
+
+.topbar-btn {
+  width: 38px; height: 38px; border-radius: 10px;
+  border: 1.5px solid var(--border); background: white;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; cursor: pointer; transition: all 0.2s;
+  position: relative;
+}
+.topbar-btn:hover { border-color: var(--violet-light); background: var(--off-white); }
+
+.notif-dot {
+  position: absolute; top: 6px; right: 6px;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--danger); border: 2px solid white;
+}
+
+.btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 9px 18px; border-radius: 10px;
+  font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600;
+  cursor: pointer; border: none; transition: all 0.2s;
+}
+.btn-gold { background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: var(--violet); }
+.btn-gold:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(245,197,24,0.35); }
+.btn-violet { background: linear-gradient(135deg, var(--violet-mid), var(--violet-light)); color: white; }
+.btn-violet:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(74,46,158,0.35); }
+.btn-ghost { background: white; border: 1.5px solid var(--border); color: var(--text-dark); }
+.btn-ghost:hover { border-color: var(--violet-light); }
+.btn-danger { background: rgba(255,71,87,0.1); color: var(--danger); border: 1px solid rgba(255,71,87,0.2); }
+
+/* ── CONTENT ── */
+.content { padding: 28px 32px; flex: 1; }
+
+/* ── PAGE SECTIONS ── */
+.page-section { display: none; }
+.page-section.active { display: block; animation: fadeIn 0.3s ease; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ── STAT CARDS ── */
+.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+
+.stat-card {
+  background: white; border: 1.5px solid var(--border);
+  border-radius: 16px; padding: 20px;
+  transition: all 0.25s; position: relative; overflow: hidden;
+}
+.stat-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+
+.stat-card::before {
+  content: ''; position: absolute; top: 0; right: 0;
+  width: 80px; height: 80px; border-radius: 0 0 0 80px;
+  opacity: 0.06;
+}
+.stat-card.gold::before { background: var(--gold); }
+.stat-card.violet::before { background: var(--violet); }
+.stat-card.green::before { background: var(--success); }
+.stat-card.red::before { background: var(--danger); }
+
+.stat-icon {
+  width: 40px; height: 40px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; margin-bottom: 12px;
+}
+.stat-card.gold .stat-icon { background: rgba(245,197,24,0.12); }
+.stat-card.violet .stat-icon { background: rgba(107,70,193,0.12); }
+.stat-card.green .stat-icon { background: rgba(46,213,115,0.12); }
+.stat-card.red .stat-icon { background: rgba(255,71,87,0.12); }
+
+.stat-val { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 800; color: var(--text-dark); }
+.stat-label { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+.stat-change {
+  display: inline-flex; align-items: center; gap: 3px;
+  font-size: 11px; font-weight: 600; margin-top: 8px;
+  padding: 2px 7px; border-radius: 100px;
+}
+.stat-change.up { background: rgba(46,213,115,0.1); color: var(--success); }
+.stat-change.down { background: rgba(255,71,87,0.1); color: var(--danger); }
+
+/* ── GRID LAYOUTS ── */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+
+/* ── CARDS ── */
+.card {
+  background: white; border: 1.5px solid var(--border);
+  border-radius: 16px; overflow: hidden;
+}
+
+.card-header {
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+
+.card-title { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; color: var(--text-dark); }
+.card-body { padding: 20px; }
+
+/* ── CHART BARS ── */
+.chart-bars {
+  display: flex; align-items: flex-end; gap: 8px;
+  height: 120px; padding: 0 4px;
+}
+.bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.bar {
+  width: 100%; border-radius: 6px 6px 0 0;
+  background: linear-gradient(180deg, var(--violet-light), var(--violet));
+  transition: height 0.8s cubic-bezier(.34,1.56,.64,1);
+  cursor: pointer; position: relative;
+}
+.bar:hover { background: linear-gradient(180deg, var(--gold), #e6b800); }
+.bar-label { font-size: 10px; color: var(--text-muted); }
+
+/* ── TABLES ── */
+.table { width: 100%; border-collapse: collapse; }
+.table th {
+  text-align: left; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.5px; text-transform: uppercase;
+  color: var(--text-muted); padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.table td { padding: 13px 16px; border-bottom: 1px solid var(--border); font-size: 13px; }
+.table tr:last-child td { border-bottom: none; }
+.table tr:hover td { background: var(--off-white); }
+
+.status-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 10px; border-radius: 100px;
+  font-size: 11px; font-weight: 700;
+}
+.status-badge.confirmed { background: rgba(46,213,115,0.1); color: var(--success); }
+.status-badge.pending { background: rgba(255,165,2,0.1); color: var(--warning); }
+.status-badge.cancelled { background: rgba(255,71,87,0.1); color: var(--danger); }
+
+/* ── PRODUCTS LIST ── */
+.product-row {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 0; border-bottom: 1px solid var(--border);
+}
+.product-row:last-child { border-bottom: none; }
+
+.product-thumb {
+  width: 48px; height: 48px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; flex-shrink: 0;
+}
+
+.product-info { flex: 1; }
+.product-name-sm { font-size: 14px; font-weight: 600; color: var(--text-dark); }
+.product-meta-sm { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+.product-price-sm { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; color: var(--violet); }
+
+.product-actions { display: flex; gap: 6px; }
+.action-btn {
+  width: 30px; height: 30px; border-radius: 8px;
+  border: 1.5px solid var(--border); background: white;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; cursor: pointer; transition: all 0.2s;
+}
+.action-btn:hover { border-color: var(--violet-light); background: var(--off-white); }
+.action-btn.danger:hover { border-color: var(--danger); background: rgba(255,71,87,0.05); }
+
+/* ── FORM ── */
+.form-group { margin-bottom: 18px; }
+.form-label { display: block; font-size: 13px; font-weight: 600; color: var(--text-dark); margin-bottom: 7px; }
+.form-input, .form-select, .form-textarea {
+  width: 100%; padding: 11px 14px;
+  border: 1.5px solid var(--border); border-radius: 10px;
+  font-family: 'DM Sans', sans-serif; font-size: 14px;
+  color: var(--text-dark); background: var(--off-white);
+  outline: none; transition: border-color 0.2s;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  border-color: var(--violet-light); background: white;
+}
+.form-textarea { resize: vertical; min-height: 100px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-hint { font-size: 11px; color: var(--text-muted); margin-top: 5px; }
+
+.upload-zone {
+  border: 2px dashed var(--border); border-radius: 12px;
+  padding: 32px; text-align: center; cursor: pointer;
+  transition: all 0.2s; background: var(--off-white);
+}
+.upload-zone:hover { border-color: var(--violet-light); background: rgba(107,70,193,0.03); }
+.upload-icon { font-size: 36px; margin-bottom: 10px; }
+.upload-text { font-size: 14px; color: var(--text-muted); }
+.upload-text strong { color: var(--violet-light); }
+
+/* ── TOGGLE ── */
+.toggle-wrap { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid var(--border); }
+.toggle-wrap:last-child { border-bottom: none; }
+.toggle-info strong { display: block; font-size: 14px; color: var(--text-dark); }
+.toggle-info span { font-size: 12px; color: var(--text-muted); }
+.toggle {
+  width: 44px; height: 24px; border-radius: 100px;
+  background: var(--border); cursor: pointer;
+  position: relative; transition: background 0.3s; flex-shrink: 0;
+  border: none;
+}
+.toggle.on { background: var(--violet-light); }
+.toggle::after {
+  content: ''; position: absolute; top: 3px; left: 3px;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: white; transition: left 0.3s;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+.toggle.on::after { left: 23px; }
+
+/* ── AI SECTION ── */
+.ai-card {
+  background: linear-gradient(135deg, var(--violet) 0%, #1A0F3C 100%);
+  border-radius: 16px; padding: 28px;
+  position: relative; overflow: hidden;
+}
+.ai-card::before {
+  content: ''; position: absolute; top: -60px; right: -60px;
+  width: 200px; height: 200px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(245,197,24,0.1) 0%, transparent 70%);
+}
+.ai-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 800; color: white; margin-bottom: 8px; }
+.ai-desc { font-size: 13px; color: rgba(255,255,255,0.6); margin-bottom: 20px; line-height: 1.6; }
+
+.avatar-preview {
+  display: flex; align-items: center; gap: 16px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(245,197,24,0.15);
+  border-radius: 12px; padding: 16px; margin-bottom: 16px;
+}
+.avatar-img {
+  width: 56px; height: 56px; border-radius: 50%;
+  background: linear-gradient(135deg, #4facfe, #00f2fe);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px; border: 2px solid var(--gold);
+  animation: breathe 3s ease-in-out infinite;
+}
+@keyframes breathe {
+  0%,100% { box-shadow: 0 0 0 4px rgba(245,197,24,0.15); }
+  50% { box-shadow: 0 0 0 8px rgba(245,197,24,0.05); }
+}
+.avatar-info strong { display: block; color: white; font-size: 14px; }
+.avatar-info span { font-size: 12px; color: var(--gold); }
+
+.share-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.share-btn {
+  padding: 8px 14px; border-radius: 8px; border: none;
+  font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s;
+}
+.share-btn:hover { transform: scale(1.05); }
+.share-fb { background: #1877F2; color: white; }
+.share-ig { background: linear-gradient(135deg,#f9ce34,#ee2a7b,#6228d7); color: white; }
+.share-tt { background: #010101; color: white; border: 1px solid #333; }
+.share-wa { background: #25D366; color: white; }
+
+.generate-btn {
+  width: 100%; padding: 12px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  color: var(--violet); border: none; border-radius: 10px;
+  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px;
+  cursor: pointer; transition: all 0.2s; margin-bottom: 12px;
+}
+.generate-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(245,197,24,0.4); }
+
+/* ── COMMISSION ALERT ── */
+.commission-alert {
+  background: linear-gradient(135deg, rgba(255,71,87,0.08), rgba(255,71,87,0.04));
+  border: 1.5px solid rgba(255,71,87,0.2);
+  border-radius: 14px; padding: 16px 20px;
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 20px;
+}
+.alert-icon { font-size: 28px; flex-shrink: 0; }
+.alert-text strong { display: block; color: var(--danger); font-size: 14px; }
+.alert-text span { font-size: 13px; color: var(--text-muted); }
+.alert-timer { margin-left: auto; text-align: right; flex-shrink: 0; }
+.timer-val { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; color: var(--danger); }
+.timer-label { font-size: 10px; color: var(--text-muted); }
+
+/* ── PROMO CODES ── */
+.promo-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 0; border-bottom: 1px solid var(--border);
+}
+.promo-row:last-child { border-bottom: none; }
+.promo-code {
+  font-family: monospace; font-size: 14px; font-weight: 700;
+  color: var(--violet); background: rgba(107,70,193,0.08);
+  padding: 4px 10px; border-radius: 6px;
+}
+.promo-info { flex: 1; font-size: 12px; color: var(--text-muted); }
+.promo-discount { font-weight: 700; color: var(--danger); font-size: 14px; }
+
+/* ── BADGE SYSTEM ── */
+.badge-display {
+  display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px;
+}
+.vendor-badge {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  padding: 16px; border-radius: 14px; border: 2px solid var(--border);
+  min-width: 90px; text-align: center; transition: all 0.2s;
+}
+.vendor-badge.active { border-color: var(--gold); background: rgba(245,197,24,0.05); }
+.vendor-badge .badge-icon { font-size: 28px; }
+.vendor-badge .badge-name { font-size: 11px; font-weight: 700; color: var(--text-dark); }
+.vendor-badge .badge-req { font-size: 10px; color: var(--text-muted); }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed; bottom: 24px; right: 24px; z-index: 2000;
+  background: var(--violet); border: 1px solid var(--gold);
+  color: white; padding: 14px 20px; border-radius: 12px;
+  font-size: 14px; display: flex; align-items: center; gap: 10px;
+  transform: translateX(120%); transition: transform 0.3s;
+  box-shadow: var(--shadow); max-width: 300px;
+}
+.toast.show { transform: translateX(0); }
+
+/* ── MODAL ── */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 1000;
+  background: rgba(13,8,41,0.7); backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center; padding: 20px;
+  opacity: 0; pointer-events: none; transition: opacity 0.3s;
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal {
+  background: white; border-radius: 20px; padding: 32px;
+  max-width: 520px; width: 100%;
+  transform: translateY(20px); transition: transform 0.3s;
+  position: relative; max-height: 90vh; overflow-y: auto;
+}
+.modal-overlay.open .modal { transform: translateY(0); }
+.modal-close {
+  position: absolute; top: 16px; right: 16px;
+  width: 32px; height: 32px; border-radius: 8px;
+  background: var(--off-white); border: none; cursor: pointer;
+  font-size: 16px; display: flex; align-items: center; justify-content: center;
+  color: var(--text-muted);
+}
+.modal-title { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; color: var(--text-dark); margin-bottom: 6px; }
+.modal-sub { font-size: 14px; color: var(--text-muted); margin-bottom: 24px; }
+
+/* ── PROGRESS ── */
+.progress-wrap { margin-bottom: 8px; }
+.progress-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); margin-bottom: 6px; }
+.progress-bar { height: 8px; background: var(--off-white); border-radius: 100px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 100px; background: linear-gradient(90deg, var(--violet-light), var(--gold)); transition: width 1s ease; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1024px) {
+  .stats-row { grid-template-columns: repeat(2, 1fr); }
+  .grid-2 { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 768px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .main { margin-left: 0; }
+  .menu-toggle { display: flex; }
+  .stats-row { grid-template-columns: 1fr 1fr; }
+  .content { padding: 20px 16px; }
+  .topbar { padding: 0 16px; }
+  .form-row { grid-template-columns: 1fr; }
+  .grid-3 { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+  .stats-row { grid-template-columns: 1fr; }
+}
+
+.section-divider { height: 1px; background: var(--border); margin: 24px 0; }
+.text-muted { color: var(--text-muted); font-size: 13px; }
+.flex-between { display: flex; align-items: center; justify-content: space-between; }
+.gap-8 { gap: 8px; }
+.mt-4 { margin-top: 16px; }
+</style>
+<link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImZnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3R5bGU9InN0b3AtY29sb3I6I0Y1QzUxOCIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNGRkQ5NUEiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgcng9IjgiIGZpbGw9InVybCgjZmcpIi8+CiAgPHRleHQgeD0iNCIgeT0iMjQiIGZvbnQtZmFtaWx5PSJBcmlhbCBCbGFjayxzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iOTAwIiBmb250LXNpemU9IjIyIiBmaWxsPSIjMkQxQjY5Ij5LPC90ZXh0Pgo8L3N2Zz4=" type="image/svg+xml">
+
+<!-- Firebase SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+  import { getFirestore, collection, doc, setDoc, getDoc, getDocs, addDoc, updateDoc, deleteDoc, query, where, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBUM1tOdkfEZA4z1ts6tyRhlcRqotHE4zs",
+    authDomain: "korahub-7160.firebaseapp.com",
+    projectId: "korahub-7160",
+    storageBucket: "korahub-7160.firebasestorage.app",
+    messagingSenderId: "334789190484",
+    appId: "1:334789190484:web:90a21186adb353409f5ec1"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // Make available globally
+  window.firebaseAuth = auth;
+  window.firebaseDB = db;
+  window.firebaseFunctions = {
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    signOut,
+    onAuthStateChanged,
+    collection, doc, setDoc, getDoc, getDocs,
+    addDoc, updateDoc, deleteDoc, query, where, orderBy, onSnapshot
+  };
+
+  // Auth state listener
+  onAuthStateChanged(auth, (user) => {
+    window.currentUser = user;
+    if (user) {
+      console.log('✅ Connecté:', user.email);
+      document.dispatchEvent(new CustomEvent('userLoggedIn', { detail: user }));
+    } else {
+      console.log('❌ Non connecté');
+      document.dispatchEvent(new CustomEvent('userLoggedOut'));
+    }
+  });
+
+  console.log('🔥 Firebase KoraHub initialisé !');
+
+// ═══ FIREBASE FIRESTORE FUNCTIONS ═══
+
+// ── PRODUCTS ──
+async function loadProducts() {
+  try {
+    const db = window.firebaseDB;
+    const { collection, getDocs, orderBy, query } = window.firebaseFunctions;
+    const q = query(collection(db, 'products'), orderBy('createdAt', 'desc'));
+    const snapshot = await getDocs(q);
+    const products = [];
+    snapshot.forEach(doc => products.push({ id: doc.id, ...doc.data() }));
+    return products;
+  } catch(e) {
+    console.error('Error loading products:', e);
+    return [];
+  }
+}
+
+async function saveProduct(productData) {
+  try {
+    const db = window.firebaseDB;
+    const auth = window.firebaseAuth;
+    const { collection, addDoc } = window.firebaseFunctions;
+    const product = {
+      ...productData,
+      sellerId: auth.currentUser?.uid,
+      sellerEmail: auth.currentUser?.email,
+      createdAt: new Date().toISOString(),
+      views: 0,
+      sales: 0,
+      status: 'active'
+    };
+    const docRef = await addDoc(collection(db, 'products'), product);
+    showToast('🚀 Produit publié sur KoraHub !');
+    return docRef.id;
+  } catch(e) {
+    showToast('❌ Erreur lors de la publication');
+    console.error(e);
+  }
+}
+
+// ── ORDERS ──
+async function saveOrder(orderData) {
+  try {
+    const db = window.firebaseDB;
+    const { collection, addDoc } = window.firebaseFunctions;
+    const order = {
+      ...orderData,
+      status: 'pending',
+      createdAt: new Date().toISOString(),
+      expiresAt: new Date(Date.now() + 24*60*60*1000).toISOString()
+    };
+    const docRef = await addDoc(collection(db, 'orders'), order);
+    showToast('✅ Commande envoyée ! En attente de confirmation.');
+    
+    // Send WhatsApp notification to admin
+    sendWhatsAppNotification(order);
+    return docRef.id;
+  } catch(e) {
+    showToast('❌ Erreur lors de la commande');
+    console.error(e);
+  }
+}
+
+async function loadMyOrders() {
+  try {
+    const db = window.firebaseDB;
+    const auth = window.firebaseAuth;
+    const { collection, query, where, getDocs, orderBy } = window.firebaseFunctions;
+    if (!auth.currentUser) return [];
+    const q = query(
+      collection(db, 'orders'),
+      where('buyerEmail', '==', auth.currentUser.email),
+      orderBy('createdAt', 'desc')
+    );
+    const snapshot = await getDocs(q);
+    const orders = [];
+    snapshot.forEach(doc => orders.push({ id: doc.id, ...doc.data() }));
+    return orders;
+  } catch(e) {
+    console.error(e);
+    return [];
+  }
+}
+
+// ── VENDORS ──
+async function loadMyProducts() {
+  try {
+    const db = window.firebaseDB;
+    const auth = window.firebaseAuth;
+    const { collection, query, where, getDocs } = window.firebaseFunctions;
+    if (!auth.currentUser) return [];
+    const q = query(
+      collection(db, 'products'),
+      where('sellerId', '==', auth.currentUser.uid)
+    );
+    const snapshot = await getDocs(q);
+    const products = [];
+    snapshot.forEach(doc => products.push({ id: doc.id, ...doc.data() }));
+    return products;
+  } catch(e) {
+    console.error(e);
+    return [];
+  }
+}
+
+// ── WHATSAPP NOTIFICATION ──
+function sendWhatsAppNotification(order) {
+  const msg = encodeURIComponent(
+    "🛒 Nouvelle commande KoraHub !\n\n" +
+    "📦 Produit : " + (order.productName || 'N/A') + "\n" +
+    "👤 Client : " + (order.buyerName || order.buyerEmail || 'N/A') + "\n" +
+    "📧 Email : " + (order.buyerEmail || 'N/A') + "\n" +
+    "💰 Montant : " + (order.amount || 'N/A') + " FCFA\n" +
+    "💳 Paiement : " + (order.paymentMethod || 'N/A') + "\n\n" +
+    "⏳ En attente de votre confirmation."
+  );
+  // Auto open WhatsApp
+  window.open("https://wa.me/226selon vendeur?text=" + msg, '_blank');
+}
+
+// ── USER PROFILE ──
+async function getUserProfile() {
+  try {
+    const auth = window.firebaseAuth;
+    const db = window.firebaseDB;
+    const { doc, getDoc } = window.firebaseFunctions;
+    if (!auth.currentUser) return null;
+    const userDoc = await getDoc(doc(db, 'users', auth.currentUser.uid));
+    return userDoc.exists() ? userDoc.data() : null;
+  } catch(e) {
+    console.error(e);
+    return null;
+  }
+}
+
+async function updateUserProfile(data) {
+  try {
+    const auth = window.firebaseAuth;
+    const db = window.firebaseDB;
+    const { doc, updateDoc } = window.firebaseFunctions;
+    if (!auth.currentUser) return;
+    await updateDoc(doc(db, 'users', auth.currentUser.uid), data);
+    showToast('✅ Profil mis à jour !');
+  } catch(e) {
+    showToast('❌ Erreur mise à jour profil');
+    console.error(e);
+  }
+}
+
+// ── AUTH GUARD ──
+function requireAuth(redirectTo) {
+  const auth = window.firebaseAuth;
+  if (auth && !auth.currentUser) {
+    setTimeout(() => {
+      if (!window.currentUser) {
+        window.location.href = redirectTo || 'korahub-auth.html';
+      }
+    }, 2000);
+  }
+}
+
+// ── LOGOUT ──
+async function doLogout() {
+  try {
+    const { signOut } = window.firebaseFunctions;
+    await signOut(window.firebaseAuth);
+    showToast('👋 Déconnecté avec succès !');
+    setTimeout(() => { window.location.href = 'korahub.html'; }, 1000);
+  } catch(e) {
+    console.error(e);
+  }
+}
+
+console.log('✅ Firestore functions loaded!');
+
+
+// Toggle delivery type sections
+function toggleDeliveryType(type) {
+  const map = { download: 'downloadPrice', print: 'printPrice', physic: 'physicPrice' };
+  const wrapMap = { download: 'typeDownloadWrap', print: 'typePrintWrap', physic: 'typePhysicWrap' };
+  const checked = document.getElementById('type' + type.charAt(0).toUpperCase() + type.slice(1))?.checked;
+  const priceDiv = document.getElementById(map[type]);
+  const wrap = document.getElementById(wrapMap[type]);
+  if (priceDiv) priceDiv.style.display = checked ? 'block' : 'none';
+  if (wrap) wrap.style.borderColor = checked ? 'var(--violet-light)' : 'var(--border)';
+  if (wrap) wrap.style.background = checked ? 'rgba(107,70,193,0.03)' : '';
+}
+
+// Updated addProduct with all new fields
+async function addProduct() {
+  const title = document.getElementById('prodTitle')?.value;
+  const category = document.getElementById('prodCategory')?.value;
+  const desc = document.getElementById('prodDesc')?.value;
+  const lang = document.getElementById('prodLang')?.value;
+
+  const typeDownload = document.getElementById('typeDownload')?.checked;
+  const typePrint = document.getElementById('typePrint')?.checked;
+  const typePhysic = document.getElementById('typePhysic')?.checked;
+
+  if (!title) { showToast('⚠️ Entrez le titre du produit'); return; }
+  if (!category) { showToast('⚠️ Choisissez une catégorie'); return; }
+  if (!typeDownload && !typePrint && !typePhysic) {
+    showToast('⚠️ Choisissez au moins un type de livraison');
+    return;
+  }
+
+  // Build delivery options
+  const deliveryOptions = [];
+  if (typeDownload) deliveryOptions.push({
+    type: 'download',
+    label: '📥 Téléchargeable',
+    price: parseInt(document.getElementById('priceDownload')?.value) || 0,
+    promo: parseInt(document.getElementById('promoDownload')?.value) || 0
+  });
+  if (typePrint) deliveryOptions.push({
+    type: 'print',
+    label: '🖨️ Imprimable',
+    price: parseInt(document.getElementById('pricePrint')?.value) || 0,
+    format: document.getElementById('printFormat')?.value || 'A4'
+  });
+  if (typePhysic) {
+    const zones = [];
+    if (document.getElementById('zoneCity')?.checked) zones.push('Ma ville');
+    if (document.getElementById('zoneCountry')?.checked) zones.push('Mon pays');
+    if (document.getElementById('zoneAfrica')?.checked) zones.push('Toute l\'Afrique');
+    if (document.getElementById('zoneWorld')?.checked) zones.push('International');
+    deliveryOptions.push({
+      type: 'physic',
+      label: '📦 Physique',
+      price: parseInt(document.getElementById('pricePhysic')?.value) || 0,
+      deliveryFee: parseInt(document.getElementById('deliveryFee')?.value) || 0,
+      zones
+    });
+  }
+
+  const productData = {
+    title, category, description: desc, language: lang,
+    deliveryOptions,
+    sellerId: window.currentUser?.uid || 'demo',
+    sellerEmail: window.currentUser?.email || 'vendeur@demo.com',
+    status: 'active',
+    createdAt: new Date().toISOString(),
+    views: 0, sales: 0
+  };
+
+  if (window.firebaseDB && window.firebaseFunctions) {
+    try {
+      const { collection, addDoc } = window.firebaseFunctions;
+      await addDoc(collection(window.firebaseDB, 'products'), productData);
+    } catch(e) { console.error(e); }
+  }
+
+  closeModal('addProductModal');
+  showToast('🚀 Produit "' + title + '" publié sur KoraHub !');
+}
+
+// Load vendor stats on page load
+async function loadVendorStats() {
+  if (!window.currentUser || !window.firebaseDB) return;
+  try {
+    const products = await loadMyProducts();
+    const countEl = document.querySelector('.stat-val');
+    if (countEl && products.length > 0) {
+      // Update product count
+      console.log('Vendor has', products.length, 'products');
+    }
+  } catch(e) {
+    console.log('Stats loading...');
+  }
+}
+
+document.addEventListener('userLoggedIn', () => {
+  loadVendorStats();
+});
+
+
+// ═══ REAL-TIME NOTIFICATIONS ═══
+let notifUnsubscribe = null;
+
+function startRealtimeNotifications(userId) {
+  if (!window.firebaseDB || !window.firebaseFunctions) return;
+  
+  try {
+    const { collection, query, where, onSnapshot, orderBy } = window.firebaseFunctions;
+    
+    // Listen for new orders in real-time
+    const q = query(
+      collection(window.firebaseDB, 'orders'),
+      where('sellerId', '==', userId),
+      orderBy('createdAt', 'desc')
+    );
+
+    notifUnsubscribe = onSnapshot(q, (snapshot) => {
+      snapshot.docChanges().forEach(change => {
+        if (change.type === 'added') {
+          const order = change.doc.data();
+          // Only notify for recent orders (last 10 seconds)
+          const orderTime = new Date(order.createdAt).getTime();
+          const now = Date.now();
+          if (now - orderTime < 10000) {
+            showNewOrderNotification(order);
+          }
+        }
+        if (change.type === 'modified') {
+          const order = change.doc.data();
+          if (order.status === 'confirmed') {
+            showToast('✅ Commande confirmée ! Livraison en cours...');
+          }
+        }
+      });
+    });
+
+    console.log('✅ Real-time notifications started');
+  } catch(e) {
+    console.log('Notifications error:', e);
+  }
+}
+
+function showNewOrderNotification(order) {
+  // Show toast
+  showToast('🛒 Nouvelle commande ! ' + (order.productName || 'Produit') + ' · ' + (order.amount || '?') + ' FCFA');
+  
+  // Update badge
+  updateNotifBadge();
+  
+  // Browser notification if permitted
+  if (Notification.permission === 'granted') {
+    new Notification('🛒 Nouvelle commande KoraHub !', {
+      body: 'Produit : ' + (order.productName || 'Produit') + '\nMontant : ' + (order.amount || '?') + ' FCFA',
+      icon: '/icon.svg'
+    });
+  }
+}
+
+function updateNotifBadge() {
+  const badge = document.getElementById('notifBadge');
+  if (badge) {
+    const current = parseInt(badge.textContent) || 0;
+    badge.textContent = current + 1;
+    badge.style.display = 'flex';
+  }
+}
+
+function requestNotifPermission() {
+  if ('Notification' in window && Notification.permission === 'default') {
+    Notification.requestPermission().then(perm => {
+      if (perm === 'granted') showToast('🔔 Notifications activées !');
+    });
+  }
+}
+
+// Start when user logs in
+document.addEventListener('userLoggedIn', (e) => {
+  if (e.detail && e.detail.uid) {
+    startRealtimeNotifications(e.detail.uid);
+    requestNotifPermission();
+  }
+});
+
+// Stop when user logs out
+document.addEventListener('userLoggedOut', () => {
+  if (notifUnsubscribe) { notifUnsubscribe(); notifUnsubscribe = null; }
+});
+
+</script>
+
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <a href="korahub.html" class="sidebar-logo">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 40" style="height:34px;width:auto;display:block"><defs><linearGradient id="kg1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#F5C518"/><stop offset="100%" style="stop-color:#FFD95A"/></linearGradient></defs><rect x="0" y="2" width="36" height="36" rx="9" fill="url(#kg1)"/><text x="8" y="28" font-family="Arial Black,sans-serif" font-weight="900" font-size="23" fill="#2D1B69">K</text><text x="44" y="25" font-family="Arial,sans-serif" font-weight="700" font-size="16" fill="white">Kora</text><text x="80" y="25" font-family="Arial,sans-serif" font-weight="700" font-size="16" fill="#F5C518">Hub</text><text x="44" y="35" font-family="Arial,sans-serif" font-size="7" fill="rgba(255,255,255,0.45)" letter-spacing="1.5">LEARN · SELL · GROW</text></svg>
+    
+  </a>
+
+  <div class="sidebar-user">
+    <div class="user-avatar">M</div>
+    <div>
+      <div class="user-name">Moussa Traoré</div>
+      <div class="user-badge">⭐ Vendeur Pro</div>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">Principal</div>
+    <a class="nav-item active" onclick="showPage('overview')">
+      <span class="nav-icon">📊</span> Tableau de bord
+    </a>
+    <a class="nav-item" onclick="showPage('products')">
+      <span class="nav-icon">📦</span> Mes produits
+      <span class="nav-badge">3</span>
+    </a>
+    <a class="nav-item" onclick="showPage('orders')">
+      <span class="nav-icon">🛒</span> Commandes
+      <span class="nav-badge">2</span>
+    </a>
+    <a class="nav-item" onclick="showPage('revenue')">
+      <span class="nav-icon">💰</span> Revenus
+    </a>
+
+    <div class="nav-section-label">Marketing</div>
+    
+    <a class="nav-item" onclick="showPage('promo')">
+      <span class="nav-icon">🏷️</span> Codes Promo
+    </a>
+    <a class="nav-item" onclick="showPage('affiliation')">
+      <span class="nav-icon">📢</span> Affiliation
+    </a>
+
+    <div class="nav-section-label">Compte</div>
+    <a class="nav-item" onclick="showPage('settings')">
+      <span class="nav-icon">⚙️</span> Paramètres
+    </a>
+    <a class="nav-item" onclick="showPage('commission')">
+      <span class="nav-icon">💸</span> Commissions
+      <span class="nav-badge" style="background:var(--warning)">!</span>
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <button class="btn-logout" onclick="doLogout()">
+      <span>🚪</span> Se déconnecter
+    </button>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+      <div>
+        <div class="page-title" id="pageTitle">Tableau de bord</div>
+        <div class="page-breadcrumb">KoraHub › <span id="pageBreadcrumb">Vue générale</span></div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <button class="topbar-btn" onclick="showToast('🔔 Aucune nouvelle notification')">
+        🔔 <span class="notif-dot"></span>
+      </button>
+      <button class="topbar-btn" onclick="showToast('💬 Support KoraHub')">💬</button>
+      <button class="btn btn-gold" onclick="openModal('addProductModal')">+ Ajouter un produit</button>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- ══ OVERVIEW ══ -->
+    <div class="page-section active" id="page-overview">
+
+      <!-- Commission Alert -->
+      <div class="commission-alert">
+        <div class="alert-icon">⚠️</div>
+        <div class="alert-text">
+          <strong>Commission due : 1 000 FCFA</strong>
+          <span>Vente de "Gagner avec ChatGPT" – Envoyez au selon vendeur avant expiration</span>
+        </div>
+        <div class="alert-timer">
+          <div class="timer-val" id="timer">18:42:15</div>
+          <div class="timer-label">restant</div>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-row">
+        <div class="stat-card gold">
+          <div class="stat-icon">💰</div>
+          <div class="stat-val">47 500 F</div>
+          <div class="stat-label">Chiffre d'affaires ce mois</div>
+          <div class="stat-change up">↑ +12% vs mois dernier</div>
+        </div>
+        <div class="stat-card violet">
+          <div class="stat-icon">🛒</div>
+          <div class="stat-val">23</div>
+          <div class="stat-label">Ventes ce mois</div>
+          <div class="stat-change up">↑ +8 vs mois dernier</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-icon">📦</div>
+          <div class="stat-val">6</div>
+          <div class="stat-label">Produits actifs</div>
+          <div class="stat-change up">↑ +2 nouveaux</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-icon">💸</div>
+          <div class="stat-val">4 750 F</div>
+          <div class="stat-label">Commissions dues (10%)</div>
+          <div class="stat-change down">⚠️ À payer sous 24h</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <!-- Chart -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">📈 Ventes des 7 derniers jours</span>
+            <span class="text-muted">FCFA</span>
+          </div>
+          <div class="card-body">
+            <div class="chart-bars" id="chartBars">
+              <!-- Generated by JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Top Products -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">🔥 Meilleurs produits</span>
+            <button class="btn btn-ghost" style="padding:6px 12px;font-size:12px" onclick="showPage('products')">Voir tout</button>
+          </div>
+          <div class="card-body" style="padding:16px 20px">
+            <div class="product-row">
+              <div class="product-thumb" style="background:linear-gradient(135deg,#667eea,#764ba2)">📚</div>
+              <div class="product-info">
+                <div class="product-name-sm">Gagner avec ChatGPT</div>
+                <div class="product-meta-sm">14 ventes · Ebook</div>
+              </div>
+              <div class="product-price-sm">35 000 F</div>
+            </div>
+            <div class="product-row">
+              <div class="product-thumb" style="background:linear-gradient(135deg,#f093fb,#f5576c)">🎓</div>
+              <div class="product-info">
+                <div class="product-name-sm">Marketing Digital</div>
+                <div class="product-meta-sm">6 ventes · Formation</div>
+              </div>
+              <div class="product-price-sm">8 500 F</div>
+            </div>
+            <div class="product-row">
+              <div class="product-thumb" style="background:linear-gradient(135deg,#4facfe,#00f2fe)">🎯</div>
+              <div class="product-info">
+                <div class="product-name-sm">Coaching Business</div>
+                <div class="product-meta-sm">3 ventes · Coaching</div>
+              </div>
+              <div class="product-price-sm">7 500 F</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Orders -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">🛒 Dernières commandes</span>
+          <button class="btn btn-ghost" style="padding:6px 12px;font-size:12px" onclick="showPage('orders')">Voir tout</button>
+        </div>
+        <div class="card-body" style="padding:0">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Client</th>
+                <th>Produit</th>
+                <th>Montant</th>
+                <th>Paiement</th>
+                <th>Statut</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Awa Kaboré</strong></td>
+                <td>Gagner avec ChatGPT</td>
+                <td><strong>2 500 F</strong></td>
+                <td>🟠 Orange Money</td>
+                <td><span class="status-badge confirmed">✓ Confirmé</span></td>
+                <td>Aujourd'hui 14h32</td>
+              </tr>
+              <tr>
+                <td><strong>Seydou Coulibaly</strong></td>
+                <td>Marketing Digital</td>
+                <td><strong>8 000 F</strong></td>
+                <td>🔵 Wave</td>
+                <td><span class="status-badge pending">⏳ En attente</span></td>
+                <td>Aujourd'hui 11h15</td>
+              </tr>
+              <tr>
+                <td><strong>Mariam Ouédraogo</strong></td>
+                <td>Coaching Business</td>
+                <td><strong>25 000 F</strong></td>
+                <td>🟣 Moov Money</td>
+                <td><span class="status-badge confirmed">✓ Confirmé</span></td>
+                <td>Hier 18h44</td>
+              </tr>
+              <tr>
+                <td><strong>Adama Sawadogo</strong></td>
+                <td>Gagner avec ChatGPT</td>
+                <td><strong>2 500 F</strong></td>
+                <td>🔴 Coris Money</td>
+                <td><span class="status-badge cancelled">✗ Annulé</span></td>
+                <td>Hier 09h22</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ PRODUCTS ══ -->
+    <div class="page-section" id="page-products">
+      <div class="flex-between" style="margin-bottom:20px">
+        <div>
+          <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800">Mes Produits</div>
+          <div class="text-muted">Gérez vos produits digitaux</div>
+        </div>
+        <button class="btn btn-gold" onclick="openModal('addProductModal')">+ Nouveau produit</button>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">📦 6 produits actifs</span>
+          <div style="display:flex;gap:8px">
+            <input type="text" class="form-input" placeholder="Rechercher..." style="width:180px;padding:7px 12px">
+          </div>
+        </div>
+        <div class="card-body" style="padding:0">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Produit</th>
+                <th>Catégorie</th>
+                <th>Prix</th>
+                <th>Ventes</th>
+                <th>Statut</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div style="display:flex;align-items:center;gap:10px">
+                    <div style="width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;font-size:16px">📚</div>
+                    <div>
+                      <div style="font-weight:600;font-size:13px">Gagner avec ChatGPT</div>
+                      <div style="font-size:11px;color:var(--text-muted)">🇫🇷 Français</div>
+                    </div>
+                  </div>
+                </td>
+                <td>Ebook</td>
+                <td><strong>2 500 F</strong> <span style="font-size:11px;color:var(--danger);text-decoration:line-through">3 500 F</span></td>
+                <td><strong>14</strong></td>
+                <td><span class="status-badge confirmed">● Actif</span></td>
+                <td>
+                  <div class="product-actions">
+                    <button class="action-btn" onclick="showToast('✏️ Modification du produit')">✏️</button>
+                    <button class="action-btn" onclick="showPage('ai')">🤖</button>
+                    <button class="action-btn danger" onclick="showToast('🗑️ Produit supprimé')">🗑️</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div style="display:flex;align-items:center;gap:10px">
+                    <div style="width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,#f093fb,#f5576c);display:flex;align-items:center;justify-content:center;font-size:16px">🎓</div>
+                    <div>
+                      <div style="font-weight:600;font-size:13px">Marketing Digital</div>
+                      <div style="font-size:11px;color:var(--text-muted)">🇫🇷 Français</div>
+                    </div>
+                  </div>
+                </td>
+                <td>Formation</td>
+                <td><strong>8 000 F</strong></td>
+                <td><strong>6</strong></td>
+                <td><span class="status-badge confirmed">● Actif</span></td>
+                <td>
+                  <div class="product-actions">
+                    <button class="action-btn" onclick="showToast('✏️ Modification du produit')">✏️</button>
+                    <button class="action-btn" onclick="showPage('ai')">🤖</button>
+                    <button class="action-btn danger" onclick="showToast('🗑️ Produit supprimé')">🗑️</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div style="display:flex;align-items:center;gap:10px">
+                    <div style="width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,#4facfe,#00f2fe);display:flex;align-items:center;justify-content:center;font-size:16px">🎯</div>
+                    <div>
+                      <div style="font-weight:600;font-size:13px">Coaching Business</div>
+                      <div style="font-size:11px;color:var(--text-muted)">🇫🇷🇬🇧 Bilingue</div>
+                    </div>
+                  </div>
+                </td>
+                <td>Coaching</td>
+                <td><strong>25 000 F</strong></td>
+                <td><strong>3</strong></td>
+                <td><span class="status-badge pending">● Promo</span></td>
+                <td>
+                  <div class="product-actions">
+                    <button class="action-btn" onclick="showToast('✏️ Modification du produit')">✏️</button>
+                    <button class="action-btn" onclick="showPage('ai')">🤖</button>
+                    <button class="action-btn danger" onclick="showToast('🗑️ Produit supprimé')">🗑️</button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ ORDERS ══ -->
+    <div class="page-section" id="page-orders">
+      <div style="margin-bottom:20px">
+        <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800">Commandes</div>
+        <div class="text-muted">Toutes vos commandes clients</div>
+      </div>
+
+      <div class="stats-row" style="grid-template-columns:repeat(3,1fr)">
+        <div class="stat-card green">
+          <div class="stat-icon">✅</div>
+          <div class="stat-val">18</div>
+          <div class="stat-label">Confirmées</div>
+        </div>
+        <div class="stat-card" style="border-color:rgba(255,165,2,0.2)">
+          <div class="stat-icon" style="background:rgba(255,165,2,0.1)">⏳</div>
+          <div class="stat-val">2</div>
+          <div class="stat-label">En attente</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-icon">✗</div>
+          <div class="stat-val">3</div>
+          <div class="stat-label">Annulées (24h)</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">📋 Toutes les commandes</span>
+          <select class="form-select" style="width:auto;padding:6px 10px">
+            <option>Toutes</option>
+            <option>Confirmées</option>
+            <option>En attente</option>
+            <option>Annulées</option>
+          </select>
+        </div>
+        <div class="card-body" style="padding:0">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Client</th>
+                <th>Produit</th>
+                <th>Montant</th>
+                <th>Paiement</th>
+                <th>Statut</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="font-family:monospace;color:var(--text-muted)">#KH-0023</td>
+                <td><strong>Awa Kaboré</strong><br><span style="font-size:11px;color:var(--text-muted)">awa@gmail.com</span></td>
+                <td>Gagner avec ChatGPT</td>
+                <td><strong>2 500 F</strong></td>
+                <td>🟠 Orange Money</td>
+                <td><span class="status-badge confirmed">✓ Confirmé</span></td>
+                <td>Auj. 14h32</td>
+              </tr>
+              <tr>
+                <td style="font-family:monospace;color:var(--text-muted)">#KH-0022</td>
+                <td><strong>Seydou Coulibaly</strong><br><span style="font-size:11px;color:var(--text-muted)">seydou@email.com</span></td>
+                <td>Marketing Digital</td>
+                <td><strong>8 000 F</strong></td>
+                <td>🔵 Wave</td>
+                <td><span class="status-badge pending">⏳ En attente</span></td>
+                <td>Auj. 11h15</td>
+              </tr>
+              <tr>
+                <td style="font-family:monospace;color:var(--text-muted)">#KH-0021</td>
+                <td><strong>Mariam Ouédraogo</strong><br><span style="font-size:11px;color:var(--text-muted)">mariam@gmail.com</span></td>
+                <td>Coaching Business</td>
+                <td><strong>25 000 F</strong></td>
+                <td>🟣 Moov Money</td>
+                <td><span class="status-badge confirmed">✓ Confirmé</span></td>
+                <td>Hier 18h44</td>
+              </tr>
+              <tr>
+                <td style="font-family:monospace;color:var(--text-muted)">#KH-0020</td>
+                <td><strong>Adama Sawadogo</strong><br><span style="font-size:11px;color:var(--text-muted)">adama@yahoo.com</span></td>
+                <td>Gagner avec ChatGPT</td>
+                <td><strong>2 500 F</strong></td>
+                <td>🔴 Coris Money</td>
+                <td><span class="status-badge cancelled">✗ Annulé (24h)</span></td>
+                <td>Hier 09h22</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ REVENUE ══ -->
+    <div class="page-section" id="page-revenue">
+      <div style="margin-bottom:20px">
+        <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800">Revenus</div>
+        <div class="text-muted">Votre chiffre d'affaires en détail</div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card gold">
+          <div class="stat-icon">💰</div>
+          <div class="stat-val">47 500 F</div>
+          <div class="stat-label">Ce mois</div>
+          <div class="stat-change up">↑ +12%</div>
+        </div>
+        <div class="stat-card violet">
+          <div class="stat-icon">📅</div>
+          <div class="stat-val">312 000 F</div>
+          <div class="stat-label">Cette année</div>
+          <div class="stat-change up">↑ +34%</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-icon">✅</div>
+          <div class="stat-val">42 750 F</div>
+          <div class="stat-label">Reçu (après commission)</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-icon">💸</div>
+          <div class="stat-val">4 750 F</div>
+          <div class="stat-label">Commissions payées</div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:20px">
+        <div class="card-header">
+          <span class="card-title">📊 Revenus mensuels 2025</span>
+        </div>
+        <div class="card-body">
+          <div class="chart-bars" id="monthlyChart" style="height:160px"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">💸 Historique des commissions</span>
+        </div>
+        <div class="card-body" style="padding:0">
+          <table class="table">
+            <thead>
+              <tr><th>Vente</th><th>Montant vente</th><th>Commission (10%)</th><th>Statut</th><th>Date limite</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Gagner avec ChatGPT × 14</td>
+                <td>35 000 F</td>
+                <td><strong>3 500 F</strong></td>
+                <td><span class="status-badge confirmed">✓ Payé</span></td>
+                <td>—</td>
+              </tr>
+              <tr>
+                <td>Marketing Digital × 3</td>
+                <td>24 000 F</td>
+                <td><strong>2 400 F</strong></td>
+                <td><span class="status-badge confirmed">✓ Payé</span></td>
+                <td>—</td>
+              </tr>
+              <tr>
+                <td>Coaching Business × 1</td>
+                <td>25 000 F</td>
+                <td><strong style="color:var(--danger)">2 500 F</strong></td>
+                <td><span class="status-badge pending">⚠️ En attente</span></td>
+                <td style="color:var(--danger);font-weight:700">18h 42min</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ PROMO ══ -->
+    <div class="page-section" id="page-promo">
+      <div class="flex-between" style="margin-bottom:20px">
+        <div>
+          <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800">Codes Promo 🏷️</div>
+          <div class="text-muted">Créez des réductions pour attirer plus de clients</div>
+        </div>
+        <button class="btn btn-gold" onclick="openModal('addPromoModal')">+ Nouveau code</button>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><span class="card-title">Codes actifs</span></div>
+        <div class="card-body">
+          <div class="promo-row">
+            <div class="promo-code">KORA20</div>
+            <div class="promo-info">Tous les produits · Utilisé 8 fois · Expire 31 déc.</div>
+            <div class="promo-discount">-20%</div>
+            <div class="product-actions">
+              <button class="action-btn" onclick="showToast('📋 Code copié : KORA20')">📋</button>
+              <button class="action-btn danger" onclick="showToast('🗑️ Code supprimé')">🗑️</button>
+            </div>
+          </div>
+          <div class="promo-row">
+            <div class="promo-code">BURKINA10</div>
+            <div class="promo-info">Ebooks seulement · Utilisé 3 fois · Pas d'expiration</div>
+            <div class="promo-discount">-10%</div>
+            <div class="product-actions">
+              <button class="action-btn" onclick="showToast('📋 Code copié : BURKINA10')">📋</button>
+              <button class="action-btn danger" onclick="showToast('🗑️ Code supprimé')">🗑️</button>
+            </div>
+          </div>
+          <div class="promo-row">
+            <div class="promo-code">GRATUIT1</div>
+            <div class="promo-info">Coaching Business · 1 utilisation max · Expire 15 jan.</div>
+            <div class="promo-discount">-100%</div>
+            <div class="product-actions">
+              <button class="action-btn" onclick="showToast('📋 Code copié : GRATUIT1')">📋</button>
+              <button class="action-btn danger" onclick="showToast('🗑️ Code supprimé')">🗑️</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ AFFILIATION ══ -->
+    <div class="page-section" id="page-affiliation">
+      <div style="margin-bottom:20px">
+        <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800">Programme d'Affiliation 📢</div>
+        <div class="text-muted">Laissez d'autres personnes promouvoir vos produits</div>
+      </div>
+
+      <div class="card" style="margin-bottom:20px">
+        <div class="card-header"><span class="card-title">⚙️ Paramètres affiliation par produit</span></div>
+        <div class="card-body">
+          <div class="toggle-wrap">
+            <div class="toggle-info">
+              <strong>📚 Gagner avec ChatGPT</strong>
+              <span>Commission affilié : 10% par vente</span>
+            </div>
+            <button class="toggle on" onclick="this.classList.toggle('on')"></button>
+          </div>
+          <div class="toggle-wrap">
+            <div class="toggle-info">
+              <strong>🎓 Marketing Digital</strong>
+              <span>Commission affilié : 10% par vente</span>
+            </div>
+            <button class="toggle" onclick="this.classList.toggle('on')"></button>
+          </div>
+          <div class="toggle-wrap">
+            <div class="toggle-info">
+              <strong>🎯 Coaching Business</strong>
+              <span>Commission affilié : 10% par vente</span>
+            </div>
+            <button class="toggle on" onclick="this.classList.toggle('on')"></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><span class="card-title">📊 Performance des affiliés</span></div>
+        <div class="card-body" style="padding:0">
+          <table class="table">
+            <thead>
+              <tr><th>Affilié</th><th>Clics</th><th>Ventes générées</th><th>Commission due</th><th>Statut</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Youssouf Compaoré</strong></td>
+                <td>234</td>
+                <td>8 ventes · 20 000 F</td>
+                <td><strong>2 000 F</strong></td>
+                <td><span class="status-badge confirmed">✓ Payé</span></td>
+              </tr>
+              <tr>
+                <td><strong>Rasmata Zongo</strong></td>
+                <td>89</td>
+                <td>3 ventes · 7 500 F</td>
+                <td><strong>750 F</strong></td>
+                <td><span class="status-badge pending">⏳ En attente</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ COMMISSION ══ -->
+    <div class="page-section" id="page-commission">
+      <div style="margin-bottom:20px">
+        <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800">Commissions KoraHub 💸</div>
+        <div class="text-muted">10% de chaque vente à payer dans les 24h</div>
+      </div>
+
+      <div class="commission-alert">
+        <div class="alert-icon">🚨</div>
+        <div class="alert-text">
+          <strong>URGENT : 2 500 FCFA dus à KoraHub</strong>
+          <span>Envoyez sur Orange Money / Wave : selon vendeur · Votre compte sera bloqué après expiration</span>
+        </div>
+        <div class="alert-timer">
+          <div class="timer-val" id="timer2">18:42:15</div>
+          <div class="timer-label">restant</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><span class="card-title">Comment payer votre commission</span></div>
+        <div class="card-body">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+            <div style="background:rgba(245,197,24,0.08);border:1px solid rgba(245,197,24,0.2);border-radius:12px;padding:16px;text-align:center">
+              <div style="font-size:28px">🟠</div>
+              <div style="font-weight:700;margin-top:8px">Orange Money / Wave</div>
+              <div style="font-family:monospace;font-size:20px;font-weight:800;color:var(--violet);margin-top:4px">selon vendeur</div>
+              <button class="btn btn-ghost" style="margin-top:12px;width:100%;font-size:12px" onclick="copyToClipboard('selon vendeur')">Copier le numéro</button>
+            </div>
+            <div style="background:rgba(107,70,193,0.06);border:1px solid rgba(107,70,193,0.15);border-radius:12px;padding:16px;text-align:center">
+              <div style="font-size:28px">🟣</div>
+              <div style="font-weight:700;margin-top:8px">Moov / Coris Money</div>
+              <div style="font-family:monospace;font-size:20px;font-weight:800;color:var(--violet);margin-top:4px">selon vendeur</div>
+              <button class="btn btn-ghost" style="margin-top:12px;width:100%;font-size:12px" onclick="copyToClipboard('selon vendeur')">Copier le numéro</button>
+            </div>
+          </div>
+          <div class="upload-zone" id="uploadZone2" onclick="uploadScreenshot('uploadZone2')">
+            <div class="upload-icon">📸</div>
+            <div class="upload-text">Uploadez votre <strong>capture d'écran</strong> de paiement de commission</div>
+          </div>
+          <button class="btn btn-gold" style="width:100%;justify-content:center;padding:13px" onclick="showToast('✅ Capture envoyée ! Admin va confirmer.')">✅ J'ai payé ma commission</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ SETTINGS ══ -->
+    <div class="page-section" id="page-settings">
+      <div style="margin-bottom:20px">
+        <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800">Paramètres ⚙️</div>
+        <div class="text-muted">Gérez votre profil vendeur</div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header"><span class="card-title">👤 Profil vendeur</span></div>
+          <div class="card-body">
+            <div class="form-group">
+              <label class="form-label">Nom complet</label>
+              <input type="text" class="form-input" value="Moussa Traoré">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-input" value="moussa@gmail.com">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Numéro WhatsApp</label>
+              <input type="text" class="form-input" placeholder="+226 XX XX XX XX">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Numéro de paiement principal</label>
+              <input type="text" class="form-input" placeholder="Ex: selon vendeur">
+            </div>
+            <button class="btn btn-violet" style="width:100%;justify-content:center" onclick="showToast('✅ Profil mis à jour !')">Sauvegarder</button>
+          </div>
+        </div>
+
+        <div>
+          <div class="card" style="margin-bottom:20px">
+            <div class="card-header"><span class="card-title">🏅 Votre badge vendeur</span></div>
+            <div class="card-body">
+              <div class="badge-display">
+                <div class="vendor-badge">
+                  <div class="badge-icon">🌱</div>
+                  <div class="badge-name">Débutant</div>
+                  <div class="badge-req">0-10 ventes</div>
+                </div>
+                <div class="vendor-badge active">
+                  <div class="badge-icon">⭐</div>
+                  <div class="badge-name">Pro</div>
+                  <div class="badge-req">11-50 ventes</div>
+                </div>
+                <div class="vendor-badge">
+                  <div class="badge-icon">🏆</div>
+                  <div class="badge-name">Expert</div>
+                  <div class="badge-req">51+ ventes</div>
+                </div>
+              </div>
+              <div class="progress-wrap">
+                <div class="progress-label"><span>Progression vers Expert</span><span>23/50 ventes</span></div>
+                <div class="progress-bar"><div class="progress-fill" style="width:46%"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header"><span class="card-title">🔔 Notifications</span></div>
+            <div class="card-body">
+              <div class="toggle-wrap">
+                <div class="toggle-info">
+                  <strong>Email nouvelle vente</strong>
+                  <span>Recevoir un email à chaque vente</span>
+                </div>
+                <button class="toggle on" onclick="this.classList.toggle('on')"></button>
+              </div>
+              <div class="toggle-wrap">
+                <div class="toggle-info">
+                  <strong>WhatsApp nouvelle vente</strong>
+                  <span>Notification WhatsApp instantanée</span>
+                </div>
+                <button class="toggle on" onclick="this.classList.toggle('on')"></button>
+              </div>
+              <div class="toggle-wrap">
+                <div class="toggle-info">
+                  <strong>Rappel commission</strong>
+                  <span>Alerte 12h avant expiration</span>
+                </div>
+                <button class="toggle on" onclick="this.classList.toggle('on')"></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ API CONFIG SECTION ═══ -->
+      <div style="margin-top:24px">
+        <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--text-dark);margin-bottom:6px">🤖 Configuration Outils marketing</div>
+        <div class="text-muted" style="margin-bottom:16px">Configurez vos propres clés API pour générer des vidéos avatar. Chaque vendeur gère ses propres crédits gratuitement.</div>
+
+        <div style="background:rgba(245,197,24,0.06);border:1.5px solid rgba(245,197,24,0.2);border-radius:12px;padding:14px 16px;margin-bottom:18px;display:flex;gap:12px;align-items:flex-start">
+          <span style="font-size:20px;flex-shrink:0">🔐</span>
+          <div>
+            <strong style="display:block;font-size:13px;color:var(--text-dark);margin-bottom:3px">Vos clés API sont privées</strong>
+            <span style="font-size:12px;color:var(--text-muted)">Sauvegardées uniquement sur votre navigateur. Personne d'autre ne peut y accéder. Ne les partagez jamais.</span>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <!-- ElevenLabs -->
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">🎙️ ElevenLabs · Voix</span>
+              <span style="font-size:10px;font-weight:700;background:rgba(46,213,115,0.1);color:var(--success);padding:2px 8px;border-radius:100px">✅ Gratuit</span>
+            </div>
+            <div class="card-body">
+              <div style="font-size:12px;color:var(--text-muted);margin-bottom:12px;line-height:1.6">Voix marketing française masculine · <strong>10 000 chars/mois gratuits</strong></div>
+              <div class="form-group">
+                <label class="form-label">Clé API ElevenLabs</label>
+                <div style="display:flex;gap:6px">
+                  <input type="password" class="form-input" id="vendor-elevenlabs-key" placeholder="sk_xxxxxxxxxxxxxxxxxxxx" style="font-family:monospace;font-size:12px" oninput="saveVendorKey('elevenlabs',this.value)">
+                  <button onclick="toggleVendorKey('vendor-elevenlabs-key',this)" style="background:none;border:none;cursor:pointer;font-size:14px;color:var(--text-muted);padding:0 6px">👁️</button>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Voice ID (voix masculine)</label>
+                <input type="text" class="form-input" id="vendor-elevenlabs-voice" placeholder="pNInz6obpgDQGcFmaJgB" style="font-family:monospace;font-size:12px" oninput="saveVendorKey('elevenlabs_voice',this.value)">
+                <div style="font-size:11px;color:var(--text-muted);margin-top:4px">📍 <a href="https://elevenlabs.io" target="_blank" style="color:var(--violet-light);font-weight:600">elevenlabs.io</a> → Settings → API Keys</div>
+              </div>
+              <div style="display:flex;gap:6px">
+                <button class="btn btn-ghost" style="flex:1;justify-content:center;font-size:11px" onclick="testVendorAPI('elevenlabs')">🧪 Tester</button>
+                <button class="btn btn-violet" style="flex:1;justify-content:center;font-size:11px" onclick="saveAllVendorKeys()">💾 Sauver</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- D-ID -->
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">🧑🏾 D-ID · Avatar</span>
+              <span style="font-size:10px;font-weight:700;background:rgba(46,213,115,0.1);color:var(--success);padding:2px 8px;border-radius:100px">✅ 20 vidéos gratuites</span>
+            </div>
+            <div class="card-body">
+              <div style="font-size:12px;color:var(--text-muted);margin-bottom:12px;line-height:1.6">Avatar homme africain réaliste · <strong>20 vidéos/mois gratuites</strong></div>
+              <div class="form-group">
+                <label class="form-label">Clé API D-ID</label>
+                <div style="display:flex;gap:6px">
+                  <input type="password" class="form-input" id="vendor-did-key" placeholder="Basic xxxxxxxxxxxxxx" style="font-family:monospace;font-size:12px" oninput="saveVendorKey('did',this.value)">
+                  <button onclick="toggleVendorKey('vendor-did-key',this)" style="background:none;border:none;cursor:pointer;font-size:14px;color:var(--text-muted);padding:0 6px">👁️</button>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">URL image avatar</label>
+                <input type="text" class="form-input" id="vendor-did-avatar" placeholder="https://... (photo homme africain)" style="font-family:monospace;font-size:12px" oninput="saveVendorKey('did_avatar',this.value)">
+                <div style="font-size:11px;color:var(--text-muted);margin-top:4px">📍 <a href="https://www.d-id.com" target="_blank" style="color:var(--violet-light);font-weight:600">d-id.com</a> → Account Settings → API</div>
+              </div>
+              <div style="display:flex;gap:6px">
+                <button class="btn btn-ghost" style="flex:1;justify-content:center;font-size:11px" onclick="testVendorAPI('did')">🧪 Tester</button>
+                <button class="btn btn-violet" style="flex:1;justify-content:center;font-size:11px" onclick="saveAllVendorKeys()">💾 Sauver</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Groq -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">🤖 Groq · Scripts marketing IA</span>
+            <span style="font-size:10px;font-weight:700;background:rgba(46,213,115,0.1);color:var(--success);padding:2px 8px;border-radius:100px">✅ 100% Gratuit</span>
+          </div>
+          <div class="card-body">
+            <div style="font-size:12px;color:var(--text-muted);margin-bottom:12px;line-height:1.6">Génère automatiquement vos scripts marketing avec l'IA Llama 3. Entièrement gratuit.</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+              <div class="form-group" style="margin-bottom:0">
+                <label class="form-label">Clé API Groq</label>
+                <div style="display:flex;gap:6px">
+                  <input type="password" class="form-input" id="vendor-groq-key" placeholder="gsk_xxxxxxxxxxxxxxxxxxxx" style="font-family:monospace;font-size:12px" oninput="saveVendorKey('groq',this.value)">
+                  <button onclick="toggleVendorKey('vendor-groq-key',this)" style="background:none;border:none;cursor:pointer;font-size:14px;color:var(--text-muted);padding:0 6px">👁️</button>
+                </div>
+                <div style="font-size:11px;color:var(--text-muted);margin-top:4px">📍 <a href="https://console.groq.com/keys" target="_blank" style="color:var(--violet-light);font-weight:600">console.groq.com/keys</a></div>
+              </div>
+              <div class="form-group" style="margin-bottom:0">
+                <label class="form-label">Modèle IA</label>
+                <select class="form-select" id="vendor-groq-model" onchange="saveVendorKey('groq_model',this.value)">
+                  <option value="llama-3.1-8b-instant">llama-3.1-8b-instant (Rapide)</option>
+                  <option value="llama-3.1-70b-versatile">llama-3.1-70b-versatile (Plus intelligent)</option>
+                </select>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-ghost" style="flex:1;justify-content:center;font-size:12px" onclick="testVendorAPI('groq')">🧪 Tester la clé</button>
+              <button class="btn btn-gold" style="flex:2;justify-content:center;font-size:12px" onclick="saveAllVendorKeys()">💾 Sauvegarder toutes les clés</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Status -->
+        <div style="background:white;border:1.5px solid var(--border);border-radius:12px;padding:16px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;text-align:center">
+          <div>
+            <div style="font-size:22px;margin-bottom:4px" id="groqStatusIcon">⚪</div>
+            <div style="font-size:12px;font-weight:700;color:var(--text-dark)">Groq</div>
+            <div style="font-size:10px;color:var(--text-muted)" id="groqStatusText">Non configuré</div>
+          </div>
+          <div>
+            <div style="font-size:22px;margin-bottom:4px" id="elevenStatusIcon">⚪</div>
+            <div style="font-size:12px;font-weight:700;color:var(--text-dark)">ElevenLabs</div>
+            <div style="font-size:10px;color:var(--text-muted)" id="elevenStatusText">Non configuré</div>
+          </div>
+          <div>
+            <div style="font-size:22px;margin-bottom:4px" id="didStatusIcon">⚪</div>
+            <div style="font-size:12px;font-weight:700;color:var(--text-dark)">D-ID</div>
+            <div style="font-size:10px;color:var(--text-muted)" id="didStatusText">Non configuré</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span>✅</span>
+  <span id="toastMsg">Action effectuée !</span>
+</div>
+
+<!-- ADD PRODUCT MODAL -->
+<div class="modal-overlay" id="addProductModal">
+  <div class="modal" style="max-width:560px;max-height:90vh;overflow-y:auto">
+    <button class="modal-close" onclick="closeModal('addProductModal')">✕</button>
+    <div class="modal-title">➕ Nouveau produit</div>
+    <div class="modal-sub">Remplissez les informations de votre produit</div>
+
+    <!-- Infos de base -->
+    <div class="form-group">
+      <label class="form-label">Titre du produit *</label>
+      <input type="text" class="form-input" id="prodTitle" placeholder="Ex: Les maux pour le mot">
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Catégorie *</label>
+        <select class="form-select" id="prodCategory">
+          <optgroup label="📚 Livres & Auteurs">
+            <option>Roman & Fiction</option>
+            <option>Développement personnel</option>
+            <option>Poésie & Littérature</option>
+            <option>Business & Entrepreneuriat</option>
+            <option>Spiritualité & Religion</option>
+            <option>Académique & Scolaire</option>
+          </optgroup>
+          <optgroup label="🎓 Formations & Coaching">
+            <option>Business en ligne</option>
+            <option>Marketing digital</option>
+            <option>Compétences techniques</option>
+            <option>Coaching personnel</option>
+          </optgroup>
+          <optgroup label="🧠 Bien-être & Santé">
+            <option>Santé mentale</option>
+            <option>Fitness & Sport</option>
+            <option>Nutrition</option>
+          </optgroup>
+          <optgroup label="🖨️ Imprimables">
+            <option>Planner & Agenda</option>
+            <option>Tracker (budget, sport, habitudes)</option>
+            <option>Journal personnel</option>
+            <option>Carnet & Bloc-notes</option>
+            <option>Vision board</option>
+            <option>Carnet spécial (voyage, recettes...)</option>
+          </optgroup>
+          <optgroup label="🎨 Templates & Créatifs">
+            <option>CV & Lettres</option>
+            <option>Factures & Devis</option>
+            <option>Présentation PowerPoint</option>
+            <option>Template réseaux sociaux</option>
+            <option>Template Canva/Word</option>
+          </optgroup>
+          <optgroup label="👶 KoraHub Kids">
+            <option>Livre enfant (0-3 ans)</option>
+            <option>Livre enfant (4-7 ans)</option>
+            <option>Livre enfant (8-12 ans)</option>
+            <option>Livre enfant (13+ ans)</option>
+            <option>Album à colorier</option>
+            <option>Cahier d'activités</option>
+          </optgroup>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Langue</label>
+        <select class="form-select" id="prodLang">
+          <option>🇫🇷 Français</option>
+          <option>🇬🇧 Anglais</option>
+          <option>🇫🇷🇬🇧 Bilingue</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Description *</label>
+      <textarea class="form-textarea" id="prodDesc" placeholder="Décrivez votre produit en détail..."></textarea>
+    </div>
+
+    <!-- TYPE DE LIVRAISON -->
+    <div class="form-group">
+      <label class="form-label">Type de livraison <span style="font-size:11px;color:var(--text-muted);font-weight:400">(cochez tout ce qui s'applique)</span></label>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:6px">
+
+        <!-- Téléchargeable -->
+        <div style="border:1.5px solid var(--border);border-radius:12px;padding:14px;transition:all .2s" id="typeDownloadWrap">
+          <label style="display:flex;align-items:center;gap:10px;cursor:pointer">
+            <input type="checkbox" id="typeDownload" onchange="toggleDeliveryType('download')" style="width:18px;height:18px;accent-color:var(--violet)">
+            <div>
+              <div style="font-weight:700;font-size:13px;color:var(--text-dark)">📥 Téléchargeable</div>
+              <div style="font-size:11px;color:var(--text-muted)">PDF envoyé par email immédiatement après paiement</div>
+            </div>
+          </label>
+          <div id="downloadPrice" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">
+            <div class="form-row" style="margin-bottom:0">
+              <div class="form-group" style="margin-bottom:0">
+                <label class="form-label">Prix téléchargeable (FCFA)</label>
+                <input type="number" class="form-input" id="priceDownload" placeholder="Ex: 3000">
+              </div>
+              <div class="form-group" style="margin-bottom:0">
+                <label class="form-label">Prix promo (optionnel)</label>
+                <input type="number" class="form-input" id="promoDownload" placeholder="Ex: 2000">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Imprimable -->
+        <div style="border:1.5px solid var(--border);border-radius:12px;padding:14px;transition:all .2s" id="typePrintWrap">
+          <label style="display:flex;align-items:center;gap:10px;cursor:pointer">
+            <input type="checkbox" id="typePrint" onchange="toggleDeliveryType('print')" style="width:18px;height:18px;accent-color:var(--violet)">
+            <div>
+              <div style="font-weight:700;font-size:13px;color:var(--text-dark)">🖨️ Imprimable</div>
+              <div style="font-size:11px;color:var(--text-muted)">PDF haute qualité que l'acheteur imprime lui-même</div>
+            </div>
+          </label>
+          <div id="printPrice" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">
+            <div class="form-row" style="margin-bottom:0">
+              <div class="form-group" style="margin-bottom:0">
+                <label class="form-label">Prix imprimable (FCFA)</label>
+                <input type="number" class="form-input" id="pricePrint" placeholder="Ex: 2000">
+              </div>
+              <div class="form-group" style="margin-bottom:0">
+                <label class="form-label">Format</label>
+                <select class="form-select" id="printFormat">
+                  <option>A4</option>
+                  <option>A5</option>
+                  <option>6x9 pouces</option>
+                  <option>Letter</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Physique -->
+        <div style="border:1.5px solid var(--border);border-radius:12px;padding:14px;transition:all .2s" id="typePhysicWrap">
+          <label style="display:flex;align-items:center;gap:10px;cursor:pointer">
+            <input type="checkbox" id="typePhysic" onchange="toggleDeliveryType('physic')" style="width:18px;height:18px;accent-color:var(--violet)">
+            <div>
+              <div style="font-weight:700;font-size:13px;color:var(--text-dark)">📦 Physique</div>
+              <div style="font-size:11px;color:var(--text-muted)">Produit déjà imprimé/relié que vous livrez vous-même</div>
+            </div>
+          </label>
+          <div id="physicPrice" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">
+            <div class="form-row">
+              <div class="form-group" style="margin-bottom:0">
+                <label class="form-label">Prix physique (FCFA)</label>
+                <input type="number" class="form-input" id="pricePhysic" placeholder="Ex: 5000">
+              </div>
+              <div class="form-group" style="margin-bottom:0">
+                <label class="form-label">Frais livraison (FCFA)</label>
+                <input type="number" class="form-input" id="deliveryFee" placeholder="Ex: 1000">
+              </div>
+            </div>
+            <div class="form-group" style="margin-top:10px;margin-bottom:0">
+              <label class="form-label">Zone de livraison <span style="font-size:11px;color:var(--text-muted);font-weight:400">(plusieurs possibles)</span></label>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px">
+                <label style="display:flex;align-items:center;gap:8px;padding:9px 12px;border:1.5px solid var(--border);border-radius:9px;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-dark)">
+                  <input type="checkbox" id="zoneCity" style="accent-color:var(--violet)"> 📍 Ma ville
+                </label>
+                <label style="display:flex;align-items:center;gap:8px;padding:9px 12px;border:1.5px solid var(--border);border-radius:9px;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-dark)">
+                  <input type="checkbox" id="zoneCountry" style="accent-color:var(--violet)"> 🌍 Mon pays
+                </label>
+                <label style="display:flex;align-items:center;gap:8px;padding:9px 12px;border:1.5px solid var(--border);border-radius:9px;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-dark)">
+                  <input type="checkbox" id="zoneAfrica" style="accent-color:var(--violet)"> 🌍 Toute l'Afrique
+                </label>
+                <label style="display:flex;align-items:center;gap:8px;padding:9px 12px;border:1.5px solid var(--border);border-radius:9px;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-dark)">
+                  <input type="checkbox" id="zoneWorld" style="accent-color:var(--violet)"> 🌐 International
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fichiers -->
+    <div class="form-group">
+      <label class="form-label">Fichier du produit (PDF ou vidéo)</label>
+      <div class="upload-zone" id="prodFileZone" onclick="uploadScreenshot('prodFileZone')">
+        <div class="upload-icon">📁</div>
+        <div class="upload-text">Cliquez pour uploader votre <strong>PDF, vidéo ou fichier</strong></div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Image de couverture</label>
+      <div class="upload-zone" id="prodCoverZone" onclick="uploadScreenshot('prodCoverZone')">
+        <div class="upload-icon">🖼️</div>
+        <div class="upload-text">Cliquez pour uploader <strong>l'image de couverture</strong></div>
+      </div>
+    </div>
+
+    <button class="btn btn-gold" style="width:100%;justify-content:center;padding:13px;font-size:14px;font-family:'Syne',sans-serif;font-weight:800" onclick="addProduct()">🚀 Publier le produit</button>
+  </div>
+</div>
+
+<!-- ADD PROMO MODAL -->
+<div class="modal-overlay" id="addPromoModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('addPromoModal')">✕</button>
+    <div class="modal-title">🏷️ Nouveau code promo</div>
+    <div class="modal-sub">Créez un code de réduction pour vos clients</div>
+    <div class="form-group">
+      <label class="form-label">Code promo</label>
+      <input type="text" class="form-input" placeholder="Ex: KORA2025" style="text-transform:uppercase">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Réduction (%)</label>
+        <input type="number" class="form-input" placeholder="Ex: 20">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Utilisations max</label>
+        <input type="number" class="form-input" placeholder="Vide = illimité">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Produit concerné</label>
+      <select class="form-select">
+        <option>Tous les produits</option>
+        <option>Gagner avec ChatGPT</option>
+        <option>Marketing Digital</option>
+        <option>Coaching Business</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Date d'expiration (optionnel)</label>
+      <input type="date" class="form-input">
+    </div>
+    <button class="btn btn-gold" style="width:100%;justify-content:center;padding:13px" onclick="closeModal('addPromoModal');showToast('✅ Code promo créé !')">Créer le code</button>
+  </div>
+</div>
+
+<script>
+// Navigation
+function showPage(page) {
+  document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+
+  const titles = {
+    overview: ['Tableau de bord', 'Vue générale'],
+    products: ['Mes Produits', 'Gérer les produits'],
+    orders: ['Commandes', 'Historique des commandes'],
+    revenue: ['Revenus', 'Chiffre d\'affaires'],
+    ai: ['Outils marketing', 'Génération de vidéos'],
+    promo: ['Codes Promo', 'Réductions et offres'],
+    affiliation: ['Affiliation', 'Programme partenaires'],
+    commission: ['Commissions', 'Paiements KoraHub'],
+    settings: ['Paramètres', 'Mon profil']
+  };
+
+  if (titles[page]) {
+    document.getElementById('pageTitle').textContent = titles[page][0];
+    document.getElementById('pageBreadcrumb').textContent = titles[page][1];
+  }
+
+  // Close sidebar on mobile
+  document.getElementById('sidebar').classList.remove('open');
+}
+
+// Sidebar toggle
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+
+// Modal
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.querySelectorAll('.modal-overlay').forEach(o => {
+  o.addEventListener('click', function(e) {
+    if (e.target === this) closeModal(this.id);
+  });
+});
+
+// Toast
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// Charts
+function buildChart(id, data, labels) {
+  const container = document.getElementById(id);
+  if (!container) return;
+  const max = Math.max(...data);
+  container.innerHTML = data.map((v, i) => `
+    <div class="bar-wrap">
+      <div class="bar" style="height:${(v/max)*100}%" title="${v} FCFA"></div>
+      <div class="bar-label">${labels[i]}</div>
+    </div>
+  `).join('');
+}
+
+buildChart('chartBars',
+  [8500, 12000, 6000, 15000, 9500, 18000, 14000],
+  ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim']
+);
+
+buildChart('monthlyChart',
+  [18000, 24000, 31000, 28000, 42000, 38000, 51000, 47500, 0, 0, 0, 0],
+  ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc']
+);
+
+// ═══ VENDOR API KEYS ═══
+function saveVendorKey(key, value) {
+  localStorage.setItem('vendor_' + key, value);
+  updateVendorAPIStatus();
+}
+
+function saveAllVendorKeys() {
+  const keys = {
+    'vendor_groq': document.getElementById('vendor-groq-key')?.value || '',
+    'vendor_groq_model': document.getElementById('vendor-groq-model')?.value || '',
+    'vendor_elevenlabs': document.getElementById('vendor-elevenlabs-key')?.value || '',
+    'vendor_elevenlabs_voice': document.getElementById('vendor-elevenlabs-voice')?.value || '',
+    'vendor_did': document.getElementById('vendor-did-key')?.value || '',
+    'vendor_did_avatar': document.getElementById('vendor-did-avatar')?.value || ''
+  };
+  Object.entries(keys).forEach(([k, v]) => localStorage.setItem(k, v));
+  updateVendorAPIStatus();
+  showToast('💾 Toutes vos clés API sauvegardées !');
+}
+
+function loadVendorKeys() {
+  const fields = {
+    'vendor-groq-key': 'vendor_groq',
+    'vendor-groq-model': 'vendor_groq_model',
+    'vendor-elevenlabs-key': 'vendor_elevenlabs',
+    'vendor-elevenlabs-voice': 'vendor_elevenlabs_voice',
+    'vendor-did-key': 'vendor_did',
+    'vendor-did-avatar': 'vendor_did_avatar'
+  };
+  Object.entries(fields).forEach(([id, key]) => {
+    const el = document.getElementById(id);
+    const val = localStorage.getItem(key);
+    if (el && val) el.value = val;
+  });
+  updateVendorAPIStatus();
+}
+
+function toggleVendorKey(id, btn) {
+  const input = document.getElementById(id);
+  if (!input) return;
+  input.type = input.type === 'password' ? 'text' : 'password';
+  btn.textContent = input.type === 'password' ? '👁️' : '🙈';
+}
+
+function testVendorAPI(service) {
+  const keyMap = {
+    groq: 'vendor-groq-key',
+    elevenlabs: 'vendor-elevenlabs-key',
+    did: 'vendor-did-key'
+  };
+  const key = document.getElementById(keyMap[service])?.value;
+  if (!key || key.length < 10) {
+    showToast('⚠️ Entrez votre clé API ' + service + ' d\'abord');
+    return;
+  }
+  showToast('⏳ Test de connexion ' + service + '...');
+  setTimeout(() => {
+    showToast('✅ Clé ' + service + ' valide ! Connexion réussie.');
+    updateVendorAPIStatus();
+  }, 1500);
+}
+
+function updateVendorAPIStatus() {
+  const groqKey = localStorage.getItem('vendor_groq') || document.getElementById('vendor-groq-key')?.value || '';
+  const elevenKey = localStorage.getItem('vendor_elevenlabs') || document.getElementById('vendor-elevenlabs-key')?.value || '';
+  const didKey = localStorage.getItem('vendor_did') || document.getElementById('vendor-did-key')?.value || '';
+
+  const configs = [
+    { icon: 'groqStatusIcon', text: 'groqStatusText', key: groqKey, name: 'Groq' },
+    { icon: 'elevenStatusIcon', text: 'elevenStatusText', key: elevenKey, name: 'ElevenLabs' },
+    { icon: 'didStatusIcon', text: 'didStatusText', key: didKey, name: 'D-ID' }
+  ];
+
+  configs.forEach(c => {
+    const iconEl = document.getElementById(c.icon);
+    const textEl = document.getElementById(c.text);
+    if (iconEl) iconEl.textContent = c.key.length > 10 ? '✅' : '⚪';
+    if (textEl) textEl.textContent = c.key.length > 10 ? 'Configuré ✓' : 'Non configuré';
+  });
+}
+
+// Load vendor keys on page start
+loadVendorKeys();
+
+// Countdown timer
+function startTimer(elementId, seconds) {
+  const el = document.getElementById(elementId);
+  if (!el) return;
+  let s = seconds;
+  setInterval(() => {
+    s--;
+    if (s < 0) { el.textContent = 'EXPIRÉ'; el.style.color = '#ff4757'; return; }
+    const h = Math.floor(s / 3600);
+    const m = Math.floor((s % 3600) / 60);
+    const sec = s % 60;
+    el.textContent = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+  }, 1000);
+}
+
+startTimer('timer', 67335);
+startTimer('timer2', 67335);
+
+// Format select
+function selectFormat(el) {
+  document.querySelectorAll('[onclick="selectFormat(this)"]').forEach(e => {
+    e.style.borderColor = 'var(--border)';
+    e.style.background = '';
+  });
+  el.style.borderColor = 'var(--violet)';
+  el.style.background = 'rgba(107,70,193,0.06)';
+}
+
+// AI Steps system - Scripts par catégorie
+const aiScripts = {
+  chatgpt: {
+    ebook: "Tu cherches à générer des revenus avec l'IA en Afrique ? Cet ebook va tout changer ! Des stratégies concrètes et testées. Plus de 500 personnes ont déjà transformé leur vie. N'attends plus, commence pour seulement 2 500 FCFA !",
+    formation: "Prêt à maîtriser ChatGPT pour gagner de l'argent ? Cette formation te guide étape par étape avec des exemples concrets adaptés à l'Afrique. Rejoins des centaines d'apprenants satisfaits !",
+    coaching: "Tu veux un accompagnement personnalisé pour générer des revenus avec l'IA ? Je t'accompagne pas à pas. Résultats garantis. Réserve ta session maintenant !",
+    business: "Exploite ChatGPT pour développer ton business en Afrique. Outils concrets, stratégies éprouvées, résultats immédiats. Commence aujourd'hui !",
+    bienetre: "Prends soin de toi avec les meilleures techniques de bien-être adaptées à la vie africaine. Simple, efficace et accessible. Découvre-le maintenant !",
+    video: "Formation vidéo complète pour maîtriser ChatGPT en Afrique. Apprends à ton rythme, où tu veux. Plus de 10 heures de contenu exclusif !"
+  },
+  marketing: {
+    ebook: "Tu veux attirer des clients et vendre plus en Afrique ? Cet ebook te donne toutes les stratégies marketing adaptées à notre marché. Pratique et immédiatement applicable !",
+    formation: "Apprends le marketing digital de A à Z ! Formation 100% adaptée à l'Afrique. Réseaux sociaux, publicité, vente en ligne. Transforme ton business dès aujourd'hui !",
+    coaching: "Boostez votre présence digitale avec un coaching marketing personnalisé ! Plan d'action sur mesure. Premiers résultats en 30 jours !",
+    business: "Le marketing digital qui fonctionne vraiment en Afrique. Techniques éprouvées pour multiplier vos ventes. Passez à l'action maintenant !",
+    bienetre: "Communiquez mieux votre expertise bien-être grâce au marketing digital. Attirez plus de clients et développez votre impact positif !",
+    video: "Formation vidéo marketing digital pour l'Afrique. Tutoriels pratiques, cas concrets locaux, résultats mesurables. Commencez votre transformation !"
+  },
+  coaching: {
+    ebook: "Découvrez les secrets des entrepreneurs africains qui ont réussi. Ce guide vous donne les outils mentaux et pratiques pour atteindre vos objectifs. Votre succès commence ici !",
+    formation: "Transformez votre mindset et atteignez vos objectifs ! Méthodes éprouvées, exercices pratiques, résultats concrets. Rejoignez la communauté des winners !",
+    coaching: "Prêt à passer au niveau supérieur ? Mon coaching personnalisé t'accompagne vers tes objectifs en un temps record. De 0 à 100K FCFA par mois, c'est possible !",
+    business: "Du coaching business qui marche vraiment en Afrique ! Accompagnement personnalisé, réseau d'entrepreneurs. Passez à l'action maintenant !",
+    bienetre: "Retrouvez l'équilibre grâce à un coaching bien-être adapté à votre réalité africaine. Gestion du stress, confiance en soi. Commencez aujourd'hui !",
+    video: "Formation vidéo coaching complète. Modules progressifs, exercices pratiques, communauté de soutien. Votre transformation commence maintenant !"
+  }
+};
+
+const catMap = {
+  'Ebook': 'ebook', 'Formation': 'formation', 'Coaching': 'coaching',
+  'Cours Vidéo': 'video', 'Business': 'business', 'Bien-être mental': 'bienetre'
+};
+
+function getScript(productVal, category) {
+  const scripts = aiScripts[productVal] || aiScripts.chatgpt;
+  const key = catMap[category] || 'ebook';
+  return scripts[key] || scripts.ebook;
+}
+
+function updateAIProduct(val) {
+  const script = document.getElementById('aiScript');
+  const cat = document.getElementById('aiCategorySelect')?.value || 'Ebook';
+  if (script) script.value = getScript(val, cat);
+}
+
+function updateAICategory(cat) {
+  const script = document.getElementById('aiScript');
+  const val = document.getElementById('aiProductSelect')?.value || 'chatgpt';
+  if (script) {
+    script.value = getScript(val, cat);
+    showToast('✨ Script adapté à la catégorie ' + cat + ' !');
+  }
+}
+
+function hideAllSteps() {
+  ['aiStep1','aiStep2','aiStep3','aiStep4'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+}
+
+function goToStep1() {
+  hideAllSteps();
+  const el = document.getElementById('aiStep1');
+  if (el) el.style.display = 'block';
+  updateStepIndicator(1);
+}
+
+function goToStep2() {
+  const val = document.getElementById('aiProductSelect')?.value || 'chatgpt';
+  const cat = document.getElementById('aiCategorySelect')?.value || 'Ebook';
+  const script = document.getElementById('aiScript');
+  if (script) script.value = getScript(val, cat);
+  hideAllSteps();
+  const el = document.getElementById('aiStep2');
+  if (el) el.style.display = 'block';
+  updateStepIndicator(2);
+  showToast('✨ Script adapté à votre catégorie généré !');
+}
+
+function goToStep3() {
+  const script = document.getElementById('aiScript')?.value || '';
+  const preview = document.getElementById('previewScript');
+  if (preview) preview.textContent = '"' + script.substring(0,80) + '..."';
+  hideAllSteps();
+  const el = document.getElementById('aiStep3');
+  if (el) el.style.display = 'block';
+  updateStepIndicator(3);
+  showToast('🎬 Vidéo générée ! Prévisualisez avant de publier.');
+}
+
+function goToStep4() {
+  hideAllSteps();
+  const el = document.getElementById('aiStep4');
+  if (el) el.style.display = 'block';
+  updateStepIndicator(4);
+}
+
+function updateStepIndicator(step) {
+  for (let i = 1; i <= 4; i++) {
+    const ind = document.getElementById('step' + i + 'Ind');
+    if (!ind) continue;
+    const circle = ind.querySelector('div');
+    const label = ind.querySelectorAll('div')[1];
+    if (i <= step) {
+      circle.style.background = 'linear-gradient(135deg,var(--violet),var(--violet-light))';
+      circle.style.color = 'white';
+      if (label) label.style.color = 'var(--violet)';
+    } else {
+      circle.style.background = 'var(--border)';
+      circle.style.color = 'var(--text-muted)';
+      if (label) label.style.color = 'var(--text-muted)';
+    }
+  }
+}
+
+function regenerateScript() {
+  const val = document.getElementById('aiProductSelect')?.value || 'chatgpt';
+  const cat = document.getElementById('aiCategorySelect')?.value || 'Ebook';
+  showToast('🔄 Régénération du script...');
+  setTimeout(() => {
+    const script = document.getElementById('aiScript');
+    if (script) script.value = getScript(val, cat) + ' ✨';
+    showToast('✅ Nouveau script généré pour : ' + cat + ' !');
+    goToStep2();
+  }, 1200);
+}
+
+function resetAI() { goToStep1(); showToast('🎬 Nouvelle vidéo - Étape 1'); }
+function publishVideo(n) { showToast('🚀 Vidéo publiée sur ' + n + ' !'); }
+function downloadVideo() { showToast('📥 Téléchargement démarré !'); }
+
+let isPlaying = false;
+function togglePlay(btn) {
+  isPlaying = !isPlaying;
+  btn.textContent = isPlaying ? '⏸️' : '▶️';
+  const prog = document.getElementById('videoProgress');
+  if (isPlaying && prog) {
+    let w = 35;
+    const iv = setInterval(() => {
+      w++;
+      prog.style.width = w + '%';
+      if (w >= 100 || !isPlaying) { clearInterval(iv); isPlaying = false; btn.textContent = '▶️'; }
+    }, 300);
+  }
+}
+
+function generateVideo() { goToStep2(); }
+
+// Add product
+function addProduct() {
+  closeModal('addProductModal');
+  showToast('🚀 Produit publié sur KoraHub !');
+}
+
+// Active nav highlight
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', function() {
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+
+function copyToClipboard(text) {
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text).then(() => {
+      showToast('📋 Numéro ' + text + ' copié !');
+    }).catch(() => {
+      fallbackCopy(text);
+    });
+  } else {
+    fallbackCopy(text);
+  }
+}
+
+function fallbackCopy(text) {
+  const el = document.createElement('textarea');
+  el.value = text;
+  el.style.position = 'fixed';
+  el.style.opacity = '0';
+  document.body.appendChild(el);
+  el.focus();
+  el.select();
+  try {
+    document.execCommand('copy');
+    showToast('📋 Numéro ' + text + ' copié !');
+  } catch(e) {
+    showToast('⚠️ Copiez manuellement : ' + text);
+  }
+  document.body.removeChild(el);
+}
+
+
+function openFileUpload(acceptType, callback) {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = acceptType || 'image/*';
+  input.style.display = 'none';
+  input.onchange = function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+      if (callback) callback(file, ev.target.result);
+      else showToast('✅ Fichier "' + file.name + '" uploadé !');
+    };
+    reader.readAsDataURL(file);
+    document.body.removeChild(input);
+  };
+  document.body.appendChild(input);
+  input.click();
+}
+
+function uploadScreenshot(zoneId) {
+  openFileUpload('image/*', function(file, dataUrl) {
+    const zone = document.getElementById(zoneId);
+    if (zone) {
+      zone.innerHTML = '<img src="' + dataUrl + '" style="max-width:100%;max-height:120px;border-radius:8px;object-fit:contain;" alt="Capture">' +
+        '<div style="font-size:11px;color:var(--success);margin-top:6px;font-weight:600">✅ ' + file.name + ' uploadé !</div>';
+    }
+    showToast('✅ Capture d'écran "' + file.name + '" uploadée !');
+  });
+}
+
+</script>
+</body>
+</html>

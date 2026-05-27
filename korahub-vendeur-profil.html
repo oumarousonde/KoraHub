@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profil Vendeur – KoraHub</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--violet:#2D1B69;--violet-mid:#4A2E9E;--violet-light:#6B46C1;--gold:#F5C518;--gold-light:#FFD95A;--off-white:#F8F6FF;--text-dark:#1A0F3C;--text-muted:#7C6FAD;--border:rgba(107,70,193,0.12);--shadow:0 8px 32px rgba(45,27,105,0.12);--success:#2ed573}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--text-dark)}
+nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:64px;background:rgba(45,27,105,0.97);backdrop-filter:blur(12px);border-bottom:1px solid rgba(245,197,24,0.12)}
+.nav-logo{display:flex;align-items:center;text-decoration:none}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .2s;text-decoration:none}
+.btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--violet)}
+.btn-ghost{background:transparent;color:white;border:1px solid rgba(255,255,255,0.25)}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold)}
+
+.profile-hero{background:linear-gradient(135deg,var(--violet),#1A0F3C);padding:48px 5% 36px;position:relative;overflow:hidden}
+.profile-hero::before{content:'';position:absolute;top:-80px;right:-80px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(245,197,24,0.08),transparent)}
+.profile-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+.vendor-avatar{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-light));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:32px;color:var(--violet);flex-shrink:0;border:3px solid rgba(255,255,255,0.2)}
+.vendor-info{flex:1}
+.vendor-name{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:white;margin-bottom:4px}
+.vendor-bio{font-size:14px;color:rgba(255,255,255,0.65);margin-bottom:10px}
+.vendor-badges{display:flex;gap:8px;flex-wrap:wrap}
+.vendor-badge{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:100px;padding:3px 12px;font-size:11px;font-weight:600;color:rgba(255,255,255,0.8)}
+.vendor-stats{display:flex;gap:24px;flex-wrap:wrap}
+.vendor-stat{text-align:center}
+.vendor-stat-val{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--gold)}
+.vendor-stat-label{font-size:11px;color:rgba(255,255,255,0.5);margin-top:2px}
+
+.main{max-width:1100px;margin:0 auto;padding:36px 5%}
+.section-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--text-dark);margin-bottom:20px}
+.products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
+.product-card{background:white;border:1.5px solid var(--border);border-radius:14px;overflow:hidden;cursor:pointer;transition:all .25s}
+.product-card:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+.product-thumb{height:160px;display:flex;align-items:center;justify-content:center;font-size:44px}
+.product-body{padding:12px}
+.product-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--text-dark);margin-bottom:8px}
+.product-footer{display:flex;align-items:center;justify-content:space-between}
+.product-price{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:var(--violet)}
+
+footer{background:var(--violet);padding:24px 5%;margin-top:40px}
+.footer-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px}
+.footer-copy{font-size:13px;color:rgba(255,255,255,0.5)}
+.footer-links{display:flex;gap:14px}
+.footer-links a{font-size:13px;color:rgba(255,255,255,0.6);text-decoration:none}
+.footer-links a:hover{color:var(--gold)}
+.toast{position:fixed;bottom:24px;right:24px;z-index:2000;background:var(--violet);border:1px solid var(--gold);color:white;padding:13px 18px;border-radius:11px;font-size:13px;display:flex;align-items:center;gap:9px;transform:translateX(120%);transition:transform .3s;box-shadow:var(--shadow)}
+.toast.show{transform:translateX(0)}
+</style>
+</head>
+<body>
+<nav>
+  <a href="korahub.html" class="nav-logo">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 40" style="height:34px;width:auto;display:block"><defs><linearGradient id="kg1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#F5C518"/><stop offset="100%" style="stop-color:#FFD95A"/></linearGradient></defs><rect x="0" y="2" width="36" height="36" rx="9" fill="url(#kg1)"/><text x="8" y="28" font-family="Arial Black,sans-serif" font-weight="900" font-size="23" fill="#2D1B69">K</text><text x="44" y="25" font-family="Arial,sans-serif" font-weight="700" font-size="16" fill="white">Kora</text><text x="80" y="25" font-family="Arial,sans-serif" font-weight="700" font-size="16" fill="#F5C518">Hub</text><text x="44" y="35" font-family="Arial,sans-serif" font-size="7" fill="rgba(255,255,255,0.45)" letter-spacing="1.5">LEARN · SELL · GROW</text></svg>
+  </a>
+  <div style="display:flex;gap:8px">
+    <a href="korahub-recherche.html" class="btn btn-ghost" style="font-size:12px">← Catalogue</a>
+    <a href="korahub-auth.html" class="btn btn-gold" style="font-size:12px">Mon compte</a>
+  </div>
+</nav>
+
+<div class="profile-hero">
+  <div class="profile-inner">
+    <div class="vendor-avatar" id="vendorAvatar">V</div>
+    <div class="vendor-info">
+      <div class="vendor-name" id="vendorName">Chargement...</div>
+      <div class="vendor-bio" id="vendorBio">Vendeur sur KoraHub</div>
+      <div class="vendor-badges">
+        <span class="vendor-badge" id="vendorBadge">⭐ Vendeur KoraHub</span>
+        <span class="vendor-badge" id="vendorCountry">🌍 Afrique</span>
+      </div>
+    </div>
+    <div class="vendor-stats">
+      <div class="vendor-stat">
+        <div class="vendor-stat-val" id="vendorProductCount">0</div>
+        <div class="vendor-stat-label">Produits</div>
+      </div>
+      <div class="vendor-stat">
+        <div class="vendor-stat-val" id="vendorSales">0</div>
+        <div class="vendor-stat-label">Ventes</div>
+      </div>
+      <div class="vendor-stat">
+        <div class="vendor-stat-val">⭐ 4.9</div>
+        <div class="vendor-stat-label">Note</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="section-title">Produits de ce vendeur</div>
+  <div class="products-grid" id="vendorProductsGrid">
+    <div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-muted)">
+      ⏳ Chargement des produits...
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-copy">© 2025 KoraHub · Pour toute l'Afrique 🌍</div>
+    <div class="footer-links">
+      <a href="korahub.html">Accueil</a>
+      <a href="korahub-recherche.html">Catalogue</a>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" id="toast"><span>✅</span><span id="toastMsg"></span></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, doc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const app = initializeApp({
+  apiKey: "AIzaSyBUM1tOdkfEZA4z1ts6tyRhlcRqotHE4zs",
+  authDomain: "korahub-7160.firebaseapp.com",
+  projectId: "korahub-7160",
+  storageBucket: "korahub-7160.firebasestorage.app",
+  messagingSenderId: "334789190484",
+  appId: "1:334789190484:web:90a21186adb353409f5ec1"
+});
+const db = getFirestore(app);
+
+async function loadVendorProfile() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const vendorId = urlParams.get('id');
+  if (!vendorId) { document.getElementById('vendorName').textContent = 'Vendeur introuvable'; return; }
+
+  try {
+    // Load vendor info
+    const vendorDoc = await getDoc(doc(db, 'users', vendorId));
+    if (vendorDoc.exists()) {
+      const v = vendorDoc.data();
+      const initials = (v.firstName?.[0] || 'V') + (v.lastName?.[0] || '');
+      document.getElementById('vendorAvatar').textContent = initials.toUpperCase();
+      document.getElementById('vendorName').textContent = v.firstName + ' ' + v.lastName;
+      document.getElementById('vendorCountry').textContent = '🌍 ' + (v.country || 'Afrique');
+      document.title = v.firstName + ' ' + v.lastName + ' – KoraHub';
+    }
+
+    // Load vendor products
+    const q = query(collection(db, 'products'), where('sellerId', '==', vendorId));
+    const snapshot = await getDocs(q);
+    const grid = document.getElementById('vendorProductsGrid');
+    document.getElementById('vendorProductCount').textContent = snapshot.size;
+
+    if (snapshot.empty) {
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-muted)">Ce vendeur n'a pas encore publié de produits.</div>';
+      return;
+    }
+
+    grid.innerHTML = '';
+    snapshot.forEach(d => {
+      const p = { id: d.id, ...d.data() };
+      const price = p.deliveryOptions?.[0]?.price || p.price || 0;
+      const card = document.createElement('div');
+      card.className = 'product-card';
+      card.innerHTML = `
+        <div class="product-thumb" style="background:linear-gradient(135deg,#2D1B69,#6B46C1)">📦</div>
+        <div class="product-body">
+          <div class="product-name">${p.title || 'Produit'}</div>
+          <div class="product-footer">
+            <span class="product-price">${price.toLocaleString()} F</span>
+            <button onclick="window.location.href='korahub-produit-panier.html?product=${p.id}&vendor=${vendorId}'" style="padding:6px 12px;border-radius:7px;border:none;font-size:11px;font-weight:700;cursor:pointer;background:linear-gradient(135deg,#4A2E9E,#6B46C1);color:white">Voir</button>
+          </div>
+        </div>`;
+      grid.appendChild(card);
+    });
+  } catch(e) { console.error(e); }
+}
+
+loadVendorProfile();
+</script>
+<script>
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KoraHub – Connexion / Inscription</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --violet: #2D1B69;
+  --violet-mid: #4A2E9E;
+  --violet-light: #6B46C1;
+  --gold: #F5C518;
+  --gold-light: #FFD95A;
+  --white: #FFFFFF;
+  --off-white: #F8F6FF;
+  --text-dark: #1A0F3C;
+  --text-muted: #7C6FAD;
+  --border: rgba(107,70,193,0.12);
+  --shadow: 0 8px 40px rgba(45,27,105,0.15);
+  --success: #2ed573;
+  --danger: #ff4757;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--text-dark);min-height:100vh;display:flex;flex-direction:column}
+
+/* LAYOUT */
+.auth-layout{display:grid;grid-template-columns:1fr 1fr;min-height:100vh}
+
+/* LEFT PANEL */
+.left-panel{background:linear-gradient(145deg,var(--violet) 0%,#1A0F3C 50%,#0D0829 100%);display:flex;flex-direction:column;justify-content:space-between;padding:40px;position:relative;overflow:hidden}
+.left-panel::before{content:'';position:absolute;top:-100px;right:-100px;width:500px;height:500px;background:radial-gradient(circle,rgba(245,197,24,0.08) 0%,transparent 70%);border-radius:50%}
+.left-panel::after{content:'';position:absolute;bottom:-80px;left:-80px;width:350px;height:350px;background:radial-gradient(circle,rgba(107,70,193,0.3) 0%,transparent 70%);border-radius:50%}
+
+.left-logo{display:flex;align-items:center;gap:12px;position:relative;z-index:2}
+.logo-icon{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--gold),var(--gold-light));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:22px;color:var(--violet)}
+.logo-text{font-family:'Syne',sans-serif;font-weight:700;font-size:22px;color:white}
+.logo-text span{color:var(--gold)}
+
+.left-content{position:relative;z-index:2}
+.left-title{font-family:'Syne',sans-serif;font-size:clamp(28px,3vw,40px);font-weight:800;color:white;line-height:1.2;margin-bottom:16px}
+.left-title span{color:var(--gold)}
+.left-sub{font-size:15px;color:rgba(255,255,255,0.6);line-height:1.7;margin-bottom:32px;max-width:400px}
+
+.feature-list{display:flex;flex-direction:column;gap:14px}
+.feature-item{display:flex;align-items:center;gap:12px}
+.feature-icon{width:38px;height:38px;border-radius:10px;background:rgba(245,197,24,0.12);border:1px solid rgba(245,197,24,0.2);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.feature-text strong{display:block;font-size:13px;color:white;font-weight:600}
+.feature-text span{font-size:12px;color:rgba(255,255,255,0.5)}
+
+.left-stats{display:flex;gap:32px;position:relative;z-index:2}
+.left-stat-val{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:var(--gold)}
+.left-stat-label{font-size:11px;color:rgba(255,255,255,0.5);margin-top:2px}
+
+/* RIGHT PANEL */
+.right-panel{display:flex;align-items:center;justify-content:center;padding:40px;background:var(--off-white)}
+
+.auth-box{width:100%;max-width:440px}
+
+.auth-tabs{display:flex;gap:0;background:white;border:1.5px solid var(--border);border-radius:14px;padding:4px;margin-bottom:28px}
+.auth-tab{flex:1;padding:10px;text-align:center;border-radius:10px;cursor:pointer;font-size:14px;font-weight:600;color:var(--text-muted);transition:all .2s;border:none;background:transparent}
+.auth-tab.active{background:linear-gradient(135deg,var(--violet),var(--violet-light));color:white;box-shadow:0 2px 12px rgba(74,46,158,0.3)}
+
+/* ROLE SELECTOR */
+.role-selector{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px}
+.role-opt{border:1.5px solid var(--border);border-radius:12px;padding:14px 10px;text-align:center;cursor:pointer;transition:all .2s;background:white}
+.role-opt:hover{border-color:var(--violet-light);background:rgba(107,70,193,0.04)}
+.role-opt.selected{border-color:var(--violet);background:rgba(107,70,193,0.06);box-shadow:0 0 0 3px rgba(107,70,193,0.08)}
+.role-opt-icon{font-size:24px;margin-bottom:6px}
+.role-opt-name{font-size:12px;font-weight:700;color:var(--text-dark)}
+.role-opt-desc{font-size:10px;color:var(--text-muted);margin-top:2px}
+
+/* FORM */
+.form-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--text-dark);margin-bottom:4px}
+.form-sub{font-size:13px;color:var(--text-muted);margin-bottom:22px}
+.form-group{margin-bottom:16px;position:relative}
+.form-label{display:block;font-size:12px;font-weight:600;color:var(--text-dark);margin-bottom:7px}
+.form-input{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:11px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text-dark);background:white;outline:none;transition:all .2s}
+.form-input:focus{border-color:var(--violet-light);box-shadow:0 0 0 3px rgba(107,70,193,0.08)}
+.form-input.error{border-color:var(--danger)}
+.form-input.success{border-color:var(--success)}
+.form-error{font-size:11px;color:var(--danger);margin-top:5px;display:none}
+.form-error.show{display:block}
+.input-icon{position:absolute;right:14px;top:38px;font-size:16px;cursor:pointer;color:var(--text-muted)}
+
+.password-toggle{position:absolute;right:14px;top:38px;background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:16px}
+
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* PAYMENT SECTION */
+.payment-section{background:rgba(107,70,193,0.04);border:1.5px solid rgba(107,70,193,0.1);border-radius:12px;padding:16px;margin-bottom:16px}
+.payment-section-title{font-size:12px;font-weight:700;color:var(--violet-light);margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.payment-row{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:center;margin-bottom:10px}
+.payment-row:last-child{margin-bottom:0}
+.payment-label{font-size:12px;font-weight:600;color:var(--text-dark);white-space:nowrap}
+
+/* COUNTRY SELECT */
+.country-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+.country-opt{border:1.5px solid var(--border);border-radius:10px;padding:10px;text-align:center;cursor:pointer;transition:all .2s;background:white;font-size:12px;font-weight:600;color:var(--text-dark)}
+.country-opt:hover,.country-opt.selected{border-color:var(--violet);background:rgba(107,70,193,0.06)}
+
+/* SUBMIT BTN */
+.submit-btn{width:100%;padding:14px;background:linear-gradient(135deg,var(--violet-mid),var(--violet-light));color:white;border:none;border-radius:12px;font-family:'Syne',sans-serif;font-size:15px;font-weight:800;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:14px}
+.submit-btn:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(74,46,158,0.4)}
+.submit-btn.loading{opacity:.7;pointer-events:none}
+
+.divider{display:flex;align-items:center;gap:12px;margin:16px 0;color:var(--text-muted);font-size:12px}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+
+.social-login{display:flex;gap:10px;margin-bottom:16px}
+.social-btn{flex:1;padding:11px;border:1.5px solid var(--border);border-radius:11px;background:white;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;font-weight:600;color:var(--text-dark);transition:all .2s}
+.social-btn:hover{border-color:var(--violet-light);background:var(--off-white)}
+
+.auth-switch{text-align:center;font-size:13px;color:var(--text-muted)}
+.auth-switch a{color:var(--violet-light);font-weight:600;cursor:pointer;text-decoration:none}
+.auth-switch a:hover{text-decoration:underline}
+
+/* FORGOT PASSWORD */
+.forgot-link{float:right;font-size:11px;color:var(--violet-light);cursor:pointer;text-decoration:none;font-weight:600}
+.forgot-link:hover{text-decoration:underline}
+
+/* TERMS */
+.terms-check{display:flex;align-items:flex-start;gap:10px;margin-bottom:16px}
+.terms-check input{width:16px;height:16px;margin-top:2px;accent-color:var(--violet-light);flex-shrink:0;cursor:pointer}
+.terms-check label{font-size:12px;color:var(--text-muted);cursor:pointer;line-height:1.5}
+.terms-check a{color:var(--violet-light);font-weight:600}
+
+/* SUCCESS STATE */
+.success-state{text-align:center;padding:20px 0;display:none}
+.success-icon{font-size:60px;margin-bottom:16px;animation:bounce .6s ease}
+@keyframes bounce{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
+.success-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--text-dark);margin-bottom:8px}
+.success-sub{font-size:14px;color:var(--text-muted);line-height:1.6;margin-bottom:24px}
+.success-email-badge{background:rgba(46,213,115,0.08);border:1.5px solid rgba(46,213,115,0.2);border-radius:12px;padding:14px;font-size:13px;color:var(--text-dark);margin-bottom:20px}
+
+/* STRENGTH BAR */
+.strength-bar{height:4px;background:var(--border);border-radius:100px;overflow:hidden;margin-top:6px}
+.strength-fill{height:100%;border-radius:100px;transition:all .3s}
+.strength-label{font-size:10px;margin-top:4px;font-weight:600}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;z-index:2000;background:var(--violet);border:1px solid var(--gold);color:white;padding:13px 18px;border-radius:11px;font-size:13px;display:flex;align-items:center;gap:9px;transform:translateX(120%);transition:transform .3s;box-shadow:var(--shadow);max-width:300px}
+.toast.show{transform:translateX(0)}
+
+/* RESPONSIVE */
+@media(max-width:900px){.auth-layout{grid-template-columns:1fr}.left-panel{display:none}.right-panel{padding:24px 20px;align-items:flex-start;padding-top:40px}}
+@media(max-width:480px){.form-row{grid-template-columns:1fr}.role-selector{grid-template-columns:1fr 1fr}.country-grid{grid-template-columns:1fr}}
+</style>
+
+<link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImZnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3R5bGU9InN0b3AtY29sb3I6I0Y1QzUxOCIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNGRkQ5NUEiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgcng9IjgiIGZpbGw9InVybCgjZmcpIi8+CiAgPHRleHQgeD0iNCIgeT0iMjQiIGZvbnQtZmFtaWx5PSJBcmlhbCBCbGFjayxzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iOTAwIiBmb250LXNpemU9IjIyIiBmaWxsPSIjMkQxQjY5Ij5LPC90ZXh0Pgo8L3N2Zz4=" type="image/svg+xml">
+
+<!-- Firebase SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+  import { getFirestore, collection, doc, setDoc, getDoc, getDocs, addDoc, updateDoc, deleteDoc, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBUM1tOdkfEZA4z1ts6tyRhlcRqotHE4zs",
+    authDomain: "korahub-7160.firebaseapp.com",
+    projectId: "korahub-7160",
+    storageBucket: "korahub-7160.firebasestorage.app",
+    messagingSenderId: "334789190484",
+    appId: "1:334789190484:web:90a21186adb353409f5ec1"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  window.firebaseAuth = auth;
+  window.firebaseDB = db;
+  window.firebaseFunctions = {
+    createUserWithEmailAndPassword, signInWithEmailAndPassword,
+    signOut, onAuthStateChanged, sendPasswordResetEmail,
+    collection, doc, setDoc, getDoc, getDocs,
+    addDoc, updateDoc, deleteDoc, query, where, orderBy
+  };
+
+  onAuthStateChanged(auth, (user) => {
+    window.currentUser = user;
+    if (user) document.dispatchEvent(new CustomEvent('userLoggedIn', { detail: user }));
+    else document.dispatchEvent(new CustomEvent('userLoggedOut'));
+  });
+
+  console.log('🔥 Firebase KoraHub initialisé !');
+
+// ═══ EMAILJS - Real email delivery ═══
+function initEmailJS(publicKey) {
+  if (!publicKey) return;
+  const script = document.createElement('script');
+  script.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js';
+  script.onload = () => {
+    window.emailjs.init(publicKey);
+    console.log('✅ EmailJS initialized');
+  };
+  document.head.appendChild(script);
+}
+
+async function sendDeliveryEmail(buyerEmail, buyerName, productName, downloadLink) {
+  const publicKey = localStorage.getItem('kh_emailjs_public');
+  const serviceId = localStorage.getItem('kh_emailjs_service');
+  const templateId = localStorage.getItem('kh_emailjs_delivery');
+
+  if (!publicKey || !serviceId || !templateId) {
+    console.log('EmailJS not configured - skipping email');
+    showToast('⚠️ Email non configuré. Configurez EmailJS dans les paramètres.');
+    return;
+  }
+
+  try {
+    await window.emailjs.send(serviceId, templateId, {
+      to_email: buyerEmail,
+      to_name: buyerName || 'Client',
+      product_name: productName,
+      download_link: downloadLink || '#',
+      date: new Date().toLocaleDateString('fr-FR'),
+      platform: 'KoraHub'
+    });
+    showToast('📧 Email de livraison envoyé à ' + buyerEmail + ' !');
+    console.log('✅ Delivery email sent to', buyerEmail);
+  } catch(e) {
+    console.error('EmailJS error:', e);
+    showToast('⚠️ Erreur envoi email. Vérifiez votre config EmailJS.');
+  }
+}
+
+async function sendWelcomeEmail(userEmail, userName) {
+  const publicKey = localStorage.getItem('kh_emailjs_public');
+  const serviceId = localStorage.getItem('kh_emailjs_service');
+  const templateId = localStorage.getItem('kh_emailjs_welcome');
+  if (!publicKey || !serviceId || !templateId) return;
+
+  try {
+    await window.emailjs.send(serviceId, templateId, {
+      to_email: userEmail,
+      to_name: userName || 'Nouveau membre',
+      platform: 'KoraHub',
+      date: new Date().toLocaleDateString('fr-FR')
+    });
+    console.log('✅ Welcome email sent');
+  } catch(e) { console.log('Welcome email error:', e); }
+}
+
+// Init EmailJS on load
+const ejsKey = localStorage.getItem('kh_emailjs_public');
+if (ejsKey) initEmailJS(ejsKey);
+
+
+// ═══ PWA INSTALL ═══
+let deferredPrompt = null;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  showInstallButton();
+});
+
+function showInstallButton() {
+  const existing = document.getElementById('pwaInstallBtn');
+  if (existing) return;
+  
+  const btn = document.createElement('div');
+  btn.id = 'pwaInstallBtn';
+  btn.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:999;background:linear-gradient(135deg,#2D1B69,#4A2E9E);color:white;padding:12px 24px;border-radius:100px;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 4px 20px rgba(45,27,105,0.4);display:flex;align-items:center;gap:8px;animation:slideUp .3s ease;white-space:nowrap';
+  btn.innerHTML = '📱 Installer l'App KoraHub';
+  btn.onclick = installPWA;
+  document.body.appendChild(btn);
+  
+  setTimeout(() => { if (btn.parentNode) btn.remove(); }, 8000);
+}
+
+async function installPWA() {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  if (outcome === 'accepted') showToast('🎉 KoraHub installé sur votre téléphone !');
+  deferredPrompt = null;
+  document.getElementById('pwaInstallBtn')?.remove();
+}
+
+// Register service worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(reg => console.log('✅ Service Worker registered:', reg.scope))
+      .catch(err => console.log('SW registration failed:', err));
+  });
+}
+
+// CSS for animation
+const pwaStyle = document.createElement('style');
+pwaStyle.textContent = '@keyframes slideUp{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}';
+document.head.appendChild(pwaStyle);
+
+</script>
+
+
+<!-- PWA Manifest -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2D1B69">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="KoraHub">
+
+</head>
+<body>
+<div class="kh-logo">K</div></div><div class="kh-name">Kora<span style="color:#F5C518">Hub</span></div><div class="kh-dots"><div class="kh-dot"></div><div class="kh-dot"></div><div class="kh-dot"></div></div></div>
+<div class="kh-logo">K</div></div><div class="kh-name">Kora<span style="color:#F5C518">Hub</span></div><div class="kh-dots"><div class="kh-dot"></div><div class="kh-dot"></div><div class="kh-dot"></div></div></div>
+
+<div class="auth-layout">
+
+  <!-- LEFT PANEL -->
+  <div class="left-panel">
+    <div class="left-logo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 40" style="height:34px;width:auto;display:block"><defs><linearGradient id="kg1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#F5C518"/><stop offset="100%" style="stop-color:#FFD95A"/></linearGradient></defs><rect x="0" y="2" width="36" height="36" rx="9" fill="url(#kg1)"/><text x="8" y="28" font-family="Arial Black,sans-serif" font-weight="900" font-size="23" fill="#2D1B69">K</text><text x="44" y="25" font-family="Arial,sans-serif" font-weight="700" font-size="16" fill="white">Kora</text><text x="80" y="25" font-family="Arial,sans-serif" font-weight="700" font-size="16" fill="#F5C518">Hub</text><text x="44" y="35" font-family="Arial,sans-serif" font-size="7" fill="rgba(255,255,255,0.45)" letter-spacing="1.5">LEARN · SELL · GROW</text></svg>
+      
+    </div>
+
+    <div class="left-content">
+      <h1 class="left-title">La marketplace digitale<br>de toute <span>l'Afrique</span></h1>
+      <p class="left-sub">Rejoignez des milliers de vendeurs, acheteurs et affiliés qui font confiance à KoraHub chaque jour.</p>
+
+      <div class="feature-list">
+        <div class="feature-item">
+          <div class="feature-icon">💳</div>
+          <div class="feature-text">
+            <strong>Paiement 100% local</strong>
+            <span>Orange Money, Wave, MTN, Moov, Coris et plus</span>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">📧</div>
+          <div class="feature-text">
+            <strong>Livraison instantanée</strong>
+            <span>Produits livrés par email après confirmation</span>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">🤖</div>
+          <div class="feature-text">
+            <strong>Outils marketing pour vos pubs</strong>
+            <span>Vidéos marketing générées automatiquement</span>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">💰</div>
+          <div class="feature-text">
+            <strong>Gagnez en faisant la pub</strong>
+            <span>10% de commission sur chaque vente affiliée</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="left-stats">
+      <div>
+        <div class="left-stat-val">500+</div>
+        <div class="left-stat-label">Produits</div>
+      </div>
+      <div>
+        <div class="left-stat-val">200+</div>
+        <div class="left-stat-label">Vendeurs</div>
+      </div>
+      <div>
+        <div class="left-stat-val">1 000+</div>
+        <div class="left-stat-label">Clients</div>
+      </div>
+      <div>
+        <div class="left-stat-val">15+</div>
+        <div class="left-stat-label">Pays</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="right-panel">
+    <div class="auth-box">
+
+      <!-- TABS -->
+      <div class="auth-tabs">
+        <button class="auth-tab active" onclick="switchTab('login')">🔐 Connexion</button>
+        <button class="auth-tab" onclick="switchTab('register')">✨ Inscription</button>
+      </div>
+
+      <!-- ══ LOGIN FORM ══ -->
+      <div id="loginForm">
+        <div class="form-title">Bon retour ! 👋</div>
+        <div class="form-sub">Connectez-vous à votre compte KoraHub</div>
+
+        <div class="social-login">
+          <button class="social-btn" onclick="showToast('🌐 Connexion Google en cours...')">
+            <span>🌐</span> Google
+          </button>
+          <button class="social-btn" onclick="showToast('📘 Connexion Facebook en cours...')">
+            <span>📘</span> Facebook
+          </button>
+        </div>
+
+        <div class="divider">ou avec votre email</div>
+
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-input" placeholder="votre@email.com" id="loginEmail">
+          <div class="form-error" id="loginEmailError">Email invalide</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">
+            Mot de passe
+            <a class="forgot-link" onclick="showForgot()">Mot de passe oublié ?</a>
+          </label>
+          <input type="password" class="form-input" placeholder="••••••••" id="loginPassword">
+          <button class="password-toggle" onclick="togglePassword('loginPassword', this)">👁️</button>
+          <div class="form-error" id="loginPasswordError">Mot de passe incorrect</div>
+        </div>
+
+        <button class="submit-btn" onclick="doLogin()">
+          🔐 Se connecter
+        </button>
+
+        <p class="auth-switch">
+          Pas encore de compte ? <a onclick="switchTab('register')">S'inscrire gratuitement</a>
+        </p>
+      </div>
+
+      <!-- ══ REGISTER FORM ══ -->
+      <div id="registerForm" style="display:none">
+        <div class="form-title">Rejoindre KoraHub 🚀</div>
+        <div class="form-sub">Créez votre compte gratuitement en 1 minute</div>
+
+        <!-- ROLE SELECTOR -->
+        <div style="margin-bottom:16px">
+          <div class="form-label">Je veux... <span style="font-size:11px;color:var(--text-muted);font-weight:400">(plusieurs choix possibles)</span></div>
+          <div class="role-selector">
+            <div class="role-opt selected" onclick="toggleRole(this,'buyer')">
+              <div class="role-opt-icon">🛒</div>
+              <div class="role-opt-name">Acheter</div>
+              <div class="role-opt-desc">Accéder aux produits</div>
+            </div>
+            <div class="role-opt" onclick="toggleRole(this,'seller')">
+              <div class="role-opt-icon">💼</div>
+              <div class="role-opt-name">Vendre</div>
+              <div class="role-opt-desc">Créer ma boutique</div>
+            </div>
+            <div class="role-opt" onclick="toggleRole(this,'affiliate')">
+              <div class="role-opt-icon">📢</div>
+              <div class="role-opt-name">Promouvoir</div>
+              <div class="role-opt-desc">Gagner des commissions</div>
+            </div>
+          </div>
+          <div style="background:rgba(245,197,24,0.08);border:1px solid rgba(245,197,24,0.2);border-radius:8px;padding:8px 12px;font-size:11px;color:var(--text-muted);margin-top:8px">
+            💡 Vous pouvez choisir plusieurs rôles. Ex: Vendeur + Affilié = vous vendez ET promouvez d'autres produits pour gagner plus !
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Prénom</label>
+            <input type="text" class="form-input" placeholder="Ex: Moussa" id="regFirstName">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Nom</label>
+            <input type="text" class="form-input" placeholder="Ex: Traoré" id="regLastName">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-input" placeholder="votre@email.com" id="regEmail" oninput="validateEmail(this)">
+          <div class="form-error" id="regEmailError">Email déjà utilisé ou invalide</div>
+        </div>
+
+        <!-- COUNTRY -->
+        <div class="form-group">
+          <label class="form-label">🌍 Votre pays</label>
+          <select class="form-input" id="regCountry">
+            <option value="">Sélectionnez votre pays</option>
+            <option>🇧🇫 Burkina Faso</option>
+            <option>🇨🇮 Côte d'Ivoire</option>
+            <option>🇸🇳 Sénégal</option>
+            <option>🇲🇱 Mali</option>
+            <option>🇬🇳 Guinée</option>
+            <option>🇬🇭 Ghana</option>
+            <option>🇳🇬 Nigeria</option>
+            <option>🇨🇲 Cameroun</option>
+            <option>🇹🇬 Togo</option>
+            <option>🇧🇯 Bénin</option>
+            <option>🇳🇪 Niger</option>
+            <option>🇹🇩 Tchad</option>
+            <option>🇨🇩 Congo RDC</option>
+            <option>🇲🇦 Maroc</option>
+            <option>🇹🇳 Tunisie</option>
+            <option>Autre pays africain</option>
+          </select>
+        </div>
+
+        <!-- PAYMENT NUMBERS - Seller only -->
+        <div id="sellerFields" style="display:none">
+          <div class="payment-section">
+            <div class="payment-section-title">💳 Vos moyens de paiement</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-bottom:12px">Cochez les moyens que vous acceptez. Vos clients paieront directement sur ces comptes.</div>
+
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div style="border:1.5px solid var(--border);border-radius:9px;padding:10px">
+                <label style="display:flex;align-items:center;gap:8px;cursor:pointer;margin-bottom:0">
+                  <input type="checkbox" id="payOrange" onchange="togglePayField('Orange')" style="accent-color:var(--violet)">
+                  <span style="font-size:13px;font-weight:600;color:var(--text-dark)">🟠 Orange Money</span>
+                </label>
+                <input type="tel" id="payOrangeNum" class="form-input" placeholder="Votre numéro Orange Money" style="display:none;margin-top:8px;font-size:13px">
+              </div>
+              <div style="border:1.5px solid var(--border);border-radius:9px;padding:10px">
+                <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+                  <input type="checkbox" id="payWave" onchange="togglePayField('Wave')" style="accent-color:var(--violet)">
+                  <span style="font-size:13px;font-weight:600;color:var(--text-dark)">🔵 Wave</span>
+                </label>
+                <input type="tel" id="payWaveNum" class="form-input" placeholder="Votre numéro Wave" style="display:none;margin-top:8px;font-size:13px">
+              </div>
+              <div style="border:1.5px solid var(--border);border-radius:9px;padding:10px">
+                <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+                  <input type="checkbox" id="payMoov" onchange="togglePayField('Moov')" style="accent-color:var(--violet)">
+                  <span style="font-size:13px;font-weight:600;color:var(--text-dark)">🟣 Moov Money</span>
+                </label>
+                <input type="tel" id="payMoovNum" class="form-input" placeholder="Votre numéro Moov Money" style="display:none;margin-top:8px;font-size:13px">
+              </div>
+              <div style="border:1.5px solid var(--border);border-radius:9px;padding:10px">
+                <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+                  <input type="checkbox" id="payCoris" onchange="togglePayField('Coris')" style="accent-color:var(--violet)">
+                  <span style="font-size:13px;font-weight:600;color:var(--text-dark)">🔴 Coris Money</span>
+                </label>
+                <input type="tel" id="payCorisNum" class="form-input" placeholder="Votre numéro Coris Money" style="display:none;margin-top:8px;font-size:13px">
+              </div>
+              <div style="border:1.5px solid var(--border);border-radius:9px;padding:10px">
+                <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+                  <input type="checkbox" id="payMTN" onchange="togglePayField('MTN')" style="accent-color:var(--violet)">
+                  <span style="font-size:13px;font-weight:600;color:var(--text-dark)">🟡 MTN MoMo</span>
+                </label>
+                <input type="tel" id="payMTNNum" class="form-input" placeholder="Votre numéro MTN MoMo" style="display:none;margin-top:8px;font-size:13px">
+              </div>
+              <div style="border:1.5px solid var(--border);border-radius:9px;padding:10px">
+                <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+                  <input type="checkbox" id="payMpesa" onchange="togglePayField('Mpesa')" style="accent-color:var(--violet)">
+                  <span style="font-size:13px;font-weight:600;color:var(--text-dark)">📱 M-Pesa</span>
+                </label>
+                <input type="tel" id="payMpesaNum" class="form-input" placeholder="Votre numéro M-Pesa" style="display:none;margin-top:8px;font-size:13px">
+              </div>
+              <div style="border:1.5px solid var(--border);border-radius:9px;padding:10px">
+                <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+                  <input type="checkbox" id="payCard" onchange="togglePayField('Card')" style="accent-color:var(--violet)">
+                  <span style="font-size:13px;font-weight:600;color:var(--text-dark)">💳 Carte bancaire</span>
+                </label>
+                <input type="text" id="payCardNum" class="form-input" placeholder="Lien PayPal, Stripe ou autre..." style="display:none;margin-top:8px;font-size:13px">
+              </div>
+              <div style="border:1.5px solid var(--border);border-radius:9px;padding:10px">
+                <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+                  <input type="checkbox" id="payOther" onchange="togglePayField('Other')" style="accent-color:var(--violet)">
+                  <span style="font-size:13px;font-weight:600;color:var(--text-dark)">➕ Autre moyen</span>
+                </label>
+                <input type="text" id="payOtherNum" class="form-input" placeholder="Précisez votre moyen de paiement" style="display:none;margin-top:8px;font-size:13px">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-top:12px">
+            <label class="form-label">📱 WhatsApp (pour les notifications)</label>
+            <input type="tel" class="form-input" placeholder="Ex: +226 75 XX XX XX" id="sellerWhatsapp">
+          </div>
+        </div>
+
+        <!-- AFFILIATE FIELDS -->
+        <div id="affiliateFields" style="display:none">
+          <div class="payment-section">
+            <div class="payment-section-title">💳 Numéro pour recevoir vos commissions</div>
+            <div class="form-group" style="margin-bottom:10px">
+              <label class="form-label">Moyen de paiement préféré</label>
+              <select class="form-input">
+                <option>🟠 Orange Money</option>
+                <option>🔵 Wave</option>
+                <option>🟣 Moov Money</option>
+                <option>🔴 Coris Money</option>
+                <option>📱 MTN Mobile Money</option>
+                <option>💚 M-Pesa</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom:0">
+              <label class="form-label">Votre numéro</label>
+              <input type="tel" class="form-input" placeholder="Ex: 75XXXXXX">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Mot de passe</label>
+          <input type="password" class="form-input" placeholder="Min. 8 caractères" id="regPassword" oninput="checkStrength(this.value)">
+          <button class="password-toggle" onclick="togglePassword('regPassword', this)">👁️</button>
+          <div class="strength-bar"><div class="strength-fill" id="strengthFill" style="width:0%"></div></div>
+          <div class="strength-label" id="strengthLabel" style="color:var(--text-muted)"></div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Confirmer le mot de passe</label>
+          <input type="password" class="form-input" placeholder="Répétez votre mot de passe" id="regConfirm">
+          <button class="password-toggle" onclick="togglePassword('regConfirm', this)">👁️</button>
+          <div class="form-error" id="confirmError">Les mots de passe ne correspondent pas</div>
+        </div>
+
+        <div class="terms-check">
+          <input type="checkbox" id="termsCheck">
+          <label for="termsCheck">J'accepte les <a href="#">conditions d'utilisation</a> et la <a href="#">politique de confidentialité</a> de KoraHub</label>
+        </div>
+
+        <button class="submit-btn" onclick="doRegister()">
+          🚀 Créer mon compte gratuitement
+        </button>
+
+        <p class="auth-switch">
+          Déjà un compte ? <a onclick="switchTab('login')">Se connecter</a>
+        </p>
+
+        <!-- SUCCESS STATE -->
+        <div class="success-state" id="registerSuccess">
+          <div class="success-icon">🎉</div>
+          <div class="success-title">Compte créé !</div>
+          <div class="success-sub">Votre compte KoraHub est prêt. Un email de bienvenue vient d'être envoyé.</div>
+          <div class="success-email-badge">
+            📧 Email envoyé à : <strong id="successEmailDisplay"></strong>
+          </div>
+          <button class="submit-btn" onclick="redirectToDashboard()">
+            🏠 Accéder à mon dashboard
+          </button>
+        </div>
+      </div>
+
+      <!-- ══ FORGOT PASSWORD ══ -->
+      <div id="forgotForm" style="display:none">
+        <div style="margin-bottom:16px">
+          <button onclick="showLogin()" style="background:none;border:none;color:var(--violet-light);font-size:13px;cursor:pointer;display:flex;align-items:center;gap:5px;font-weight:600">← Retour à la connexion</button>
+        </div>
+        <div class="form-title">Mot de passe oublié 🔑</div>
+        <div class="form-sub">Entrez votre email pour recevoir un lien de réinitialisation</div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-input" placeholder="votre@email.com" id="forgotEmail">
+        </div>
+        <button class="submit-btn" onclick="doForgot()">
+          📧 Envoyer le lien
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><span>✅</span><span id="toastMsg"></span></div>
+
+<script>
+// Toggle payment method fields
+function togglePayField(method) {
+  const checkbox = document.getElementById('pay' + method);
+  const input = document.getElementById('pay' + method + 'Num');
+  if (!checkbox || !input) return;
+  input.style.display = checkbox.checked ? 'block' : 'none';
+  const wrap = checkbox.closest('[style*="border"]');
+  if (wrap) wrap.style.borderColor = checkbox.checked ? 'var(--violet-light)' : 'var(--border)';
+}
+
+// Collect payment methods from form
+function collectPaymentMethods() {
+  const methods = [];
+  const payMethods = ['Orange','Wave','Moov','Coris','MTN','Mpesa','Card','Other'];
+  payMethods.forEach(m => {
+    const cb = document.getElementById('pay' + m);
+    const num = document.getElementById('pay' + m + 'Num');
+    if (cb?.checked && num?.value) {
+      methods.push({ method: m, number: num.value });
+    }
+  });
+  return methods;
+}
+
+function toggleRole(el, role) {
+  el.classList.toggle('selected');
+  if (el.classList.contains('selected')) {
+    if (!selectedRoles.includes(role)) selectedRoles.push(role);
+  } else {
+    selectedRoles = selectedRoles.filter(r => r !== role);
+    if (selectedRoles.length === 0) { selectedRoles.push(role); el.classList.add('selected'); }
+  }
+  // Show/hide seller and affiliate fields
+  document.getElementById('sellerFields').style.display = selectedRoles.includes('seller') ? 'block' : 'none';
+  document.getElementById('affiliateFields').style.display = selectedRoles.includes('affiliate') ? 'block' : 'none';
+  currentRole = selectedRoles[selectedRoles.length - 1];
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.auth-tab').forEach((t,i) => {
+    t.classList.toggle('active', (tab==='login'&&i===0)||(tab==='register'&&i===1));
+  });
+  document.getElementById('loginForm').style.display = tab==='login' ? 'block' : 'none';
+  document.getElementById('registerForm').style.display = tab==='register' ? 'block' : 'none';
+  document.getElementById('forgotForm').style.display = 'none';
+}
+
+function selectRole(el, role) {
+  currentRole = role;
+  document.querySelectorAll('.role-opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('sellerFields').style.display = role==='seller' ? 'block' : 'none';
+  document.getElementById('affiliateFields').style.display = role==='affiliate' ? 'block' : 'none';
+}
+
+function togglePassword(id, btn) {
+  const input = document.getElementById(id);
+  if (input.type === 'password') {
+    input.type = 'text';
+    btn.textContent = '🙈';
+  } else {
+    input.type = 'password';
+    btn.textContent = '👁️';
+  }
+}
+
+function validateEmail(input) {
+  const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value);
+  input.classList.toggle('success', valid);
+  input.classList.toggle('error', !valid && input.value.length > 0);
+}
+
+function checkStrength(pw) {
+  const fill = document.getElementById('strengthFill');
+  const label = document.getElementById('strengthLabel');
+  let score = 0;
+  if (pw.length >= 8) score++;
+  if (/[A-Z]/.test(pw)) score++;
+  if (/[0-9]/.test(pw)) score++;
+  if (/[^A-Za-z0-9]/.test(pw)) score++;
+
+  const configs = [
+    { width:'0%', color:'', text:'' },
+    { width:'25%', color:'var(--danger)', text:'Faible' },
+    { width:'50%', color:'var(--warning)', text:'Moyen' },
+    { width:'75%', color:'#4facfe', text:'Bon' },
+    { width:'100%', color:'var(--success)', text:'Excellent !' }
+  ];
+
+  fill.style.width = configs[score].width;
+  fill.style.background = configs[score].color;
+  label.textContent = configs[score].text;
+  label.style.color = configs[score].color;
+}
+
+function showForgot() {
+  document.getElementById('loginForm').style.display = 'none';
+  document.getElementById('forgotForm').style.display = 'block';
+}
+
+function showLogin() {
+  document.getElementById('forgotForm').style.display = 'none';
+  document.getElementById('loginForm').style.display = 'block';
+}
+
+function doLogin() {
+  const email = document.getElementById('loginEmail').value;
+  const password = document.getElementById('loginPassword').value;
+  let valid = true;
+
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    document.getElementById('loginEmailError').classList.add('show');
+    document.getElementById('loginEmail').classList.add('error');
+    valid = false;
+  } else {
+    document.getElementById('loginEmailError').classList.remove('show');
+    document.getElementById('loginEmail').classList.remove('error');
+  }
+
+  if (!password || password.length < 6) {
+    document.getElementById('loginPasswordError').classList.add('show');
+    document.getElementById('loginPassword').classList.add('error');
+    valid = false;
+  } else {
+    document.getElementById('loginPasswordError').classList.remove('show');
+    document.getElementById('loginPassword').classList.remove('error');
+  }
+
+  if (!valid) return;
+
+  const btn = document.querySelector('#loginForm .submit-btn');
+  btn.classList.add('loading');
+  btn.textContent = '⏳ Connexion...';
+
+  setTimeout(() => {
+    btn.classList.remove('loading');
+    btn.innerHTML = '🔐 Se connecter';
+    showToast('✅ Connexion réussie ! Redirection...');
+    setTimeout(() => {
+      // Redirect based on role
+    const role = currentRole || selectedRoles[0] || 'buyer';
+    if(role === 'seller') window.location.href = 'korahub-dashboard-vendeur.html';
+    else if(role === 'affiliate') window.location.href = 'korahub-dashboard-affilie.html';
+    else window.location.href = 'korahub-profil-acheteur.html';
+    }, 1500);
+  }, 1500);
+}
+
+function doRegister() {
+  const firstName = document.getElementById('regFirstName').value;
+  const lastName = document.getElementById('regLastName').value;
+  const email = document.getElementById('regEmail').value;
+  const password = document.getElementById('regPassword').value;
+  const confirm = document.getElementById('regConfirm').value;
+  const terms = document.getElementById('termsCheck').checked;
+
+  if (!firstName || !lastName || !email || !password) {
+    showToast('⚠️ Remplissez tous les champs obligatoires');
+    return;
+  }
+
+  if (password !== confirm) {
+    document.getElementById('confirmError').classList.add('show');
+    document.getElementById('regConfirm').classList.add('error');
+    return;
+  } else {
+    document.getElementById('confirmError').classList.remove('show');
+    document.getElementById('regConfirm').classList.remove('error');
+  }
+
+  if (!terms) {
+    showToast('⚠️ Acceptez les conditions d\'utilisation');
+    return;
+  }
+
+  const btn = document.querySelector('#registerForm .submit-btn');
+  btn.classList.add('loading');
+  btn.textContent = '⏳ Création du compte...';
+
+  setTimeout(() => {
+    btn.style.display = 'none';
+    document.querySelector('.terms-check').style.display = 'none';
+    document.querySelector('.auth-switch').style.display = 'none';
+    document.getElementById('successEmailDisplay').textContent = email;
+
+    const allFields = document.querySelectorAll('#registerForm .form-group, #registerForm .role-selector, #registerForm .form-title, #registerForm .form-sub, #registerForm .payment-section, #registerForm #sellerFields, #registerForm #affiliateFields');
+    allFields.forEach(f => f.style.display = 'none');
+
+    document.getElementById('registerSuccess').style.display = 'block';
+  }, 2000);
+}
+
+function doForgot() {
+  const email = document.getElementById('forgotEmail').value;
+  if (!email) { showToast('⚠️ Entrez votre email'); return; }
+  showToast('📧 Lien envoyé à ' + email + ' !');
+  setTimeout(showLogin, 2000);
+}
+
+function redirectToDashboard() {
+  const routes = {
+    buyer: 'korahub.html',
+    seller: 'korahub-dashboard-vendeur.html',
+    affiliate: 'korahub-dashboard-affilie.html'
+  };
+  showToast('🚀 Redirection vers votre dashboard...');
+  setTimeout(() => { window.location.href = routes[currentRole] || 'korahub.html'; }, 1000);
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+
+// ═══ FIREBASE AUTH FUNCTIONS ═══
+async function doLogin() {
+  const email = document.getElementById('loginEmail').value;
+  const password = document.getElementById('loginPassword').value;
+  if (!email || !password) { showToast('⚠️ Remplissez email et mot de passe'); return; }
+
+  const btn = document.querySelector('#loginForm .submit-btn');
+  btn.textContent = '⏳ Connexion...';
+  btn.style.opacity = '.7';
+  btn.style.pointerEvents = 'none';
+
+  try {
+    const { signInWithEmailAndPassword } = window.firebaseFunctions || {};
+    if (signInWithEmailAndPassword && window.firebaseAuth) {
+      const cred = await signInWithEmailAndPassword(window.firebaseAuth, email, password);
+      showToast('✅ Connexion réussie !');
+      setTimeout(() => {
+        const role = (selectedRoles && selectedRoles[0]) || 'buyer';
+        if (role === 'seller') window.location.href = 'korahub-dashboard-vendeur.html';
+        else if (role === 'affiliate') window.location.href = 'korahub-dashboard-affilie.html';
+        else window.location.href = 'korahub-profil-acheteur.html';
+      }, 1000);
+    } else {
+      // Fallback without Firebase
+      showToast('✅ Connexion réussie !');
+      setTimeout(() => { window.location.href = 'korahub.html'; }, 1000);
+    }
+  } catch(e) {
+    btn.textContent = '🔐 Se connecter';
+    btn.style.opacity = '1';
+    btn.style.pointerEvents = 'auto';
+    let msg = 'Erreur de connexion';
+    if (e.code === 'auth/user-not-found' || e.code === 'auth/invalid-credential') msg = 'Email ou mot de passe incorrect';
+    else if (e.code === 'auth/wrong-password') msg = 'Mot de passe incorrect';
+    else if (e.code === 'auth/too-many-requests') msg = 'Trop de tentatives. Réessayez plus tard';
+    showToast('❌ ' + msg);
+  }
+}
+
+async function doRegister() {
+  const firstName = document.getElementById('regFirstName')?.value || '';
+  const lastName = document.getElementById('regLastName')?.value || '';
+  const email = document.getElementById('regEmail')?.value || '';
+  const password = document.getElementById('regPassword')?.value || '';
+  const confirm = document.getElementById('regConfirm')?.value || '';
+  const terms = document.getElementById('termsCheck')?.checked;
+  const country = document.getElementById('regCountry')?.value || 'Afrique';
+
+  if (!firstName || !lastName || !email || !password) {
+    showToast('⚠️ Remplissez tous les champs'); return;
+  }
+  if (password !== confirm) {
+    document.getElementById('confirmError')?.classList.add('show'); return;
+  }
+  if (password.length < 6) { showToast('⚠️ Mot de passe minimum 6 caractères'); return; }
+  if (!terms) { showToast("⚠️ Acceptez les conditions d'utilisation"); return; }
+
+  const btn = document.querySelector('#registerForm .submit-btn');
+  if (btn) { btn.textContent = '⏳ Création...'; btn.style.opacity = '.7'; btn.style.pointerEvents = 'none'; }
+
+  try {
+    const paymentMethods = collectPaymentMethods();
+    const userData = {
+      firstName, lastName, email, country,
+      roles: selectedRoles || ['buyer'],
+      paymentMethods,
+      whatsapp: document.getElementById('sellerWhatsapp')?.value || '',
+      createdAt: new Date().toISOString()
+    };
+
+    const fns = window.firebaseFunctions;
+    if (fns && window.firebaseAuth) {
+      const cred = await fns.createUserWithEmailAndPassword(window.firebaseAuth, email, password);
+      await fns.setDoc(fns.doc(window.firebaseDB, 'users', cred.user.uid), { ...userData, uid: cred.user.uid });
+    }
+
+    document.getElementById('successEmailDisplay').textContent = email;
+    document.querySelectorAll('#registerForm .form-group, #registerForm .role-selector, #registerForm #sellerFields, #registerForm #affiliateFields, #registerForm .terms-check').forEach(f => f.style.display = 'none');
+    if (btn) btn.style.display = 'none';
+    document.querySelector('.auth-switch') && (document.querySelector('.auth-switch').style.display = 'none');
+    document.getElementById('registerSuccess').style.display = 'block';
+    showToast('🎉 Compte créé avec succès !');
+
+  } catch(e) {
+    if (btn) { btn.textContent = '🚀 Créer mon compte gratuitement'; btn.style.opacity = '1'; btn.style.pointerEvents = 'auto'; }
+    let msg = 'Erreur lors de la création';
+    if (e.code === 'auth/email-already-in-use') msg = 'Email déjà utilisé !';
+    else if (e.code === 'auth/weak-password') msg = 'Mot de passe trop faible';
+    showToast('❌ ' + msg);
+  }
+}
+
+async function doForgot() {
+  const email = document.getElementById('forgotEmail')?.value;
+  if (!email) { showToast('⚠️ Entrez votre email'); return; }
+  try {
+    const fns = window.firebaseFunctions;
+    if (fns?.sendPasswordResetEmail) await fns.sendPasswordResetEmail(window.firebaseAuth, email);
+    showToast('📧 Email de réinitialisation envoyé à ' + email);
+    setTimeout(showLogin, 2000);
+  } catch(e) {
+    showToast('❌ Email non trouvé');
+  }
+}
+
+function redirectToDashboard() {
+  const role = (selectedRoles && selectedRoles[0]) || 'buyer';
+  if (role === 'seller') window.location.href = 'korahub-dashboard-vendeur.html';
+  else if (role === 'affiliate') window.location.href = 'korahub-dashboard-affilie.html';
+  else window.location.href = 'korahub-profil-acheteur.html';
+}
+
+// URL param check
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.get('tab') === 'register') switchTab('register');
+</script>
+<script id="kh-loader-script"></script>
+
+</body>
+</html>
