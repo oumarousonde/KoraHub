@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KoraHub – Commande confirmée 🎉</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --violet:#1E0F4E;--violet-mid:#3D2488;--violet-light:#5E35B1;
+  --gold:#F0B429;--gold-light:#FCEA2B;
+  --off-white:#F7F5FF;--text-dark:#120A2E;--text-muted:#6B5B95;
+  --border:rgba(94,53,177,0.10);--shadow-lg:0 8px 40px rgba(30,15,78,0.15);
+  --success:#00C48C;--r-md:12px;--r-lg:16px;--r-xl:20px;--r-2xl:28px;--r-full:9999px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Manrope',sans-serif;background:var(--off-white);color:var(--text-dark);-webkit-font-smoothing:antialiased;min-height:100vh}
+nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:64px;background:rgba(15,6,38,0.97);backdrop-filter:blur(20px);border-bottom:1px solid rgba(240,180,41,0.10)}
+.nav-logo{display:flex;align-items:center;text-decoration:none}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:var(--r-md);font-family:'Manrope',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .2s;text-decoration:none}
+.btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--violet);font-weight:700}
+.btn-gold:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(240,180,41,0.35)}
+.btn-ghost{background:transparent;color:white;border:1.5px solid rgba(255,255,255,0.2)}
+.btn-ghost:hover{border-color:rgba(240,180,41,0.5);color:var(--gold)}
+
+/* HERO CONFIRMATION */
+.confirm-hero{
+  background:linear-gradient(160deg,#050115 0%,#0D0829 50%,#1a0a42 100%);
+  padding:60px 5% 50px;text-align:center;position:relative;overflow:hidden;
+}
+.confirm-hero::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(94,53,177,0.2),transparent);pointer-events:none}
+
+/* Confetti particles */
+.confetti-wrap{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.confetti{position:absolute;width:8px;height:8px;border-radius:2px;animation:confetti-fall linear infinite}
+@keyframes confetti-fall{
+  0%{transform:translateY(-20px) rotate(0deg);opacity:1}
+  100%{transform:translateY(100vh) rotate(720deg);opacity:0}
+}
+
+.confirm-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(0,196,140,0.15);border:1px solid rgba(0,196,140,0.3);
+  border-radius:var(--r-full);padding:6px 16px;
+  font-size:12px;font-weight:700;color:#00e6a8;
+  text-transform:uppercase;letter-spacing:.08em;
+  margin-bottom:24px;
+  animation:fadeInUp .5s ease both;
+}
+.confirm-icon{
+  font-size:72px;margin-bottom:20px;
+  animation:bounceIn .6s .2s ease both;display:block;
+}
+@keyframes bounceIn{
+  0%{opacity:0;transform:scale(.3)}
+  50%{opacity:1;transform:scale(1.08)}
+  70%{transform:scale(.95)}
+  100%{transform:scale(1)}
+}
+.confirm-title{
+  font-size:clamp(28px,5vw,48px);font-weight:900;color:white;
+  line-height:1.1;letter-spacing:-.03em;margin-bottom:14px;
+  animation:fadeInUp .5s .3s ease both;
+}
+.confirm-title span{color:var(--gold)}
+.confirm-sub{
+  font-size:16px;color:rgba(255,255,255,0.6);
+  line-height:1.7;max-width:500px;margin:0 auto 32px;
+  animation:fadeInUp .5s .4s ease both;
+}
+
+@keyframes fadeInUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+/* ORDER DETAILS */
+.confirm-inner{max-width:700px;margin:0 auto;padding:0 5% 80px}
+
+.order-details-card{
+  background:white;border:1px solid var(--border);
+  border-radius:var(--r-2xl);padding:28px;
+  box-shadow:var(--shadow-lg);margin-top:-30px;
+  position:relative;z-index:1;
+  animation:fadeInUp .5s .5s ease both;
+}
+
+.order-ref{
+  display:flex;align-items:center;justify-content:space-between;
+  padding-bottom:16px;border-bottom:1px solid var(--border);margin-bottom:20px;
+  flex-wrap:wrap;gap:10px;
+}
+.order-ref-label{font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px}
+.order-ref-num{font-size:18px;font-weight:900;color:var(--violet);font-family:monospace;letter-spacing:.05em}
+.order-status{display:flex;align-items:center;gap:6px;background:rgba(240,180,41,0.1);border:1px solid rgba(240,180,41,0.25);border-radius:var(--r-full);padding:6px 14px;font-size:12px;font-weight:700;color:var(--gold)}
+.status-dot{width:7px;height:7px;border-radius:50%;background:var(--gold);animation:pulse-dot 2s ease-in-out infinite}
+@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.7)}}
+
+/* Product summary */
+.order-product{display:flex;align-items:center;gap:16px;background:var(--off-white);border-radius:var(--r-xl);padding:16px;margin-bottom:20px}
+.order-product-thumb{width:64px;height:64px;border-radius:var(--r-lg);background:linear-gradient(135deg,#1E0F4E,#3D2488);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0}
+.order-product-name{font-size:15px;font-weight:800;color:var(--text-dark);margin-bottom:3px}
+.order-product-type{font-size:12px;color:var(--text-muted);margin-bottom:3px}
+.order-product-price{font-size:16px;font-weight:900;color:var(--violet)}
+
+/* Steps */
+.steps-title{font-size:16px;font-weight:800;color:var(--text-dark);margin-bottom:14px}
+.steps{display:flex;flex-direction:column;gap:12px;margin-bottom:24px}
+.step{display:flex;align-items:flex-start;gap:14px;padding:14px;border:1px solid var(--border);border-radius:var(--r-lg);transition:all .2s}
+.step.done{background:rgba(0,196,140,0.04);border-color:rgba(0,196,140,0.2)}
+.step.active{background:rgba(94,53,177,0.04);border-color:rgba(94,53,177,0.2)}
+.step.pending{background:var(--off-white)}
+.step-num{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;flex-shrink:0}
+.step.done .step-num{background:var(--success);color:white}
+.step.active .step-num{background:var(--violet-light);color:white}
+.step.pending .step-num{background:var(--border);color:var(--text-muted)}
+.step-info{flex:1}
+.step-name{font-size:14px;font-weight:700;color:var(--text-dark);margin-bottom:2px}
+.step-desc{font-size:12px;color:var(--text-muted);line-height:1.5}
+.step-time{font-size:11px;font-weight:600;margin-top:4px;display:flex;align-items:center;gap:4px}
+.step.done .step-time{color:var(--success)}
+.step.active .step-time{color:var(--violet-light)}
+
+/* Actions */
+.confirm-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+.btn-action{display:flex;flex-direction:column;align-items:center;gap:6px;padding:16px;border-radius:var(--r-xl);border:1.5px solid var(--border);background:white;cursor:pointer;transition:all .2s;text-decoration:none}
+.btn-action:hover{border-color:var(--violet-light);transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+.btn-action-icon{font-size:24px}
+.btn-action-label{font-size:12px;font-weight:700;color:var(--text-dark)}
+
+/* WA CTA */
+.wa-cta{background:linear-gradient(135deg,#128C7E,#25D366);border-radius:var(--r-xl);padding:18px 20px;display:flex;align-items:center;gap:14px;cursor:pointer;margin-bottom:20px;transition:all .2s}
+.wa-cta:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(37,211,102,0.3)}
+.wa-cta-icon{font-size:28px;flex-shrink:0}
+.wa-cta-text{flex:1}
+.wa-cta-title{font-size:14px;font-weight:800;color:white;margin-bottom:2px}
+.wa-cta-sub{font-size:12px;color:rgba(255,255,255,0.8)}
+.wa-cta-arrow{font-size:18px;color:white;opacity:.8}
+
+/* Newsletter */
+.newsletter{background:linear-gradient(135deg,var(--violet),var(--violet-mid));border-radius:var(--r-xl);padding:24px;text-align:center;margin-bottom:20px}
+.newsletter-title{font-size:16px;font-weight:800;color:white;margin-bottom:6px}
+.newsletter-sub{font-size:13px;color:rgba(255,255,255,0.65);margin-bottom:16px;line-height:1.5}
+.newsletter-form{display:flex;gap:8px;max-width:400px;margin:0 auto}
+.newsletter-input{flex:1;padding:11px 14px;border-radius:var(--r-md);border:none;font-family:'Manrope',sans-serif;font-size:13px;outline:none;background:rgba(255,255,255,0.1);color:white;border:1px solid rgba(255,255,255,0.2)}
+.newsletter-input::placeholder{color:rgba(255,255,255,0.45)}
+.newsletter-input:focus{background:rgba(255,255,255,0.15);border-color:rgba(255,255,255,0.4)}
+.newsletter-btn{padding:11px 18px;border-radius:var(--r-md);background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--violet);border:none;font-family:'Manrope',sans-serif;font-size:13px;font-weight:800;cursor:pointer;white-space:nowrap;transition:all .2s}
+.newsletter-btn:hover{transform:scale(1.03)}
+
+/* Related products */
+.related-title{font-size:18px;font-weight:900;color:var(--text-dark);margin-bottom:16px;letter-spacing:-.02em}
+.related-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.rel-card{background:white;border:1px solid var(--border);border-radius:var(--r-xl);overflow:hidden;cursor:pointer;transition:all .25s}
+.rel-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+.rel-thumb{height:100px;display:flex;align-items:center;justify-content:center;font-size:36px}
+.rel-body{padding:10px 12px}
+.rel-name{font-size:12px;font-weight:700;color:var(--text-dark);margin-bottom:4px;line-height:1.3}
+.rel-price{font-size:13px;font-weight:900;color:var(--violet)}
+
+/* Back btn */
+.back-btn{position:fixed;bottom:28px;left:28px;z-index:500;width:46px;height:46px;background:white;border:1.5px solid rgba(94,53,177,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;box-shadow:0 4px 20px rgba(30,15,78,0.12);transition:all .2s;color:var(--violet)}
+.back-btn:hover{background:var(--violet);color:white;transform:scale(1.08)}
+@media(max-width:768px){.back-btn{display:none}}
+
+/* Toast */
+.toast{position:fixed;bottom:24px;right:24px;z-index:3000;background:var(--violet);border:1px solid var(--gold);color:white;padding:13px 18px;border-radius:var(--r-lg);font-size:13px;display:flex;align-items:center;gap:9px;transform:translateX(120%);transition:transform .3s;box-shadow:var(--shadow-lg);max-width:300px}
+.toast.show{transform:translateX(0)}
+
+@media(max-width:600px){.confirm-actions{grid-template-columns:1fr 1fr}.related-grid{grid-template-columns:1fr 1fr}.newsletter-form{flex-direction:column}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="korahub.html" class="nav-logo">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 40" style="height:34px;width:auto;display:block"><defs><linearGradient id="g"><stop offset="0%" style="stop-color:#F0B429"/><stop offset="100%" style="stop-color:#FCEA2B"/></linearGradient></defs><rect x="0" y="2" width="36" height="36" rx="9" fill="url(#g)"/><text x="8" y="28" font-family="Arial Black" font-weight="900" font-size="23" fill="#1E0F4E">K</text><text x="44" y="25" font-family="Manrope,sans-serif" font-weight="700" font-size="16" fill="white">Kora</text><text x="80" y="25" font-family="Manrope,sans-serif" font-weight="700" font-size="16" fill="#F0B429">Hub</text></svg>
+  </a>
+  <div style="display:flex;gap:10px">
+    <a href="korahub.html" class="btn btn-ghost" style="font-size:12px">Accueil</a>
+    <a href="korahub-recherche.html" class="btn btn-gold" style="font-size:12px">Continuer mes achats</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="confirm-hero">
+  <!-- Confetti -->
+  <div class="confetti-wrap" id="confettiWrap"></div>
+
+  <div class="confirm-badge">✅ Commande reçue</div>
+  <span class="confirm-icon">🎉</span>
+  <h1 class="confirm-title">Merci pour votre <span>commande</span> !</h1>
+  <p class="confirm-sub">Votre commande a été transmise avec succès. Vous recevrez votre produit par email dès confirmation du paiement par le vendeur.</p>
+</div>
+
+<!-- CONTENT -->
+<div class="confirm-inner">
+
+  <!-- ORDER DETAILS CARD -->
+  <div class="order-details-card">
+
+    <!-- Reference & Status -->
+    <div class="order-ref">
+      <div>
+        <div class="order-ref-label">Numéro de commande</div>
+        <div class="order-ref-num" id="orderRef">KH-2025-001</div>
+      </div>
+      <div class="order-status">
+        <div class="status-dot"></div>
+        En attente de confirmation
+      </div>
+    </div>
+
+    <!-- Product -->
+    <div class="order-product">
+      <div class="order-product-thumb" id="orderThumb">📚</div>
+      <div>
+        <div class="order-product-name" id="orderProductName">Gagner avec ChatGPT en Afrique</div>
+        <div class="order-product-type" id="orderProductType">📥 PDF Téléchargeable</div>
+        <div class="order-product-price" id="orderProductPrice">2 500 FCFA</div>
+      </div>
+    </div>
+
+    <!-- Steps -->
+    <div class="steps-title">Suivi de votre commande</div>
+    <div class="steps">
+      <div class="step done">
+        <div class="step-num">✓</div>
+        <div class="step-info">
+          <div class="step-name">Commande reçue</div>
+          <div class="step-desc">Votre commande a été enregistrée avec succès sur KoraHub</div>
+          <div class="step-time">✅ Il y a quelques secondes</div>
+        </div>
+      </div>
+
+      <div class="step active">
+        <div class="step-num">2</div>
+        <div class="step-info">
+          <div class="step-name">Vérification du paiement</div>
+          <div class="step-desc">Le vendeur vérifie votre capture de paiement et confirme votre commande</div>
+          <div class="step-time">⏳ En cours · Délai estimé : 1-2 heures</div>
+        </div>
+      </div>
+
+      <div class="step pending">
+        <div class="step-num">3</div>
+        <div class="step-info">
+          <div class="step-name">Livraison par email</div>
+          <div class="step-desc">Votre PDF est envoyé sur votre email avec un filigrane de sécurité personnalisé</div>
+          <div class="step-time">📧 Après confirmation · Max 24h</div>
+        </div>
+      </div>
+
+      <div class="step pending">
+        <div class="step-num">4</div>
+        <div class="step-info">
+          <div class="step-name">Profitez de votre produit !</div>
+          <div class="step-desc">Lisez, imprimez ou utilisez votre produit. Laissez un avis pour aider la communauté</div>
+          <div class="step-time">🎉 Après réception</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="confirm-actions">
+      <a href="korahub-profil-acheteur.html" class="btn-action">
+        <span class="btn-action-icon">📦</span>
+        <span class="btn-action-label">Mes commandes</span>
+      </a>
+      <a href="korahub-recherche.html" class="btn-action">
+        <span class="btn-action-icon">🔍</span>
+        <span class="btn-action-label">Catalogue</span>
+      </a>
+      <a href="korahub-kids.html" class="btn-action">
+        <span class="btn-action-icon">👶</span>
+        <span class="btn-action-label">KoraHub Kids</span>
+      </a>
+      <div class="btn-action" onclick="shareOrder()">
+        <span class="btn-action-icon">📤</span>
+        <span class="btn-action-label">Partager</span>
+      </div>
+    </div>
+
+    <!-- WhatsApp CTA -->
+    <div class="wa-cta" onclick="contactSupport()">
+      <span class="wa-cta-icon">💬</span>
+      <div class="wa-cta-text">
+        <div class="wa-cta-title">Un problème avec votre commande ?</div>
+        <div class="wa-cta-sub">Contactez-nous sur WhatsApp · Réponse rapide</div>
+      </div>
+      <span class="wa-cta-arrow">→</span>
+    </div>
+
+  </div>
+
+  <!-- NEWSLETTER -->
+  <div class="newsletter" style="margin-top:24px">
+    <div class="newsletter-title">🔔 Restez informé des nouvelles offres</div>
+    <div class="newsletter-sub">Recevez les meilleurs deals KoraHub directement dans votre boîte email. Pas de spam, promis !</div>
+    <div class="newsletter-form">
+      <input type="email" class="newsletter-input" placeholder="votre@email.com" id="newsletterEmail">
+      <button class="newsletter-btn" onclick="subscribeNewsletter()">S'abonner</button>
+    </div>
+  </div>
+
+  <!-- RELATED PRODUCTS -->
+  <div style="margin-top:28px">
+    <div class="related-title">Vous pourriez aussi aimer</div>
+    <div class="related-grid">
+      <div class="rel-card" onclick="window.location.href='korahub-produit-panier.html'">
+        <div class="rel-thumb" style="background:linear-gradient(135deg,#f093fb,#f5576c)">📈</div>
+        <div class="rel-body">
+          <div class="rel-name">Formation Marketing Afrique</div>
+          <div class="rel-price">8 000 F</div>
+        </div>
+      </div>
+      <div class="rel-card" onclick="window.location.href='korahub-produit-panier.html'">
+        <div class="rel-thumb" style="background:linear-gradient(135deg,#43e97b,#38f9d7)">📊</div>
+        <div class="rel-body">
+          <div class="rel-name">Tracker Budget 2026</div>
+          <div class="rel-price">1 000 F</div>
+        </div>
+      </div>
+      <div class="rel-card" onclick="window.location.href='korahub-produit-panier.html'">
+        <div class="rel-thumb" style="background:linear-gradient(135deg,#fa709a,#fee140)">📒</div>
+        <div class="rel-body">
+          <div class="rel-name">Bloc-notes 6×9 Africain</div>
+          <div class="rel-price">500 F</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- BACK BTN -->
+<button class="back-btn" onclick="history.back()">←</button>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><span>✅</span><span id="toastMsg"></span></div>
+
+<script>
+// Generate order reference
+const ref = 'KH-' + new Date().getFullYear() + '-' + Math.random().toString(36).substr(2,6).toUpperCase();
+document.getElementById('orderRef').textContent = ref;
+
+// Load order details from URL params or localStorage
+const params = new URLSearchParams(window.location.search);
+if(params.get('product')) document.getElementById('orderProductName').textContent = decodeURIComponent(params.get('product'));
+if(params.get('price')) document.getElementById('orderProductPrice').textContent = params.get('price') + ' FCFA';
+if(params.get('type')) {
+  const types = {download:'📥 PDF Téléchargeable', print:'🖨️ Imprimable', physic:'📦 Physique'};
+  document.getElementById('orderProductType').textContent = types[params.get('type')] || '📥 PDF';
+  const emojis = {download:'📚', print:'🖨️', physic:'📦'};
+  document.getElementById('orderThumb').textContent = emojis[params.get('type')] || '📚';
+}
+
+// Confetti animation
+function createConfetti() {
+  const wrap = document.getElementById('confettiWrap');
+  const colors = ['#F0B429','#5E35B1','#00C48C','#FF4D6D','#4facfe','#f093fb'];
+  for(let i = 0; i < 60; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti';
+    el.style.cssText = `
+      left: ${Math.random()*100}%;
+      background: ${colors[Math.floor(Math.random()*colors.length)]};
+      width: ${4+Math.random()*8}px;
+      height: ${4+Math.random()*8}px;
+      animation-duration: ${2+Math.random()*3}s;
+      animation-delay: ${Math.random()*2}s;
+      border-radius: ${Math.random()>0.5?'50%':'2px'};
+    `;
+    wrap.appendChild(el);
+  }
+  // Remove after 5 seconds
+  setTimeout(() => wrap.innerHTML = '', 5000);
+}
+createConfetti();
+
+// Newsletter
+function subscribeNewsletter() {
+  const email = document.getElementById('newsletterEmail').value;
+  if(!email?.includes('@')) { showToast('⚠️ Entrez un email valide'); return; }
+  showToast('🎉 Abonnement confirmé ! Merci ' + email.split('@')[0]);
+  document.getElementById('newsletterEmail').value = '';
+}
+
+// Contact support
+function contactSupport() {
+  const msg = encodeURIComponent(`Bonjour KoraHub,\n\nJ'ai un problème avec ma commande.\n\nNuméro de commande : ${ref}\n\nDescription : [Précisez votre problème]\n\nMerci`);
+  window.open(`https://wa.me/22675318351?text=${msg}`, '_blank');
+}
+
+// Share order
+function shareOrder() {
+  if(navigator.share) {
+    navigator.share({
+      title: 'J\'ai acheté sur KoraHub !',
+      text: 'Je viens de faire un achat sur KoraHub, la marketplace digitale africaine 🌍',
+      url: 'https://korahub.netlify.app'
+    }).catch(()=>{});
+  } else {
+    navigator.clipboard?.writeText('https://korahub.netlify.app').then(()=>showToast('📋 Lien copié !'));
+  }
+}
+
+// Toast
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 3000);
+}
+
+// Scroll reveal
+const obs = new IntersectionObserver(entries=>{
+  entries.forEach((e,i)=>{
+    if(e.isIntersecting){
+      setTimeout(()=>{e.target.style.opacity='1';e.target.style.transform='translateY(0)'},i*80);
+      obs.unobserve(e.target);
+    }
+  });
+},{threshold:.1});
+document.querySelectorAll('.step,.rel-card,.btn-action').forEach(el=>{
+  el.style.opacity='0';el.style.transform='translateY(16px)';
+  el.style.transition='opacity .4s ease,transform .4s ease';
+  obs.observe(el);
+});
+</script>
+</body>
+</html>
