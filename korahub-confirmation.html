@@ -167,6 +167,45 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
 
 @media(max-width:600px){.confirm-actions{grid-template-columns:1fr 1fr}.related-grid{grid-template-columns:1fr 1fr}.newsletter-form{flex-direction:column}}
 </style>
+
+<style id="kh-transitions">
+/* Page transition overlay */
+.kh-page-out {
+  animation: khPageOut 0.25s ease forwards !important;
+}
+@keyframes khPageOut {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-8px); }
+}
+@keyframes khPageIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+body {
+  animation: khPageIn 0.3s ease;
+}
+
+/* Smooth link transitions */
+a[href$=".html"] {
+  transition: opacity 0.15s ease;
+}
+
+/* Loading bar at top */
+.kh-progress-bar {
+  position: fixed; top: 0; left: 0; z-index: 9999;
+  height: 3px; width: 0%;
+  background: linear-gradient(90deg, #F0B429, #FCEA2B, #F0B429);
+  background-size: 200% 100%;
+  transition: width 0.3s ease;
+  animation: progressShimmer 1s linear infinite;
+  pointer-events: none;
+}
+@keyframes progressShimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+</style>
+
 </head>
 <body>
 
@@ -425,6 +464,46 @@ document.querySelectorAll('.step,.rel-card,.btn-action').forEach(el=>{
   el.style.transition='opacity .4s ease,transform .4s ease';
   obs.observe(el);
 });
+</script>
+<script>
+
+// ═══ KoraHub Page Transitions ═══
+(function() {
+  // Create progress bar
+  const bar = document.createElement('div');
+  bar.className = 'kh-progress-bar';
+  bar.id = 'khProgressBar';
+  document.body.insertBefore(bar, document.body.firstChild);
+
+  // Intercept all internal link clicks
+  document.addEventListener('click', function(e) {
+    const link = e.target.closest('a[href]');
+    if (!link) return;
+    const href = link.getAttribute('href');
+    if (!href || href.startsWith('#') || href.startsWith('http') || href.startsWith('https') || href.startsWith('mailto') || href.startsWith('tel') || href.startsWith('javascript') || link.target === '_blank') return;
+    if (!href.endsWith('.html') && !href.includes('.html?')) return;
+
+    e.preventDefault();
+    const bar = document.getElementById('khProgressBar');
+    if (bar) { bar.style.width = '70%'; }
+
+    document.body.style.animation = 'none';
+    document.body.style.opacity = '1';
+    document.body.style.transform = 'translateY(0)';
+    document.body.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
+
+    setTimeout(() => {
+      document.body.style.opacity = '0';
+      document.body.style.transform = 'translateY(-6px)';
+    }, 10);
+
+    setTimeout(() => {
+      if (bar) bar.style.width = '100%';
+      window.location.href = href;
+    }, 220);
+  });
+})();
+
 </script>
 </body>
 </html>
