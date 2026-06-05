@@ -1305,8 +1305,8 @@ async function loadCatalogProducts() {
   }
 
   try {
-    const { collection, getDocs, query, orderBy, limit } = window.firebaseFunctions;
-    const q = query(collection(window.firebaseDB, 'products'), orderBy('createdAt', 'desc'), limit(20));
+    const { collection, getDocs, query, orderBy } = window.firebaseFunctions;
+    const q = query(collection(window.firebaseDB, 'products'), orderBy('createdAt', 'desc'));
     const snapshot = await getDocs(q);
 
     if (snapshot.empty) {
@@ -3612,7 +3612,7 @@ window.addEventListener('beforeinstallprompt', e => {
   if (!localStorage.getItem('kh_notifs_init')) {
     localStorage.setItem('kh_notifs_init', '1');
     setTimeout(() => addNotif('🎉', '#F3E5F5', 'Bienvenue sur KoraHub !', 'Découvrez le catalogue et commencez à acheter ou vendre.'), 2000);
-    setTimeout(() => addNotif('🔥', '#FFF8E1', 'Offre du jour', 'Tracker Budget -50% pour aujourd'hui seulement !'), 5000);
+    setTimeout(() => addNotif('🔥', '#FFF8E1', 'Offre du jour', "Tracker Budget -50% pour aujourd\u2019hui seulement !"), 5000);
   }
 
   // Listen for orders
