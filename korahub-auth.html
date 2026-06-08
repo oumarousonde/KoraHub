@@ -1353,48 +1353,71 @@ function doLogin() {
   }, 1500);
 }
 
-function doRegister() {
-  const firstName = document.getElementById('regFirstName').value;
-  const lastName = document.getElementById('regLastName').value;
-  const email = document.getElementById('regEmail').value;
-  const password = document.getElementById('regPassword').value;
-  const confirm = document.getElementById('regConfirm').value;
-  const terms = document.getElementById('termsCheck').checked;
+async function doRegister() {
+  const firstName = document.getElementById('regFirstName')?.value?.trim() || '';
+  const lastName = document.getElementById('regLastName')?.value?.trim() || '';
+  const email = document.getElementById('regEmail')?.value?.trim() || '';
+  const password = document.getElementById('regPassword')?.value || '';
+  const confirm = document.getElementById('regConfirm')?.value || '';
+  const terms = document.getElementById('termsCheck')?.checked;
+  const country = document.getElementById('regCountry')?.value || 'Afrique';
 
   if (!firstName || !lastName || !email || !password) {
-    showToast('⚠️ Remplissez tous les champs obligatoires');
-    return;
+    showToast('⚠️ Remplissez tous les champs obligatoires'); return;
   }
-
   if (password !== confirm) {
-    document.getElementById('confirmError').classList.add('show');
-    document.getElementById('regConfirm').classList.add('error');
-    return;
+    document.getElementById('confirmError')?.classList.add('show'); return;
   } else {
-    document.getElementById('confirmError').classList.remove('show');
-    document.getElementById('regConfirm').classList.remove('error');
+    document.getElementById('confirmError')?.classList.remove('show');
   }
-
-  if (!terms) {
-    showToast('⚠️ Acceptez les conditions d\'utilisation');
-    return;
-  }
+  if (password.length < 6) { showToast('⚠️ Mot de passe minimum 6 caractères'); return; }
+  if (!terms) { showToast("⚠️ Acceptez les conditions d'utilisation"); return; }
 
   const btn = document.querySelector('#registerForm .submit-btn');
-  btn.classList.add('loading');
-  btn.textContent = '⏳ Création du compte...';
+  if (btn) { btn.textContent = '⏳ Création...'; btn.style.opacity = '.7'; btn.style.pointerEvents = 'none'; }
 
-  setTimeout(() => {
-    btn.style.display = 'none';
-    document.querySelector('.terms-check').style.display = 'none';
-    document.querySelector('.auth-switch').style.display = 'none';
+  const fns = window.firebaseFunctions;
+  if (!fns || !window.firebaseAuth) {
+    showToast('❌ Firebase non initialisé. Rechargez la page.');
+    if (btn) { btn.textContent = '🚀 Créer mon compte gratuitement'; btn.style.opacity = '1'; btn.style.pointerEvents = 'auto'; }
+    return;
+  }
+
+  try {
+    // 1. Create Firebase Auth user
+    const cred = await fns.createUserWithEmailAndPassword(window.firebaseAuth, email, password);
+
+    // 2. Save user data to Firestore
+    const paymentMethods = typeof collectPaymentMethods === 'function' ? collectPaymentMethods() : [];
+    const userData = {
+      firstName, lastName, email, country,
+      roles: selectedRoles || ['buyer'],
+      paymentMethods,
+      whatsapp: document.getElementById('sellerWhatsapp')?.value || '',
+      createdAt: new Date().toISOString(),
+      uid: cred.user.uid
+    };
+    await fns.setDoc(fns.doc(window.firebaseDB, 'users', cred.user.uid), userData);
+
+    // 3. Show success
     document.getElementById('successEmailDisplay').textContent = email;
-
-    const allFields = document.querySelectorAll('#registerForm .form-group, #registerForm .role-selector, #registerForm .form-title, #registerForm .form-sub, #registerForm .payment-section, #registerForm #sellerFields, #registerForm #affiliateFields');
-    allFields.forEach(f => f.style.display = 'none');
-
+    document.querySelectorAll('#registerForm .form-group, #registerForm .role-selector, #registerForm .form-title, #registerForm .form-sub, #registerForm .payment-section, #registerForm #sellerFields, #registerForm #affiliateFields, #registerForm .terms-check').forEach(f => f.style.display = 'none');
+    if (btn) btn.style.display = 'none';
+    const authSwitch = document.querySelector('.auth-switch');
+    if (authSwitch) authSwitch.style.display = 'none';
     document.getElementById('registerSuccess').style.display = 'block';
-  }, 2000);
+    showToast('🎉 Compte créé avec succès !');
+
+  } catch(e) {
+    console.error('Register error:', e.code, e.message);
+    if (btn) { btn.textContent = '🚀 Créer mon compte gratuitement'; btn.style.opacity = '1'; btn.style.pointerEvents = 'auto'; }
+    let msg = 'Erreur: ' + (e.message || 'Réessayez');
+    if (e.code === 'auth/email-already-in-use') msg = 'Email déjà utilisé !';
+    else if (e.code === 'auth/weak-password') msg = 'Mot de passe trop faible (min 6 caractères)';
+    else if (e.code === 'auth/invalid-email') msg = 'Email invalide';
+    else if (e.code === 'auth/network-request-failed') msg = 'Erreur réseau. Vérifiez votre connexion';
+    showToast('❌ ' + msg);
+  }
 }
 
 function doForgot() {
@@ -1406,12 +1429,11 @@ function doForgot() {
 
 function redirectToDashboard() {
   const routes = {
-    buyer: 'korahub.html',
+    buyer: 'korahub-profil-acheteur.html',
     seller: 'korahub-dashboard-vendeur.html',
     affiliate: 'korahub-dashboard-affilie.html'
   };
-  showToast('🚀 Redirection vers votre dashboard...');
-  setTimeout(() => { window.location.href = routes[currentRole] || 'korahub.html'; }, 1000);
+  setTimeout(() => { window.location.href = routes[currentRole] || 'korahub-profil-acheteur.html'; }, 1000);
 }
 
 function showToast(msg) {
@@ -1479,58 +1501,7 @@ async function doLogin() {
   }
 }
 
-async function doRegister() {
-  const firstName = document.getElementById('regFirstName')?.value || '';
-  const lastName = document.getElementById('regLastName')?.value || '';
-  const email = document.getElementById('regEmail')?.value || '';
-  const password = document.getElementById('regPassword')?.value || '';
-  const confirm = document.getElementById('regConfirm')?.value || '';
-  const terms = document.getElementById('termsCheck')?.checked;
-  const country = document.getElementById('regCountry')?.value || 'Afrique';
-
-  if (!firstName || !lastName || !email || !password) {
-    showToast('⚠️ Remplissez tous les champs'); return;
-  }
-  if (password !== confirm) {
-    document.getElementById('confirmError')?.classList.add('show'); return;
-  }
-  if (password.length < 6) { showToast('⚠️ Mot de passe minimum 6 caractères'); return; }
-  if (!terms) { showToast("⚠️ Acceptez les conditions d'utilisation"); return; }
-
-  const btn = document.querySelector('#registerForm .submit-btn');
-  if (btn) { btn.textContent = '⏳ Création...'; btn.style.opacity = '.7'; btn.style.pointerEvents = 'none'; }
-
-  try {
-    const paymentMethods = collectPaymentMethods();
-    const userData = {
-      firstName, lastName, email, country,
-      roles: selectedRoles || ['buyer'],
-      paymentMethods,
-      whatsapp: document.getElementById('sellerWhatsapp')?.value || '',
-      createdAt: new Date().toISOString()
-    };
-
-    const fns = window.firebaseFunctions;
-    if (fns && window.firebaseAuth) {
-      const cred = await fns.createUserWithEmailAndPassword(window.firebaseAuth, email, password);
-      await fns.setDoc(fns.doc(window.firebaseDB, 'users', cred.user.uid), { ...userData, uid: cred.user.uid });
-    }
-
-    document.getElementById('successEmailDisplay').textContent = email;
-    document.querySelectorAll('#registerForm .form-group, #registerForm .role-selector, #registerForm #sellerFields, #registerForm #affiliateFields, #registerForm .terms-check').forEach(f => f.style.display = 'none');
-    if (btn) btn.style.display = 'none';
-    document.querySelector('.auth-switch') && (document.querySelector('.auth-switch').style.display = 'none');
-    document.getElementById('registerSuccess').style.display = 'block';
-    showToast('🎉 Compte créé avec succès !');
-
-  } catch(e) {
-    if (btn) { btn.textContent = '🚀 Créer mon compte gratuitement'; btn.style.opacity = '1'; btn.style.pointerEvents = 'auto'; }
-    let msg = 'Erreur lors de la création';
-    if (e.code === 'auth/email-already-in-use') msg = 'Email déjà utilisé !';
-    else if (e.code === 'auth/weak-password') msg = 'Mot de passe trop faible';
-    showToast('❌ ' + msg);
-  }
-}
+// (doRegister and doForgot defined above)
 
 async function doForgot() {
   const email = document.getElementById('forgotEmail')?.value;
