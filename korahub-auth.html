@@ -647,6 +647,25 @@ document.head.appendChild(pwaStyle);
 
 </script>
 
+<script>
+// Wait for Firebase module to initialize
+window.firebaseReady = new Promise(resolve => {
+  let checks = 0;
+  const interval = setInterval(() => {
+    checks++;
+    if (window.firebaseAuth && window.firebaseFunctions) {
+      clearInterval(interval);
+      resolve(true);
+    }
+    if (checks > 20) {
+      clearInterval(interval);
+      resolve(false);
+    }
+  }, 200);
+});
+</script>
+
+
 
 <!-- PWA Manifest -->
 <link rel="manifest" href="manifest.json">
@@ -1354,6 +1373,17 @@ function doLogin() {
 }
 
 async function doRegister() {
+  // Wait for Firebase to be ready (max 4 seconds)
+  const isReady = await Promise.race([
+    window.firebaseReady || Promise.resolve(false),
+    new Promise(r => setTimeout(() => r(false), 4000))
+  ]);
+
+  if (!isReady || !window.firebaseAuth || !window.firebaseFunctions) {
+    showToast('❌ Serveur non disponible. Vérifiez votre connexion et rechargez.');
+    return;
+  }
+
   const firstName = document.getElementById('regFirstName')?.value?.trim() || '';
   const lastName = document.getElementById('regLastName')?.value?.trim() || '';
   const email = document.getElementById('regEmail')?.value?.trim() || '';
@@ -1377,11 +1407,6 @@ async function doRegister() {
   if (btn) { btn.textContent = '⏳ Création...'; btn.style.opacity = '.7'; btn.style.pointerEvents = 'none'; }
 
   const fns = window.firebaseFunctions;
-  if (!fns || !window.firebaseAuth) {
-    showToast('❌ Firebase non initialisé. Rechargez la page.');
-    if (btn) { btn.textContent = '🚀 Créer mon compte gratuitement'; btn.style.opacity = '1'; btn.style.pointerEvents = 'auto'; }
-    return;
-  }
 
   try {
     // 1. Create Firebase Auth user
