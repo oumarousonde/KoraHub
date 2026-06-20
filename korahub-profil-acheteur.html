@@ -880,6 +880,108 @@ a[href$=".html"] {
 }
 </style>
 
+
+<!-- Firebase compat SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+<script>
+// Initialize Firebase
+if (!firebase.apps.length) {
+  firebase.initializeApp({
+    apiKey: "AIzaSyBUM1tOdkfEZA4z1ts6tyRhlcRqotHE4zs",
+    authDomain: "korahub-7160.firebaseapp.com",
+    projectId: "korahub-7160",
+    storageBucket: "korahub-7160.firebasestorage.app",
+    messagingSenderId: "334789190484",
+    appId: "1:334789190484:web:90a21186adb353409f5ec1"
+  });
+}
+
+const auth = firebase.auth();
+const db = firebase.firestore();
+window.firebaseAuth = auth;
+window.firebaseDB = db;
+
+// Load real user data
+auth.onAuthStateChanged(async user => {
+  if (!user) {
+    // Not logged in - redirect to login
+    window.location.href = 'korahub-auth.html';
+    return;
+  }
+
+  try {
+    const snap = await db.collection('users').doc(user.uid).get();
+    const data = snap.exists ? snap.data() : {};
+    const firstName = data.firstName || user.displayName?.split(' ')[0] || 'Utilisateur';
+    const lastName = data.lastName || user.displayName?.split(' ').slice(1).join(' ') || '';
+    const fullName = firstName + ' ' + lastName;
+    const email = user.email || '';
+
+    // Update all name placeholders
+    document.querySelectorAll('#userName, #userName2').forEach(el => el.textContent = fullName);
+    document.querySelectorAll('#userGreeting').forEach(el => el.textContent = firstName);
+    document.querySelectorAll('[id="pageSub"]').forEach(el => {
+      el.textContent = 'Bonjour ' + firstName + ' ! 👋';
+    });
+
+    // Update profile form
+    const fn = document.getElementById('inputFirstName');
+    const ln = document.getElementById('inputLastName');
+    if (fn) fn.value = firstName;
+    if (ln) ln.value = lastName;
+
+    // Update email fields
+    document.querySelectorAll('input[type="email"]').forEach(el => {
+      if (!el.value) el.value = email;
+    });
+
+    // Update avatar initials
+    const initials = (firstName[0] || '') + (lastName[0] || '');
+    document.querySelectorAll('.profile-avatar, .user-avatar, [class*="avatar"]').forEach(el => {
+      if (el.textContent.trim() === 'AK' || el.textContent.trim().length <= 2) {
+        el.textContent = initials.toUpperCase() || '👤';
+      }
+    });
+
+    // Load real orders
+    try {
+      const ordersSnap = await db.collection('orders')
+        .where('buyerEmail', '==', email)
+        .orderBy('createdAt', 'desc')
+        .get();
+
+      if (!ordersSnap.empty) {
+        const ordersList = document.getElementById('ordersList') || document.querySelector('.orders-list');
+        if (ordersList) {
+          ordersList.innerHTML = ordersSnap.docs.map(d => {
+            const o = d.data();
+            return `<tr>
+              <td><strong>${o.productName || 'Produit'}</strong></td>
+              <td>${(o.amount||0).toLocaleString()} F</td>
+              <td><span class="badge ${o.status==='confirmed'?'badge-success':'badge-warning'}">${o.status==='confirmed'?'✅ Livré':'⏳ En attente'}</span></td>
+              <td>${o.createdAt ? new Date(o.createdAt).toLocaleDateString('fr-FR') : '-'}</td>
+            </tr>`;
+          }).join('');
+        }
+      }
+    } catch(e) { console.log('Orders load:', e); }
+
+    console.log('✅ User data loaded:', fullName);
+  } catch(e) {
+    console.error('User load error:', e);
+  }
+});
+
+// Logout function
+window.doLogout = function() {
+  auth.signOut().then(() => {
+    window.location.href = 'korahub.html';
+  });
+};
+</script>
+
 </head>
 <body>
 
@@ -891,7 +993,7 @@ a[href$=".html"] {
     <div class="user-card">
       <div class="user-avatar">A</div>
       <div>
-        <div class="user-name">Awa Kaboré</div>
+        <div class="user-name"><span id="userName">Chargement...</span></div>
         <div class="user-country">🌍 Afrique · Acheteur</div>
       </div>
     </div>
@@ -948,7 +1050,7 @@ a[href$=".html"] {
       <button class="menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
       <div>
         <div class="page-title" id="pageTitle">Vue d'ensemble</div>
-        <div class="page-sub" id="pageSub">Bonjour Awa ! 👋</div>
+        <div class="page-sub" id="pageSub">Bonjour <span id="userGreeting">...</span> ! 👋</div>
       </div>
     </div>
     <div class="topbar-right">
@@ -966,7 +1068,7 @@ a[href$=".html"] {
       <div class="profile-header">
         <div class="profile-avatar-big">A</div>
         <div class="profile-info">
-          <div class="profile-name">Awa Kaboré</div>
+          <div class="profile-name"><span id="userName2">...</span></div>
           <div class="profile-meta">awa@gmail.com · 🇧🇫 Burkina Faso · Membre depuis Jan 2025</div>
           <div class="profile-tags">
             <span class="profile-tag">🛒 Acheteur</span>
@@ -1356,11 +1458,11 @@ a[href$=".html"] {
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label">Prénom</label>
-                <input type="text" class="form-input" value="Awa">
+                <input type="text" class="form-input" id="inputFirstName" value="">
               </div>
               <div class="form-group">
                 <label class="form-label">Nom</label>
-                <input type="text" class="form-input" value="Kaboré">
+                <input type="text" class="form-input" id="inputLastName" value="">
               </div>
             </div>
             <div class="form-group">
@@ -1473,7 +1575,7 @@ a[href$=".html"] {
 
 <script>
 const titles = {
-  overview:['Vue d\'ensemble','Bonjour Awa ! 👋'],
+  overview:['Vue d\'ensemble','Bienvenue sur KoraHub ! 👋'],
   purchases:['Mes Achats','Historique de commandes'],
   downloads:['Mes Téléchargements','Produits disponibles'],
   wishlist:['Ma Liste de Souhaits','Produits sauvegardés'],
