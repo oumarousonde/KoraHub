@@ -1237,7 +1237,7 @@ function showInstallButton() {
   const btn = document.createElement('div');
   btn.id = 'pwaInstallBtn';
   btn.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:999;background:linear-gradient(135deg,#2D1B69,#4A2E9E);color:white;padding:12px 24px;border-radius:100px;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 4px 20px rgba(45,27,105,0.4);display:flex;align-items:center;gap:8px;animation:slideUp .3s ease;white-space:nowrap';
-  btn.innerHTML = '📱 Installer l'App KoraHub';
+  btn.innerHTML = '📱 Installer l&#39;App KoraHub';
   btn.onclick = installPWA;
   document.body.appendChild(btn);
   
@@ -1351,7 +1351,7 @@ document.head.appendChild(pwaStyle);
   if (!localStorage.getItem('kh_notifs_init')) {
     localStorage.setItem('kh_notifs_init', '1');
     setTimeout(() => addNotif('🎉', '#F3E5F5', 'Bienvenue sur KoraHub !', 'Découvrez le catalogue et commencez à acheter ou vendre.'), 2000);
-    setTimeout(() => addNotif('🔥', '#FFF8E1', 'Offre du jour', 'Tracker Budget -50% pour aujourd'hui seulement !'), 5000);
+    setTimeout(() => addNotif('🔥', '#FFF8E1', 'Offre du jour', 'Tracker Budget -50% aujourd hui seulement !'), 5000);
   }
 
   // Listen for orders
