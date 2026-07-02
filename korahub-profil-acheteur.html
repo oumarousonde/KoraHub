@@ -705,8 +705,15 @@ auth.onAuthStateChanged(async user => {
     // Update profile form
     const fn = document.getElementById('inputFirstName');
     const ln = document.getElementById('inputLastName');
+    const ph = document.getElementById('inputPhone');
+    const cty = document.getElementById('inputCountry');
     if (fn) fn.value = firstName;
     if (ln) ln.value = lastName;
+    if (ph && data.phone) ph.value = data.phone;
+    if (cty && data.country) {
+      const opt = Array.from(cty.options).find(o => o.value === data.country || o.text === data.country);
+      if (opt) cty.value = opt.value;
+    }
 
     // Update email fields
     document.querySelectorAll('input[type="email"]').forEach(el => {
@@ -757,6 +764,45 @@ window.doLogout = function() {
   auth.signOut().then(() => {
     window.location.href = 'korahub.html';
   });
+};
+
+// Save profile changes to Firestore
+window.saveUserProfile = async function() {
+  const user = auth.currentUser;
+  if (!user) { showToast('❌ Non connecté'); return; }
+
+  const firstName = document.getElementById('inputFirstName')?.value.trim();
+  const lastName = document.getElementById('inputLastName')?.value.trim();
+  const phone = document.getElementById('inputPhone')?.value.trim() || '';
+  const country = document.getElementById('inputCountry')?.value || '';
+
+  if (!firstName || !lastName) {
+    showToast('⚠️ Prénom et nom obligatoires');
+    return;
+  }
+
+  try {
+    await db.collection('users').doc(user.uid).set({
+      firstName, lastName, phone, country
+    }, { merge: true });
+
+    // Update name displayed everywhere on the page immediately
+    const fullName = firstName + ' ' + lastName;
+    document.querySelectorAll('#userName, #userName2').forEach(el => el.textContent = fullName);
+    document.querySelectorAll('#userGreeting').forEach(el => el.textContent = firstName);
+    document.querySelectorAll('[id="pageSub"]').forEach(el => {
+      el.textContent = 'Bonjour ' + firstName + ' ! 👋';
+    });
+    const initials = (firstName[0] || '') + (lastName[0] || '');
+    document.querySelectorAll('.profile-avatar, .user-avatar, [class*="avatar"]').forEach(el => {
+      el.textContent = initials.toUpperCase() || '👤';
+    });
+
+    showToast('✅ Profil mis à jour !');
+  } catch(e) {
+    console.error('Save profile error:', e);
+    showToast('❌ Erreur lors de la sauvegarde');
+  }
 };
 </script>
 
@@ -1249,7 +1295,7 @@ window.doLogout = function() {
             </div>
             <div class="form-group">
               <label class="form-label">Pays</label>
-              <select class="form-select">
+              <select class="form-select" id="inputCountry">
                 <option>🇧🇫 Burkina Faso</option>
                 <option>🇨🇮 Côte d'Ivoire</option>
                 <option>🇸🇳 Sénégal</option>
@@ -1259,9 +1305,9 @@ window.doLogout = function() {
             </div>
             <div class="form-group">
               <label class="form-label">Téléphone / WhatsApp</label>
-              <input type="tel" class="form-input" placeholder="+226 XX XX XX XX">
+              <input type="tel" class="form-input" id="inputPhone" placeholder="+226 XX XX XX XX">
             </div>
-            <button class="btn btn-violet" style="width:100%;justify-content:center" onclick="showToast('✅ Profil mis à jour !')">Sauvegarder</button>
+            <button class="btn btn-violet" style="width:100%;justify-content:center" onclick="saveUserProfile()">Sauvegarder</button>
           </div>
         </div>
         <div class="card">

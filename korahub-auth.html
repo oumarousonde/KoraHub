@@ -542,6 +542,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
       }
     } catch(e) {
       if (e.code === 'auth/popup-closed-by-user') return;
+      if (e.code === 'auth/popup-blocked') {
+        showToast('⚠️ Popup bloqué. Autorisez les popups pour ce site dans votre navigateur.');
+        return;
+      }
       showToast('❌ ' + (e.message || 'Erreur Google'));
     }
   };
@@ -885,8 +889,63 @@ a[href$=".html"] {
 }
 </style>
 
+
+<style id="kh-biometric">
+.biometric-prompt {
+  position: fixed; inset: 0; z-index: 2000;
+  background: rgba(13,8,41,0.85); backdrop-filter: blur(12px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px; opacity: 0; pointer-events: none; transition: opacity .3s;
+}
+.biometric-prompt.open { opacity: 1; pointer-events: all; }
+.biometric-card {
+  background: white; border-radius: 28px; padding: 32px 24px;
+  text-align: center; max-width: 340px; width: 100%;
+  box-shadow: 0 20px 60px rgba(30,15,78,0.3);
+  transform: translateY(20px); transition: transform .3s;
+}
+.biometric-prompt.open .biometric-card { transform: translateY(0); }
+.biometric-icon {
+  font-size: 64px; margin-bottom: 16px;
+  animation: pulse-fp 2s ease-in-out infinite;
+}
+@keyframes pulse-fp {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+}
+.biometric-title { font-size: 20px; font-weight: 900; color: #120A2E; margin-bottom: 8px; }
+.biometric-sub { font-size: 13px; color: #6B5B95; line-height: 1.6; margin-bottom: 24px; }
+.biometric-actions { display: flex; gap: 10px; }
+.btn-biometric-yes {
+  flex: 1; padding: 13px; border-radius: 12px;
+  background: linear-gradient(135deg, #1E0F4E, #5E35B1);
+  color: white; border: none; font-family: Manrope, sans-serif;
+  font-size: 14px; font-weight: 700; cursor: pointer; transition: all .2s;
+}
+.btn-biometric-yes:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(30,15,78,0.3); }
+.btn-biometric-no {
+  flex: 1; padding: 13px; border-radius: 12px;
+  background: #F7F5FF; color: #6B5B95; border: 1px solid rgba(94,53,177,0.12);
+  font-family: Manrope, sans-serif; font-size: 14px; font-weight: 600; cursor: pointer;
+}
+</style>
+
 </head>
 <body>
+
+<!-- Biometric prompt -->
+<div class="biometric-prompt" id="biometricPrompt">
+  <div class="biometric-card">
+    <div class="biometric-icon">👆</div>
+    <div class="biometric-title">Connexion par empreinte</div>
+    <div class="biometric-sub">Voulez-vous activer la connexion par empreinte digitale pour vous connecter plus rapidement ?</div>
+    <div class="biometric-actions">
+      <button class="btn-biometric-yes" onclick="activateFingerprint()">✅ Activer</button>
+      <button class="btn-biometric-no" onclick="closeBiometricPrompt()">Plus tard</button>
+    </div>
+  </div>
+</div>
+
 <div class="kh-logo">K</div></div><div class="kh-name">Kora<span style="color:#F5C518">Hub</span></div><div class="kh-dots"><div class="kh-dot"></div><div class="kh-dot"></div><div class="kh-dot"></div></div></div>
 <div class="kh-logo">K</div></div><div class="kh-name">Kora<span style="color:#F5C518">Hub</span></div><div class="kh-dots"><div class="kh-dot"></div><div class="kh-dot"></div><div class="kh-dot"></div></div></div>
 
@@ -973,6 +1032,9 @@ a[href$=".html"] {
         <div class="social-login">
           <button class="social-btn" onclick="signInWithGoogle()">
             <span>🌐</span> Google
+          </button>
+          <button class="social-btn" onclick="signInWithFingerprint()" id="fingerprintBtn" style="display:none">
+            <span>👆</span> Empreinte
           </button>
           <button class="social-btn" onclick="showToast('📘 Connexion Facebook en cours...')">
             <span>📘</span> Facebook
@@ -1346,49 +1408,6 @@ function showLogin() {
   document.getElementById('loginForm').style.display = 'block';
 }
 
-function doLogin() {
-  const email = document.getElementById('loginEmail').value;
-  const password = document.getElementById('loginPassword').value;
-  let valid = true;
-
-  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    document.getElementById('loginEmailError').classList.add('show');
-    document.getElementById('loginEmail').classList.add('error');
-    valid = false;
-  } else {
-    document.getElementById('loginEmailError').classList.remove('show');
-    document.getElementById('loginEmail').classList.remove('error');
-  }
-
-  if (!password || password.length < 6) {
-    document.getElementById('loginPasswordError').classList.add('show');
-    document.getElementById('loginPassword').classList.add('error');
-    valid = false;
-  } else {
-    document.getElementById('loginPasswordError').classList.remove('show');
-    document.getElementById('loginPassword').classList.remove('error');
-  }
-
-  if (!valid) return;
-
-  const btn = document.querySelector('#loginForm .submit-btn');
-  btn.classList.add('loading');
-  btn.textContent = '⏳ Connexion...';
-
-  setTimeout(() => {
-    btn.classList.remove('loading');
-    btn.innerHTML = '🔐 Se connecter';
-    showToast('✅ Connexion réussie ! Redirection...');
-    setTimeout(() => {
-      // Redirect based on role
-    const role = currentRole || selectedRoles[0] || 'buyer';
-    if(role === 'seller') window.location.href = 'korahub-dashboard-vendeur.html';
-    else if(role === 'affiliate') window.location.href = 'korahub-dashboard-affilie.html';
-    else window.location.href = 'korahub-profil-acheteur.html';
-    }, 1500);
-  }, 1500);
-}
-
 async function doRegister() {
   // With compat SDK, Firebase is always ready immediately
   const auth = window.firebaseAuth || firebase.auth();
@@ -1444,7 +1463,7 @@ async function doRegister() {
     const authSwitch = document.querySelector('.auth-switch');
     if (authSwitch) authSwitch.style.display = 'none';
     document.getElementById('registerSuccess').style.display = 'block';
-    showToast('🎉 Compte créé avec succès !');
+    showToast('🎉 Compte créé avec succès !'); setTimeout(() => showBiometricPrompt(), 1500);;
 
   } catch(e) {
     console.error('Register error:', e.code, e.message);
@@ -1458,22 +1477,6 @@ async function doRegister() {
   }
 }
 
-function doForgot() {
-  const email = document.getElementById('forgotEmail').value;
-  if (!email) { showToast('⚠️ Entrez votre email'); return; }
-  showToast('📧 Lien envoyé à ' + email + ' !');
-  setTimeout(showLogin, 2000);
-}
-
-function redirectToDashboard() {
-  const routes = {
-    buyer: 'korahub-profil-acheteur.html',
-    seller: 'korahub-dashboard-vendeur.html',
-    affiliate: 'korahub-dashboard-affilie.html'
-  };
-  setTimeout(() => { window.location.href = routes[currentRole] || 'korahub-profil-acheteur.html'; }, 1000);
-}
-
 function showToast(msg) {
   const t = document.getElementById('toast');
   document.getElementById('toastMsg').textContent = msg;
@@ -1484,7 +1487,7 @@ function showToast(msg) {
 
 // ═══ FIREBASE AUTH FUNCTIONS ═══
 async function doLogin() {
-  const email = document.getElementById('loginEmail').value;
+  const email = document.getElementById('loginEmail').value.trim();
   const password = document.getElementById('loginPassword').value;
   if (!email || !password) { showToast('⚠️ Remplissez email et mot de passe'); return; }
 
@@ -1494,47 +1497,44 @@ async function doLogin() {
   btn.style.pointerEvents = 'none';
 
   try {
-    const fns = window.firebaseFunctions;
-    if (fns && window.firebaseAuth) {
-      const cred = await window.firebaseAuth.signInWithEmailAndPassword(email, password);
-      showToast('✅ Connexion réussie !');
+    const auth = window.firebaseAuth || firebase.auth();
+    const db = window.firebaseDB || firebase.firestore();
 
-      // ── Read role from Firebase Firestore ──
-      try {
-        const userDoc = await fns.getDoc(fns.doc(window.firebaseDB, 'users', cred.user.uid));
-        if (userDoc.exists()) {
-          const userData = userDoc.data();
-          const roles = userData.roles || ['buyer'];
-          // Admin check
-          if (userData.isAdmin || email === 'sonde.business.75@gmail.com') {
-            window.location.href = 'korahub-dashboard-admin.html';
-          } else if (roles.includes('seller')) {
-            window.location.href = 'korahub-dashboard-vendeur.html';
-          } else if (roles.includes('affiliate')) {
-            window.location.href = 'korahub-dashboard-affilie.html';
-          } else {
-            window.location.href = 'korahub-profil-acheteur.html';
-          }
+    const cred = await auth.signInWithEmailAndPassword(email, password);
+    showToast('✅ Connexion réussie !');
+
+    // Lire le rôle depuis Firestore pour rediriger correctement
+    try {
+      const snap = await db.collection('users').doc(cred.user.uid).get();
+      if (snap.exists) {
+        const data = snap.data();
+        const roles = data.roles || ['buyer'];
+        if (data.isAdmin || email === 'sonde.business.75@gmail.com') {
+          window.location.href = 'korahub-dashboard-admin.html';
+        } else if (roles.includes('seller')) {
+          window.location.href = 'korahub-dashboard-vendeur.html';
+        } else if (roles.includes('affiliate')) {
+          window.location.href = 'korahub-dashboard-affilie.html';
         } else {
-          // No user doc → go to buyer profile
           window.location.href = 'korahub-profil-acheteur.html';
         }
-      } catch(dbErr) {
-        console.log('DB read error, using default redirect:', dbErr);
+      } else {
+        // Pas de document Firestore → acheteur par défaut
         window.location.href = 'korahub-profil-acheteur.html';
       }
-    } else {
-      showToast('✅ Connexion réussie !');
-      setTimeout(() => { window.location.href = 'korahub-profil-acheteur.html'; }, 1000);
+    } catch(dbErr) {
+      console.log('Firestore read error:', dbErr);
+      window.location.href = 'korahub-profil-acheteur.html';
     }
+
   } catch(e) {
     btn.textContent = '🔐 Se connecter';
     btn.style.opacity = '1';
     btn.style.pointerEvents = 'auto';
-    let msg = 'Erreur de connexion';
-    if (e.code === 'auth/user-not-found' || e.code === 'auth/invalid-credential') msg = 'Email ou mot de passe incorrect';
-    else if (e.code === 'auth/wrong-password') msg = 'Mot de passe incorrect';
-    else if (e.code === 'auth/too-many-requests') msg = 'Trop de tentatives. Réessayez plus tard';
+    let msg = 'Email ou mot de passe incorrect';
+    if (e.code === 'auth/too-many-requests') msg = 'Trop de tentatives. Réessayez dans quelques minutes';
+    else if (e.code === 'auth/network-request-failed') msg = 'Erreur réseau. Vérifiez votre connexion internet';
+    else if (e.code === 'auth/user-disabled') msg = 'Ce compte a été désactivé';
     showToast('❌ ' + msg);
   }
 }
@@ -1697,6 +1697,203 @@ if (urlParams.get('tab') === 'register') switchTab('register');
       window.location.href = href;
     }, 220);
   });
+})();
+
+</script>
+<script>
+
+// ═══ WEBAUTHN - CONNEXION PAR EMPREINTE DIGITALE ═══
+(function() {
+  const STORAGE_KEY = 'kh_webauthn_credential';
+
+  // Check if WebAuthn is supported
+  function isWebAuthnSupported() {
+    return window.PublicKeyCredential !== undefined &&
+           navigator.credentials !== undefined;
+  }
+
+  // Show fingerprint button if credential exists
+  function checkFingerprintAvailable() {
+    const cred = localStorage.getItem(STORAGE_KEY);
+    const btn = document.getElementById('fingerprintBtn');
+    if (btn && cred && isWebAuthnSupported()) {
+      btn.style.display = '';
+    }
+  }
+
+  // Show prompt after successful registration
+  window.showBiometricPrompt = function() {
+    if (!isWebAuthnSupported()) return;
+    const prompt = document.getElementById('biometricPrompt');
+    if (prompt) prompt.classList.add('open');
+  };
+
+  window.closeBiometricPrompt = function() {
+    const prompt = document.getElementById('biometricPrompt');
+    if (prompt) prompt.classList.remove('open');
+  };
+
+  // Activate fingerprint - register WebAuthn credential
+  window.activateFingerprint = async function() {
+    closeBiometricPrompt();
+    if (!isWebAuthnSupported()) {
+      showToast('⚠️ Empreinte non supportée sur cet appareil');
+      return;
+    }
+
+    try {
+      const user = window.firebaseAuth?.currentUser;
+      const userId = user?.uid || 'korahub_user_' + Date.now();
+      const userName = user?.email || 'Utilisateur KoraHub';
+
+      // Create a random challenge
+      const challenge = new Uint8Array(32);
+      crypto.getRandomValues(challenge);
+
+      const createOptions = {
+        challenge: challenge,
+        rp: {
+          name: 'KoraHub',
+          id: window.location.hostname
+        },
+        user: {
+          id: new TextEncoder().encode(userId),
+          name: userName,
+          displayName: userName
+        },
+        pubKeyCredParams: [
+          { type: 'public-key', alg: -7 },   // ES256
+          { type: 'public-key', alg: -257 }  // RS256
+        ],
+        authenticatorSelection: {
+          authenticatorAttachment: 'platform', // Use built-in authenticator (fingerprint, face, PIN)
+          userVerification: 'required'
+        },
+        timeout: 60000,
+        attestation: 'none'
+      };
+
+      const credential = await navigator.credentials.create({ publicKey: createOptions });
+
+      if (credential) {
+        // Store credential ID for later authentication
+        const credData = {
+          id: credential.id,
+          rawId: Array.from(new Uint8Array(credential.rawId)),
+          type: credential.type,
+          userId: userId,
+          userEmail: userName,
+          createdAt: new Date().toISOString()
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(credData));
+
+        // Show fingerprint button
+        const btn = document.getElementById('fingerprintBtn');
+        if (btn) btn.style.display = '';
+
+        showToast('👆 Empreinte activée ! Utilisez-la à votre prochaine connexion.');
+      }
+    } catch(e) {
+      if (e.name === 'NotAllowedError') {
+        showToast('⚠️ Activation annulée');
+      } else if (e.name === 'NotSupportedError') {
+        showToast('⚠️ Empreinte non disponible sur cet appareil');
+      } else {
+        console.error('WebAuthn error:', e);
+        showToast("⚠️ Impossible d'activer l'empreinte");
+      }
+    }
+  };
+
+  // Sign in with fingerprint
+  window.signInWithFingerprint = async function() {
+    if (!isWebAuthnSupported()) {
+      showToast('⚠️ Empreinte non supportée sur cet appareil');
+      return;
+    }
+
+    const storedCred = localStorage.getItem(STORAGE_KEY);
+    if (!storedCred) {
+      showToast("⚠️ Aucune empreinte enregistrée. Connectez-vous d'abord avec email/mdp.");
+      return;
+    }
+
+    try {
+      const credData = JSON.parse(storedCred);
+      const challenge = new Uint8Array(32);
+      crypto.getRandomValues(challenge);
+
+      const getOptions = {
+        challenge: challenge,
+        allowCredentials: [{
+          id: new Uint8Array(credData.rawId),
+          type: 'public-key',
+          transports: ['internal']
+        }],
+        userVerification: 'required',
+        timeout: 60000
+      };
+
+      const assertion = await navigator.credentials.get({ publicKey: getOptions });
+
+      if (assertion) {
+        // Fingerprint verified - sign in with Firebase using stored email
+        showToast('✅ Empreinte reconnue ! Connexion en cours...');
+
+        // Re-authenticate user with stored email
+        const auth = window.firebaseAuth || firebase.auth();
+        const db = window.firebaseDB || firebase.firestore();
+
+        // Check current auth state
+        const currentUser = auth.currentUser;
+        if (currentUser) {
+          // Already signed in, just redirect
+          try {
+            const snap = await db.collection('users').doc(currentUser.uid).get();
+            const data = snap.exists ? snap.data() : {};
+            const roles = data.roles || ['buyer'];
+            if (data.isAdmin || currentUser.email === 'sonde.business.75@gmail.com') {
+              window.location.href = 'korahub-dashboard-admin.html';
+            } else if (roles.includes('seller')) {
+              window.location.href = 'korahub-dashboard-vendeur.html';
+            } else if (roles.includes('affiliate')) {
+              window.location.href = 'korahub-dashboard-affilie.html';
+            } else {
+              window.location.href = 'korahub-profil-acheteur.html';
+            }
+          } catch(e) {
+            window.location.href = 'korahub-profil-acheteur.html';
+          }
+        } else {
+          // Not signed in - pre-fill email and ask for password
+          const emailField = document.getElementById('loginEmail');
+          if (emailField && credData.userEmail) {
+            emailField.value = credData.userEmail;
+          }
+          showToast('👆 Empreinte reconnue ! Entrez votre mot de passe pour finaliser.');
+          document.getElementById('loginPassword')?.focus();
+        }
+      }
+    } catch(e) {
+      if (e.name === 'NotAllowedError') {
+        showToast('⚠️ Vérification annulée ou échouée');
+      } else {
+        console.error('WebAuthn auth error:', e);
+        showToast('❌ Échec de la vérification par empreinte');
+      }
+    }
+  };
+
+  // Remove fingerprint
+  window.removeFingerprint = function() {
+    localStorage.removeItem(STORAGE_KEY);
+    const btn = document.getElementById('fingerprintBtn');
+    if (btn) btn.style.display = 'none';
+    showToast('🗑️ Empreinte supprimée');
+  };
+
+  // Init on page load
+  document.addEventListener('DOMContentLoaded', checkFingerprintAvailable);
 })();
 
 </script>

@@ -551,16 +551,53 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
     onSnapshot: (q, cb) => q.onSnapshot(cb)
   };
 
-  auth.onAuthStateChanged((user) => {
+  auth.onAuthStateChanged(async (user) => {
     window.currentUser = user;
     if (user) {
       console.log('✅ Connecté:', user.email);
       document.dispatchEvent(new CustomEvent('userLoggedIn', { detail: user }));
+
+      // Load affiliate profile data into settings form
+      try {
+        const snap = await db.collection('users').doc(user.uid).get();
+        const data = snap.exists ? snap.data() : {};
+        const fullName = ((data.firstName || '') + ' ' + (data.lastName || '')).trim() || user.displayName || '';
+        const nameEl = document.getElementById('affFullName');
+        const emailEl = document.getElementById('affEmail');
+        const payEl = document.getElementById('affPaymentNum');
+        const idEl = document.getElementById('affId');
+        if (nameEl) nameEl.value = fullName;
+        if (emailEl) emailEl.value = user.email || '';
+        if (payEl && data.paymentMethods?.[0]?.number) payEl.value = data.paymentMethods[0].number;
+        if (idEl) idEl.value = (user.email || '').split('@')[0];
+      } catch(e) { console.log('Affiliate profile load error:', e); }
+
     } else {
       console.log('❌ Non connecté');
       document.dispatchEvent(new CustomEvent('userLoggedOut'));
     }
   });
+
+  // Save affiliate profile changes to Firestore
+  window.saveAffiliateProfile = async function() {
+    const user = auth.currentUser;
+    if (!user) { showToast('❌ Non connecté'); return; }
+
+    const fullName = document.getElementById('affFullName')?.value.trim() || '';
+    if (!fullName) { showToast('⚠️ Le nom complet est obligatoire'); return; }
+
+    const parts = fullName.split(' ');
+    const firstName = parts[0] || '';
+    const lastName = parts.slice(1).join(' ') || '';
+
+    try {
+      await db.collection('users').doc(user.uid).set({ firstName, lastName }, { merge: true });
+      showToast('✅ Profil mis à jour !');
+    } catch(e) {
+      console.error('Save affiliate profile error:', e);
+      showToast('❌ Erreur lors de la sauvegarde');
+    }
+  };
 
   console.log('🔥 Firebase KoraHub initialisé !');
 
@@ -1491,21 +1528,21 @@ a[href$=".html"] {
         <div class="card-body">
           <div class="form-group">
             <label class="form-label">Nom complet</label>
-            <input type="text" class="form-input" value="Youssouf Compaoré">
+            <input type="text" class="form-input" id="affFullName" value="">
           </div>
           <div class="form-group">
             <label class="form-label">Email</label>
-            <input type="email" class="form-input" value="youssouf@gmail.com">
+            <input type="email" class="form-input" id="affEmail" value="" readonly>
           </div>
           <div class="form-group">
             <label class="form-label">Numéro Mobile Money principal</label>
-            <input type="text" class="form-input" value="selon vendeur">
+            <input type="text" class="form-input" id="affPaymentNum" value="">
           </div>
           <div class="form-group">
             <label class="form-label">Mon identifiant affilié</label>
-            <input type="text" class="form-input" value="youssouf" readonly style="opacity:.7">
+            <input type="text" class="form-input" id="affId" value="" readonly style="opacity:.7">
           </div>
-          <button class="btn btn-violet" style="width:100%;justify-content:center" onclick="showToast('✅ Profil mis à jour !')">Sauvegarder</button>
+          <button class="btn btn-violet" style="width:100%;justify-content:center" onclick="saveAffiliateProfile()">Sauvegarder</button>
         </div>
       </div>
     </div>

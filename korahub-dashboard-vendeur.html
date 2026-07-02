@@ -884,16 +884,58 @@ body { font-family: 'DM Sans', sans-serif; background: var(--off-white); color: 
   };
 
   // Auth state listener
-  auth.onAuthStateChanged((user) => {
+  auth.onAuthStateChanged(async (user) => {
     window.currentUser = user;
     if (user) {
       console.log('✅ Connecté:', user.email);
       document.dispatchEvent(new CustomEvent('userLoggedIn', { detail: user }));
+
+      // Load vendor profile data into settings form
+      try {
+        const snap = await db.collection('users').doc(user.uid).get();
+        const data = snap.exists ? snap.data() : {};
+        const fullName = ((data.firstName || '') + ' ' + (data.lastName || '')).trim() || user.displayName || '';
+        const nameEl = document.getElementById('vendorFullName');
+        const emailEl = document.getElementById('vendorEmail');
+        const waEl = document.getElementById('vendorWhatsapp');
+        const payEl = document.getElementById('vendorMainPaymentNum');
+        if (nameEl) nameEl.value = fullName;
+        if (emailEl) emailEl.value = user.email || '';
+        if (waEl && data.whatsapp) waEl.value = data.whatsapp;
+        if (payEl && data.paymentMethods?.[0]?.number) payEl.value = data.paymentMethods[0].number;
+      } catch(e) { console.log('Vendor profile load error:', e); }
+
     } else {
       console.log('❌ Non connecté');
       document.dispatchEvent(new CustomEvent('userLoggedOut'));
     }
   });
+
+  // Save vendor profile changes to Firestore
+  window.saveVendorProfile = async function() {
+    const user = auth.currentUser;
+    if (!user) { showToast('❌ Non connecté'); return; }
+
+    const fullName = document.getElementById('vendorFullName')?.value.trim() || '';
+    const whatsapp = document.getElementById('vendorWhatsapp')?.value.trim() || '';
+    const paymentNum = document.getElementById('vendorMainPaymentNum')?.value.trim() || '';
+
+    if (!fullName) { showToast('⚠️ Le nom complet est obligatoire'); return; }
+
+    const parts = fullName.split(' ');
+    const firstName = parts[0] || '';
+    const lastName = parts.slice(1).join(' ') || '';
+
+    try {
+      await db.collection('users').doc(user.uid).set({
+        firstName, lastName, whatsapp
+      }, { merge: true });
+      showToast('✅ Profil mis à jour !');
+    } catch(e) {
+      console.error('Save vendor profile error:', e);
+      showToast('❌ Erreur lors de la sauvegarde');
+    }
+  };
 
   console.log('🔥 Firebase KoraHub initialisé !');
 
@@ -2100,21 +2142,21 @@ a[href$=".html"] {
           <div class="card-body">
             <div class="form-group">
               <label class="form-label">Nom complet</label>
-              <input type="text" class="form-input" value="Moussa Traoré">
+              <input type="text" class="form-input" id="vendorFullName" value="">
             </div>
             <div class="form-group">
               <label class="form-label">Email</label>
-              <input type="email" class="form-input" value="moussa@gmail.com">
+              <input type="email" class="form-input" id="vendorEmail" value="" readonly>
             </div>
             <div class="form-group">
               <label class="form-label">Numéro WhatsApp</label>
-              <input type="text" class="form-input" placeholder="+226 XX XX XX XX">
+              <input type="text" class="form-input" id="vendorWhatsapp" placeholder="+226 XX XX XX XX">
             </div>
             <div class="form-group">
               <label class="form-label">Numéro de paiement principal</label>
-              <input type="text" class="form-input" placeholder="Ex: selon vendeur">
+              <input type="text" class="form-input" id="vendorMainPaymentNum" placeholder="Ex: votre numéro Mobile Money">
             </div>
-            <button class="btn btn-violet" style="width:100%;justify-content:center" onclick="showToast('✅ Profil mis à jour !')">Sauvegarder</button>
+            <button class="btn btn-violet" style="width:100%;justify-content:center" onclick="saveVendorProfile()">Sauvegarder</button>
           </div>
         </div>
 
