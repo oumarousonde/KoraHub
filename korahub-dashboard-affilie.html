@@ -601,6 +601,99 @@ body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--te
 
   console.log('🔥 Firebase KoraHub initialisé !');
 
+// ═══ AFFILIATE PRODUCTS CATALOG ═══
+async function loadAffiliProducts() {
+  const grid = document.getElementById('affiliProductsGrid');
+  if (!grid) return;
+
+  const auth = window.firebaseAuth || firebase.auth();
+  const db = window.firebaseDB || firebase.firestore();
+  const user = auth.currentUser;
+  if (!user) return;
+
+  try {
+    // Load all products with affiliation enabled
+    const snap = await db.collection('products')
+      .where('affiliationEnabled', '==', true)
+      .get();
+
+    if (snap.empty) {
+      grid.innerHTML = `
+        <div style="grid-column:1/-1;text-align:center;padding:48px 20px;color:var(--text-muted)">
+          <div style="font-size:40px;margin-bottom:12px">🔗</div>
+          <div style="font-size:15px;font-weight:700;margin-bottom:6px">Aucun produit disponible</div>
+          <div style="font-size:13px">Les vendeurs activent l'affiliation sur leurs produits — revenez bientôt !</div>
+        </div>`;
+      return;
+    }
+
+    const colors = [
+      'linear-gradient(135deg,#667eea,#764ba2)',
+      'linear-gradient(135deg,#f093fb,#f5576c)',
+      'linear-gradient(135deg,#43e97b,#38f9d7)',
+      'linear-gradient(135deg,#F7971E,#FFD200)',
+      'linear-gradient(135deg,#4facfe,#00f2fe)',
+      'linear-gradient(135deg,#fa709a,#fee140)',
+    ];
+
+    grid.innerHTML = snap.docs.map((doc, i) => {
+      const p = { id: doc.id, ...doc.data() };
+      const price = p.deliveryOptions?.[0]?.price || p.price || 0;
+      const rate = p.affiliateRate || 10;
+      const commission = Math.round(price * rate / 100);
+      const color = colors[i % colors.length];
+      const refLink = `${window.location.origin}/korahub-produit-panier.html?product=${p.id}&ref=${user.uid}`;
+
+      return `
+        <div class="product-promo-card" data-name="${(p.title || '').toLowerCase()}">
+          <div class="product-cover" style="background:${color}">${p.emoji || '📦'}</div>
+          <div class="product-body">
+            <div class="product-cat">${p.category || '-'}</div>
+            <div class="product-name">${p.title || 'Produit'}</div>
+            <div class="product-price">Prix : ${price.toLocaleString()} FCFA</div>
+            <div class="product-commission" style="color:var(--success);font-weight:800">
+              +${commission.toLocaleString()} F par vente
+              <span style="background:rgba(0,196,140,0.12);color:var(--success);font-size:10px;font-weight:800;padding:2px 7px;border-radius:100px;margin-left:4px">${rate}%</span>
+            </div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:2px">Taux fixé par le vendeur</div>
+            <button class="btn btn-violet" style="width:100%;justify-content:center;margin-top:10px;font-size:12px"
+              onclick="copyAffiliLink('${refLink}', '${p.title || ''}')">
+              🔗 Copier mon lien affilié
+            </button>
+          </div>
+        </div>`;
+    }).join('');
+
+  } catch(e) {
+    console.error('loadAffiliProducts error:', e);
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:24px;color:var(--text-muted)">Erreur de chargement</div>';
+  }
+}
+
+function copyAffiliLink(link, title) {
+  navigator.clipboard?.writeText(link).then(() => {
+    showToast('🔗 Lien copié pour "' + title + '" !');
+  }).catch(() => {
+    showToast('🔗 Lien : ' + link);
+  });
+}
+
+function filterAffiliProducts(query) {
+  const q = query.toLowerCase();
+  document.querySelectorAll('#affiliProductsGrid .product-promo-card').forEach(card => {
+    const name = card.dataset.name || '';
+    card.style.display = name.includes(q) ? '' : 'none';
+  });
+}
+
+// Load on auth ready
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => {
+    if (firebase.auth().currentUser) loadAffiliProducts();
+    else firebase.auth().onAuthStateChanged(u => { if (u) loadAffiliProducts(); });
+  }, 1000);
+});
+
 // ═══ FIREBASE FIRESTORE FUNCTIONS ═══
 
 // ── PRODUCTS ──
@@ -719,7 +812,7 @@ function sendWhatsAppNotification(order) {
     "⏳ En attente de votre confirmation."
   );
   // Auto open WhatsApp
-  window.open("https://wa.me/226selon vendeur?text=" + msg, '_blank');
+  window.open("https://wa.me/22675318351?text=" + msg, '_blank');
 }
 
 // ── USER PROFILE ──
@@ -1282,63 +1375,18 @@ a[href$=".html"] {
 
       <div style="background:rgba(46,213,115,0.06);border:1.5px solid rgba(46,213,115,0.2);border-radius:12px;padding:14px 18px;margin-bottom:18px;display:flex;align-items:center;gap:12px">
         <span style="font-size:22px">💡</span>
-        <span style="font-size:13px;color:var(--text-dark)">Seuls les produits avec <strong>affiliation activée</strong> par le vendeur apparaissent ici. Commission fixe : <strong style="color:var(--success)">10% par vente</strong></span>
+        <span style="font-size:13px;color:var(--text-dark)">Seuls les produits avec <strong>affiliation activée</strong> par le vendeur apparaissent ici. Le <strong>taux est fixé par chaque vendeur</strong> — choisissez les plus rentables !</span>
       </div>
 
-      <div class="products-grid">
-        <div class="product-promo-card">
-          <div class="product-cover" style="background:linear-gradient(135deg,#667eea,#764ba2)">📚</div>
-          <div class="product-body">
-            <div class="product-cat">Ebook</div>
-            <div class="product-name">Gagner avec ChatGPT</div>
-            <div class="product-price">Prix : 2 500 FCFA</div>
-            <div class="product-commission">+250 F par vente (10%)</div>
-            <button class="btn btn-violet" style="width:100%;justify-content:center;margin-top:10px;font-size:12px" onclick="showToast('🔗 Lien copié : korahub.bf/ref/youssouf/chatgpt')">🔗 Copier mon lien</button>
-          </div>
-        </div>
+      <!-- Search -->
+      <div style="margin-bottom:16px">
+        <input type="text" class="form-input" placeholder="🔍 Rechercher un produit..." id="affiliSearchInput" oninput="filterAffiliProducts(this.value)" style="max-width:300px">
+      </div>
 
-        <div class="product-promo-card">
-          <div class="product-cover" style="background:linear-gradient(135deg,#f093fb,#f5576c)">🎓</div>
-          <div class="product-body">
-            <div class="product-cat">Formation</div>
-            <div class="product-name">Marketing Digital pour Débutants</div>
-            <div class="product-price">Prix : 8 000 FCFA</div>
-            <div class="product-commission">+800 F par vente (10%)</div>
-            <button class="btn btn-violet" style="width:100%;justify-content:center;margin-top:10px;font-size:12px" onclick="showToast('🔗 Lien copié : korahub.bf/ref/youssouf/marketing')">🔗 Copier mon lien</button>
-          </div>
-        </div>
-
-        <div class="product-promo-card">
-          <div class="product-cover" style="background:linear-gradient(135deg,#4facfe,#00f2fe)">🎯</div>
-          <div class="product-body">
-            <div class="product-cat">Coaching</div>
-            <div class="product-name">Coaching Business : De 0 à 100K</div>
-            <div class="product-price">Prix : 25 000 FCFA</div>
-            <div class="product-commission">+2 500 F par vente (10%)</div>
-            <button class="btn btn-violet" style="width:100%;justify-content:center;margin-top:10px;font-size:12px" onclick="showToast('🔗 Lien copié : korahub.bf/ref/youssouf/coaching')">🔗 Copier mon lien</button>
-          </div>
-        </div>
-
-        <div class="product-promo-card">
-          <div class="product-cover" style="background:linear-gradient(135deg,#43e97b,#38f9d7)">🧠</div>
-          <div class="product-body">
-            <div class="product-cat">Bien-être</div>
-            <div class="product-name">Gérer son stress et s'épanouir</div>
-            <div class="product-price">Prix : 5 000 FCFA</div>
-            <div class="product-commission">+500 F par vente (10%)</div>
-            <button class="btn btn-violet" style="width:100%;justify-content:center;margin-top:10px;font-size:12px" onclick="showToast('🔗 Lien copié : korahub.bf/ref/youssouf/stress')">🔗 Copier mon lien</button>
-          </div>
-        </div>
-
-        <div class="product-promo-card">
-          <div class="product-cover" style="background:linear-gradient(135deg,#fa709a,#fee140)">🎥</div>
-          <div class="product-body">
-            <div class="product-cat">Cours Vidéo</div>
-            <div class="product-name">Apprendre à coder en 30 jours</div>
-            <div class="product-price">Prix : 12 000 FCFA</div>
-            <div class="product-commission">+1 200 F par vente (10%)</div>
-            <button class="btn btn-violet" style="width:100%;justify-content:center;margin-top:10px;font-size:12px" onclick="showToast('🔗 Lien copié : korahub.bf/ref/youssouf/coder')">🔗 Copier mon lien</button>
-          </div>
+      <div id="affiliProductsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px">
+        <div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-muted)">
+          <div style="font-size:32px;margin-bottom:8px">⏳</div>
+          <div>Chargement des produits...</div>
         </div>
       </div>
     </div>

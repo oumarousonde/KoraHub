@@ -1025,25 +1025,7 @@ async function loadMyOrders() {
 }
 
 // ── VENDORS ──
-async function loadMyProducts() {
-  try {
-    const db = window.firebaseDB;
-    const auth = window.firebaseAuth;
-    const { collection, query, where, getDocs } = window.firebaseFunctions;
-    if (!auth.currentUser) return [];
-    const q = query(
-      collection(db, 'products'),
-      where('sellerId', '==', auth.currentUser.uid)
-    );
-    const snapshot = await getDocs(q);
-    const products = [];
-    snapshot.forEach(doc => products.push({ id: doc.id, ...doc.data() }));
-    return products;
-  } catch(e) {
-    console.error(e);
-    return [];
-  }
-}
+
 
 // ── WHATSAPP NOTIFICATION ──
 function sendWhatsAppNotification(order) {
@@ -1057,7 +1039,7 @@ function sendWhatsAppNotification(order) {
     "⏳ En attente de votre confirmation."
   );
   // Auto open WhatsApp
-  window.open("https://wa.me/226selon vendeur?text=" + msg, '_blank');
+  window.open("https://wa.me/22675318351?text=" + msg, '_blank');
 }
 
 // ── USER PROFILE ──
@@ -1475,6 +1457,65 @@ a[href$=".html"] {
 }
 </style>
 
+
+<style id="kh-affiliation">
+.prod-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 16px; border-bottom: 1px solid var(--border);
+  transition: background .15s;
+}
+.prod-item:hover { background: var(--off-white, #F7F5FF); }
+.prod-item:last-child { border-bottom: none; }
+.prod-thumb {
+  width: 44px; height: 44px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+}
+.prod-info { flex: 1; min-width: 0; }
+.prod-name { font-size: 13px; font-weight: 700; color: var(--text-dark, #120A2E); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.prod-meta { font-size: 11px; color: var(--text-muted, #6B5B95); }
+.prod-price { font-size: 14px; font-weight: 900; color: var(--violet, #1E0F4E); white-space: nowrap; }
+.affil-toggle-wrap {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  min-width: 90px;
+}
+.affil-toggle-label { font-size: 10px; font-weight: 700; color: var(--text-muted, #6B5B95); text-transform: uppercase; letter-spacing: .04em; }
+.affil-rate-wrap {
+  display: flex; align-items: center; gap: 4px;
+  margin-top: 4px;
+}
+.affil-rate-input {
+  width: 52px; padding: 4px 6px; border: 1.5px solid var(--border, rgba(94,53,177,0.12));
+  border-radius: 8px; font-family: Manrope, sans-serif; font-size: 12px;
+  font-weight: 700; text-align: center; outline: none;
+  transition: border-color .2s;
+}
+.affil-rate-input:focus { border-color: var(--violet-light, #5E35B1); }
+.affil-rate-pct { font-size: 12px; font-weight: 700; color: var(--text-muted, #6B5B95); }
+.affil-save-btn {
+  padding: 3px 8px; border-radius: 6px; border: none;
+  background: var(--violet-light, #5E35B1); color: white;
+  font-size: 10px; font-weight: 700; cursor: pointer;
+  transition: all .2s;
+}
+.affil-save-btn:hover { background: var(--violet, #1E0F4E); }
+.prod-actions-wrap { display: flex; gap: 6px; align-items: center; flex-shrink: 0; }
+/* Toggle switch */
+.kh-toggle { position: relative; width: 40px; height: 22px; cursor: pointer; }
+.kh-toggle input { opacity: 0; width: 0; height: 0; }
+.kh-toggle-slider {
+  position: absolute; inset: 0; background: #ddd;
+  border-radius: 100px; transition: all .3s;
+}
+.kh-toggle-slider::before {
+  content: ''; position: absolute; width: 16px; height: 16px;
+  left: 3px; top: 3px; background: white; border-radius: 50%;
+  transition: all .3s;
+}
+.kh-toggle input:checked + .kh-toggle-slider { background: var(--success, #00C48C); }
+.kh-toggle input:checked + .kh-toggle-slider::before { transform: translateX(18px); }
+</style>
+
 </head>
 <body>
 
@@ -1712,75 +1753,28 @@ a[href$=".html"] {
       <div class="flex-between" style="margin-bottom:20px">
         <div>
           <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800">Mes Produits</div>
-          <div class="text-muted">Gérez vos produits digitaux</div>
+          <div class="text-muted">Gérez vos produits et leur affiliation</div>
         </div>
         <button class="btn btn-gold" onclick="openModal('addProductModal')">+ Nouveau produit</button>
       </div>
 
       <div class="card">
         <div class="card-header">
-          <span class="card-title">📦 6 produits actifs</span>
+          <span class="card-title">📦 Mes produits</span>
           <div style="display:flex;gap:8px">
-            <input type="text" class="form-input" placeholder="Rechercher..." style="width:180px;padding:7px 12px">
+            <input type="text" class="form-input" placeholder="Rechercher..." style="width:180px;padding:7px 12px" oninput="filterMyProducts(this.value)">
           </div>
         </div>
         <div class="card-body" style="padding:0">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Produit</th>
-                <th>Catégorie</th>
-                <th>Prix</th>
-                <th>Ventes</th>
-                <th>Statut</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>
-                  <div style="display:flex;align-items:center;gap:10px">
-                    <div style="width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;font-size:16px">📚</div>
-                    <div>
-                      <div style="font-weight:600;font-size:13px">Gagner avec ChatGPT</div>
-                      <div style="font-size:11px;color:var(--text-muted)">🇫🇷 Français</div>
-                    </div>
-                  </div>
-                </td>
-                <td>Ebook</td>
-                <td><strong>2 500 F</strong> <span style="font-size:11px;color:var(--danger);text-decoration:line-through">3 500 F</span></td>
-                <td><strong>14</strong></td>
-                <td><span class="status-badge confirmed">● Actif</span></td>
-                <td>
-                  <div class="product-actions">
-                    <button class="action-btn" onclick="showToast('✏️ Modification du produit')">✏️</button>
-                    <button class="action-btn" onclick="showPage('ai')">🤖</button>
-                    <button class="action-btn danger" onclick="showToast('🗑️ Produit supprimé')">🗑️</button>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <div style="display:flex;align-items:center;gap:10px">
-                    <div style="width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,#f093fb,#f5576c);display:flex;align-items:center;justify-content:center;font-size:16px">🎓</div>
-                    <div>
-                      <div style="font-weight:600;font-size:13px">Marketing Digital</div>
-                      <div style="font-size:11px;color:var(--text-muted)">🇫🇷 Français</div>
-                    </div>
-                  </div>
-                </td>
-                <td>Formation</td>
-                <td><strong>8 000 F</strong></td>
-                <td><strong>6</strong></td>
-                <td><span class="status-badge confirmed">● Actif</span></td>
-                <td>
-                  <div class="product-actions">
-                    <button class="action-btn" onclick="showToast('✏️ Modification du produit')">✏️</button>
-                    <button class="action-btn" onclick="showPage('ai')">🤖</button>
-                    <button class="action-btn danger" onclick="showToast('🗑️ Produit supprimé')">🗑️</button>
-                  </div>
-                </td>
-              </tr>
+          <div id="myProductsList">
+            <div style="text-align:center;padding:40px;color:var(--text-muted)">
+              <div style="font-size:32px;margin-bottom:8px">⏳</div>
+              <div>Chargement de vos produits...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
               <tr>
                 <td>
                   <div style="display:flex;align-items:center;gap:10px">
@@ -1798,7 +1792,7 @@ a[href$=".html"] {
                 <td>
                   <div class="product-actions">
                     <button class="action-btn" onclick="showToast('✏️ Modification du produit')">✏️</button>
-                    <button class="action-btn" onclick="showPage('ai')">🤖</button>
+                    <button class="action-btn" onclick="showToast('🔗 Fonctionnalité non disponible')">🤖</button>
                     <button class="action-btn danger" onclick="showToast('🗑️ Produit supprimé')">🗑️</button>
                   </div>
                 </td>
@@ -2496,7 +2490,7 @@ function showPage(page) {
     products: ['Mes Produits', 'Gérer les produits'],
     orders: ['Commandes', 'Historique des commandes'],
     revenue: ['Revenus', 'Chiffre d\'affaires'],
-    ai: ['Outils marketing', 'Génération de vidéos'],
+    ai: ['Programme affilié', 'Notifications ventes'],
     promo: ['Codes Promo', 'Réductions et offres'],
     affiliation: ['Affiliation', 'Programme partenaires'],
     commission: ['Commissions', 'Paiements KoraHub'],
@@ -2901,6 +2895,190 @@ function uploadScreenshot(zoneId) {
     }, 220);
   });
 })();
+
+</script>
+<script>
+
+// ═══ PRODUCTS LIST WITH AFFILIATION ═══
+async function loadMyProducts() {
+  const container = document.getElementById('myProductsList');
+  if (!container) return;
+
+  const auth = window.firebaseAuth;
+  const db = window.firebaseDB;
+  if (!auth || !db) return;
+
+  const user = auth.currentUser;
+  if (!user) return;
+
+  try {
+    const snap = await db.collection('products')
+      .where('sellerId', '==', user.uid)
+      .get();
+
+    if (snap.empty) {
+      container.innerHTML = `
+        <div style="text-align:center;padding:48px 20px;color:var(--text-muted)">
+          <div style="font-size:40px;margin-bottom:12px">📦</div>
+          <div style="font-size:15px;font-weight:700;margin-bottom:6px">Aucun produit publié</div>
+          <div style="font-size:13px;margin-bottom:16px">Commencez à vendre en ajoutant votre premier produit</div>
+          <button class="btn btn-gold" onclick="openModal('addProductModal')">+ Ajouter un produit</button>
+        </div>`;
+      return;
+    }
+
+    const colors = [
+      'linear-gradient(135deg,#667eea,#764ba2)',
+      'linear-gradient(135deg,#f093fb,#f5576c)',
+      'linear-gradient(135deg,#43e97b,#38f9d7)',
+      'linear-gradient(135deg,#F7971E,#FFD200)',
+      'linear-gradient(135deg,#4facfe,#00f2fe)',
+    ];
+
+    container.innerHTML = snap.docs.map((doc, i) => {
+      const p = { id: doc.id, ...doc.data() };
+      const price = p.deliveryOptions?.[0]?.price || p.price || 0;
+      const affiliEnabled = p.affiliationEnabled || false;
+      const affiliRate = p.affiliateRate || 10;
+      const color = colors[i % colors.length];
+
+      return `
+        <div class="prod-item" id="prod-${p.id}">
+          <div class="prod-thumb" style="background:${color}">${p.emoji || '📦'}</div>
+          <div class="prod-info">
+            <div class="prod-name">${p.title || 'Produit sans titre'}</div>
+            <div class="prod-meta">${p.category || '-'} · ${p.sales || 0} ventes</div>
+          </div>
+          <div class="prod-price">${price.toLocaleString()} F</div>
+
+          <!-- AFFILIATION TOGGLE -->
+          <div class="affil-toggle-wrap">
+            <div class="affil-toggle-label">Affiliation</div>
+            <label class="kh-toggle">
+              <input type="checkbox" ${affiliEnabled ? 'checked' : ''}
+                onchange="toggleAffiliation('${p.id}', this.checked)">
+              <div class="kh-toggle-slider"></div>
+            </label>
+            <div class="affil-rate-wrap" id="affil-rate-${p.id}" style="${affiliEnabled ? '' : 'display:none'}">
+              <input type="number" class="affil-rate-input" id="rate-${p.id}"
+                value="${affiliRate}" min="1" max="99"
+                onchange="updateAffiliateRate('${p.id}', this.value)">
+              <span class="affil-rate-pct">%</span>
+            </div>
+          </div>
+
+          <!-- ACTIONS -->
+          <div class="prod-actions-wrap">
+            <button class="action-btn" onclick="editProduct('${p.id}')" title="Modifier">✏️</button>
+            <button class="action-btn danger" onclick="deleteProduct('${p.id}')" title="Supprimer">🗑️</button>
+          </div>
+        </div>`;
+    }).join('');
+
+  } catch(e) {
+    console.error('loadMyProducts error:', e);
+    container.innerHTML = '<div style="text-align:center;padding:24px;color:var(--text-muted)">Erreur de chargement</div>';
+  }
+}
+
+// Toggle affiliation ON/OFF for a product
+async function toggleAffiliation(productId, enabled) {
+  const db = window.firebaseDB;
+  if (!db) return;
+
+  try {
+    await db.collection('products').doc(productId).update({
+      affiliationEnabled: enabled
+    });
+
+    // Show/hide rate input
+    const rateWrap = document.getElementById('affil-rate-' + productId);
+    if (rateWrap) rateWrap.style.display = enabled ? 'flex' : 'none';
+
+    showToast(enabled
+      ? '✅ Affiliation activée pour ce produit'
+      : '🔴 Affiliation désactivée pour ce produit'
+    );
+  } catch(e) {
+    console.error('toggleAffiliation error:', e);
+    showToast('❌ Erreur. Réessayez.');
+  }
+}
+
+// Update affiliate rate for a product
+async function updateAffiliateRate(productId, rate) {
+  const db = window.firebaseDB;
+  if (!db) return;
+
+  const numRate = parseFloat(rate);
+  if (isNaN(numRate) || numRate < 1 || numRate > 99) {
+    showToast('⚠️ Entrez un pourcentage entre 1 et 99');
+    return;
+  }
+
+  try {
+    await db.collection('products').doc(productId).update({
+      affiliateRate: numRate
+    });
+    showToast('✅ Taux affilié mis à jour : ' + numRate + '%');
+  } catch(e) {
+    console.error('updateAffiliateRate error:', e);
+    showToast('❌ Erreur. Réessayez.');
+  }
+}
+
+// Filter products by name
+function filterMyProducts(query) {
+  const q = query.toLowerCase();
+  document.querySelectorAll('.prod-item').forEach(item => {
+    const name = item.querySelector('.prod-name')?.textContent.toLowerCase() || '';
+    item.style.display = name.includes(q) ? '' : 'none';
+  });
+}
+
+// Edit product
+async function editProduct(productId) {
+  const db = window.firebaseDB;
+  if (!db) return;
+  try {
+    const snap = await db.collection('products').doc(productId).get();
+    if (!snap.exists) return;
+    const p = snap.data();
+    // Pre-fill the add product modal
+    document.getElementById('prodTitle') && (document.getElementById('prodTitle').value = p.title || '');
+    document.getElementById('prodDesc') && (document.getElementById('prodDesc').value = p.description || '');
+    document.getElementById('prodCategory') && (document.getElementById('prodCategory').value = p.category || '');
+    document.getElementById('editProductId') && (document.getElementById('editProductId').value = productId);
+    openModal('addProductModal');
+  } catch(e) { showToast('❌ Erreur chargement produit'); }
+}
+
+// Delete product
+async function deleteProduct(productId) {
+  if (!confirm('Supprimer ce produit définitivement ?')) return;
+  const db = window.firebaseDB;
+  if (!db) return;
+  try {
+    await db.collection('products').doc(productId).delete();
+    showToast('🗑️ Produit supprimé');
+    loadMyProducts();
+  } catch(e) { showToast('❌ Erreur suppression'); }
+}
+
+// Load products when page-products is shown
+document.addEventListener('DOMContentLoaded', () => {
+  // Auto-load if on products page
+  setTimeout(() => {
+    if (window.firebaseAuth?.currentUser) loadMyProducts();
+  }, 1500);
+});
+
+// Also load when navigating to products page
+const _origShowPage = window.showPage;
+window.showPage = function(page, el) {
+  if (_origShowPage) _origShowPage(page, el);
+  if (page === 'products') setTimeout(loadMyProducts, 100);
+};
 
 </script>
 </body>

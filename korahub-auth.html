@@ -978,17 +978,10 @@ a[href$=".html"] {
           </div>
         </div>
         <div class="feature-item">
-          <div class="feature-icon">🤖</div>
+          <div class="feature-icon">🔗</div>
           <div class="feature-text">
-            <strong>Outils marketing pour vos pubs</strong>
-            <span>Vidéos marketing générées automatiquement</span>
-          </div>
-        </div>
-        <div class="feature-item">
-          <div class="feature-icon">💰</div>
-          <div class="feature-text">
-            <strong>Gagnez en faisant la pub</strong>
-            <span>10% de commission sur chaque vente affiliée</span>
+            <strong>Programme d'affiliation</strong>
+            <span>Partagez des produits et gagnez une commission sur chaque vente</span>
           </div>
         </div>
       </div>
@@ -1413,6 +1406,10 @@ async function doRegister() {
   const auth = window.firebaseAuth || firebase.auth();
   const db = window.firebaseDB || firebase.firestore();
 
+  console.log('🚀 doRegister appelé');
+  console.log('auth disponible:', !!auth);
+  console.log('db disponible:', !!db);
+
   if (!auth) {
     showToast('❌ Erreur serveur. Rechargez la page.');
     return;
@@ -1426,16 +1423,28 @@ async function doRegister() {
   const terms = document.getElementById('termsCheck')?.checked;
   const country = document.getElementById('regCountry')?.value || 'Afrique';
 
+  console.log('Champs:', { firstName, lastName, email, passwordLen: password.length, confirm: !!confirm, terms, country });
+
   if (!firstName || !lastName || !email || !password) {
+    console.log('❌ Champs vides');
     showToast('⚠️ Remplissez tous les champs obligatoires'); return;
   }
   if (password !== confirm) {
+    console.log('❌ Mots de passe différents');
     document.getElementById('confirmError')?.classList.add('show'); return;
   } else {
     document.getElementById('confirmError')?.classList.remove('show');
   }
-  if (password.length < 6) { showToast('⚠️ Mot de passe minimum 6 caractères'); return; }
-  if (!terms) { showToast("⚠️ Acceptez les conditions d'utilisation"); return; }
+  if (password.length < 6) { 
+    console.log('❌ Mot de passe trop court');
+    showToast('⚠️ Mot de passe minimum 6 caractères'); return; 
+  }
+  if (!terms) { 
+    console.log('❌ CGU non acceptées');
+    showToast("⚠️ Acceptez les conditions d'utilisation"); return; 
+  }
+
+  console.log('✅ Validation OK - Appel Firebase...');
 
   const btn = document.querySelector('#registerForm .submit-btn');
   if (btn) { btn.textContent = '⏳ Création...'; btn.style.opacity = '.7'; btn.style.pointerEvents = 'none'; }
